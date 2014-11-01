@@ -1,0 +1,37 @@
+<div class='home'>
+	<div class="row col-md-offset-2">
+		<div class="col-md-4">
+			<button type="button" class="btn btn-success btn-lg" ng-click="homeCtrl.setTab('doctors')">I'm a Doctor</button>
+		</div>
+		<div class="col-md-4">
+			<button type="button" class="btn btn-primary btn-lg" ng-click="homeCtrl.setTab('med-rep')">I'm a Medical Representative</button>
+		</div>
+	</div>
+	<div class="row col-md-offset-2">
+		<div class="col-md-4">
+			<button type="button" class="btn btn-info btn-lg" ng-click="homeCtrl.setTab('pharma')">We are a Pharmaceutical Company</button>
+		</div>
+		<div class="col-md-4">
+			<h3>Log in:</h3>
+			<form name="signInForm" class="form-horizontal" role="form" ng-submit="signInForm.$valid && homeCtrl.login()" novalidate>
+				<div class="form-group">
+					<label class="col-md-3 control-label">Email:</label>
+					<div class="col-md-8">
+						<input class="form-control" type="text" ng-model="user.email" required>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-md-3 control-label">Password:</label>
+					<div class="col-md-8">
+						<input class="form-control" type="password" ng-model="user.password" required>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-md-3 control-label"></label>
+					<div class="col-md-8">
+						<input type="submit" class="btn btn-primary" value="Login">
+					</div>
+				</div>
+		</div>
+	</div>
+</div>

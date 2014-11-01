@@ -1,0 +1,30 @@
+/** Add css rules here for your application. */
+#live_video {
+	width: 100%;
+	height: 100%;
+}
+
+#video_section {
+	float: left;
+	width: 400px;
+	height: 300px;
+}
+
+#res_section {
+	float: left;
+}
+
+#res_img {
+	width: 600px;
+	height: 450px;
+}
+#chat_box{
+	width:90%;
+	height:150px;
+}
+textarea {
+  resize: none;
+}
+
+@media only screen and (max-device-width: 480px) {
+}

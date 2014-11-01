@@ -1,0 +1,132 @@
+.main-wrapper{
+	position: absolute;
+	top:23%;
+	left:30%;
+	width:640px;
+	height:436px;
+}
+
+.content-wrapper{
+	width: 298px;
+	height: 198px;
+	border: 1px;
+	border-radius: 10px;
+	float: left;
+
+}
+.button{
+	text-align: center;
+	font-size: 30px;
+	margin: 10px;
+}
+
+.welcome-info-wrapper div.register-button{
+	background-color: rgb(105, 191, 207);
+	width: 87px;
+	height: 16px;
+	border: 1px gray solid;
+	border-radius: 8px;
+	text-align: center;
+	padding: 12px;
+	padding-top: 9px;
+	margin: 40px 0px 0px 90px;
+	cursor: pointer;
+}
+.welcome-info-wrapper div.register-button span{
+	cursor: pointer;
+}
+.login{
+	margin: 76px;
+}
+
+.doctor{
+	background-color: rgb(59, 203, 143);
+}
+.pharma{
+	background-color: rgb(200, 108, 108);
+}
+.med-rep{
+	background-color: rgb(99, 97, 181);
+}
+
+.button div{
+	margin-top: 25%;
+}
+
+.welcome-info-wrapper{
+	display: none;
+	margin: 0 !important;
+}
+
+.welcome-info-wrapper div{
+	width: 298px;
+	height: 198px;
+	border: 1px;
+	float: left;
+	text-align: left;
+	font-size: 16px;
+	margin: 5px;
+}
+.form{
+	background-color: rgb(105, 191, 207);
+	cursor: default;
+	border: 1px;
+	border-radius: 8px;
+	font-size: 30px;
+	display: none;
+}
+#register-form{
+	display: none;
+}
+
+.input-wrapper{
+	font-size:18px;
+	margin: 5;
+}
+
+#academic-form .input-wrapper{
+	margin: 20px;
+}
+
+
+
+#register-form input{
+	border-radius: 5px;
+	height: 30px;
+	width: 263px;
+	padding: 6px;
+}
+.small-button{
+	font-size: 18px;
+	cursor: pointer;
+	padding: 12px;
+	padding-top: 12px;
+	width: 80px;
+	height: 16px;
+	border: 1px gray solid;
+	border-radius: 8px;
+	background-color: rgb(126, 173, 167);
+	text-align: center;
+}
+.next-button{
+	margin: -15px 0px 0px 513px;
+}
+
+#academic-form{
+	display: none;
+}
+
+#photo-upload{
+	float:right;
+	margin: 10px;
+	border: 1px gray solid
+}
+#photo-upload img{
+	height: 96px;
+	width: 96px;
+}
+
+.submit-button{
+	margin: -19px 0px 0px 517px;
+}
+

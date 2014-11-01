@@ -1,0 +1,55 @@
+<nav class="navbar navbar-default navbar-static-top" role="navigation">
+	<div class="container">
+		<!-- Brand and toggle get grouped for better mobile display -->
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle collapsed"
+				data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+				<span class="sr-only">Toggle navigation</span> <span
+					class="icon-bar"></span> <span class="icon-bar"></span> <span
+					class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" href="#"><img alt="Panda"
+				src=images/panda_logo.jpg></a>
+		</div>
+
+		<!-- Collect the nav links, forms, and other content for toggling -->
+		<div class="collapse navbar-collapse"
+			id="bs-example-navbar-collapse-1">
+
+			<ul class="nav navbar-nav">
+				<li ng-class="{ active:isSet('whats-new') }"><a href
+					ng-click="tab.setTab('whats-new')"> What's new?</a></li>
+				<li ng-class="{ active:isSet('uploads') }"><a href
+					ng-click="tab.setTab('uploads')"> Uploads</a></li>
+				<li ng-class="{ active:isSet('calendar') }"><a href
+					ng-click="tab.setTab('calendar')"> Calendar</a></li>
+				<li ng-class="{ active:isSet('profile') }"><a href
+					ng-click="tab.setTab('profile')">Profile</a></li>
+				<li ng-class="{ active:isSet('dashboard') }"><a href
+					ng-click="tab.setTab('dashboard')">Dashboard</a></li>
+				<li ng-class="{ active:isSet('call') }"><a href
+					ng-click="tab.setTab('call')">Calls</a></li>
+			</ul>
+		</div>
+		<!-- /.navbar-collapse -->
+	</div>
+	<!-- /.container -->
+</nav>
+<div ng-show="isSet('whats-new')">
+	<whats-new></whats-new>
+</div>
+<div ng-show="isSet('uploads')">
+	<Uploads id="uploads"></Uploads>
+</div>
+<div ng-show="isSet('calendar')">
+	<calendar></calendar>
+</div>
+<div ng-show="isSet('profile')">
+	<profile></profile>
+</div>
+<div ng-show="isSet('dashboard')">
+	<dashboard></dashboard>
+</div>
+<div ng-show="isSet('call')">
+	<call></call>
+</div>

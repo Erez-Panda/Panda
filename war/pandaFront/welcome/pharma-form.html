@@ -1,0 +1,55 @@
+<form name="professionalForm" class="form-horizontal" role="form" ng-submit="professionalForm.$valid && pharmaRegisterCtrl.save(product)" novalidate>
+	<h4>Product Information<small> not sure what it is? <a href="">click here</a></small></h4>
+	<div class="form-group">
+		<label class="col-lg-3 control-label">Product name:</label>
+		<div class="col-lg-8">
+			<input class="form-control" type="text" ng-model="product.name" required>
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-md-3 control-label">Number of requested calls</label>
+		<div class="col-md-8">
+			<select class="form-control" ng-model="product.callBank" ng-options="calls for calls in callNumbers">
+			</select>
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-md-3 control-label">HCP segment</label>
+		<div class="col-md-8">
+			<select class="form-control" ng-model="product.hcp" ng-options="segment for segment in hcpSegments">
+			</select>
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-lg-3 control-label">Delivery date:</label>
+		<div class="col-lg-8">
+			<input class="form-control" type="date" ng-model="product.deliveryDate" required>
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-md-3 control-label">Product maturity phase:</label>
+		<div class="col-md-8">
+			<select class="form-control" ng-model="product.maturityPhase" ng-options="maturity for maturity in ['launch','existing','mature']">
+			</select>
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-lg-3 control-label">End date:</label>
+		<div class="col-lg-8">
+			<input class="form-control" type="date" ng-model="product.endDate" required>
+		</div>
+	</div>
+	<div class="form-group">
+		<div class="col-md-8">
+			<button type="submit" class="btn btn-primary">Purchase later</button>
+			<button class="btn btn-success" ng-click="pharmaRegisterCtrl.purchase()">Purchase</button>
+		</div>
+	</div>
+		<div class="form-group">
+		<div class="col-md-8">
+			<label class="control-label">
+				<input type="checkbox" ng-model="product.onDemand">Interested in on demand calls <a href="">What is it?</a>
+			</label>
+		</div>
+	</div>
+</form>

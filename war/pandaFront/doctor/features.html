@@ -1,0 +1,135 @@
+<div class="features">
+	<h3>Send a request to the pharmaceutical company</h3>
+	<hr>
+	<ul class="nav nav-pills">
+		<li  ng-repeat="feature in features" ng-class="{ active:isSet(feature) }"><a href
+			ng-click="featuresCtrl.setTab(feature)">{{feature}}</a></li>
+
+	</ul>
+	<div ng-show="isSet('Sampels')" class="col-md-offset-1">
+		<form name='sampleForm' class="form-horizontal" role="form" novalidate>
+			<div class="col-md-4">
+				<h4>Add sample:</h4>
+				<div class="form-group">
+					<label class="col-md-3 control-label">Product:</label>
+					<div class="col-md-8">
+						<select class="form-control" ng-model="sample.product" ng-options="product.name for product in products">
+						</select>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-md-3 control-label">Type:</label>
+					<div class="col-md-8">
+						<select class="form-control" ng-model="sample.type" ng-options="type for type in sample.product.types" ng-disabled="!sample.product.types">
+						</select>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-md-3 control-label">Quantity:</label>
+					<div class="col-md-8">
+						<select class="form-control" ng-model="sample.quantity" ng-options="quantity for quantity in [1,2,3,4]" ng-disabled="!sample.product.types">
+						</select>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-md-9  control-label"></label>
+					<button class="btn btn-primary"  ng-click="addSample()">
+						Add <span class="glyphicon glyphicon-plus-sign"></span>
+					</button>
+				</div>
+			</div>
+				<div class="col-md-4">
+				<h4>Summary:</h4>
+					<ul class="list-group">
+						<a href="#" class="list-group-item" ng-repeat="sample in samples">
+							{{sample.quantity}} - <strong>{{sample.product.name}}</strong>, {{sample.type}}
+						</a>
+					</ul>
+					<div class="form-group">
+						<label class="col-lg-3 control-label">Address:</label>
+						<div class="col-lg-8">
+							<input class="form-control" type="text" ng-model="address">
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-lg-3 control-label">Contact phone:</label>
+						<div class="col-lg-8">
+							<input class="form-control" type="text" ng-model="phone">
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-md-9  control-label"></label>
+						<button class="btn btn-success" ng-click="sendSamples()">
+							Send
+						</button>
+					</div>
+				</div>
+		</form>	
+	</div>
+	<div ng-show="isSet('Medical Letter')" class="col-md-offset-1">
+		<div class="col-md-4">
+			<form name='letterForm' class="form-horizontal" role="form" ng-submit="sendLetter()" novalidate>
+				<h4>Medical letter request <small>will be sent in two weeks</small></h4>
+				<div class="form-group">
+					<label class="col-md-3 control-label">Product:</label>
+					<div class="col-md-8">
+						<select class="form-control" ng-model="letter.product" ng-options="product.name for product in products">
+						</select>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-lg-3 control-label">Inquiry:</label>
+					<div class="col-lg-8">
+						<textarea class="form-control" type="text" ng-model="letter.inquiry"></textarea>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-md-9  control-label"></label>
+					<button class="btn btn-success" type=submit">
+						Send
+					</button>
+				</div>
+			</form>
+		</div>
+	</div>
+	<div ng-show="isSet('Acticals and Promotion matirials')" class="col-md-offset-1">
+		<h4>Request an artical</h4>
+		<form name='promoForm' class="form-horizontal" role="form" ng-submit="sendPromo()" novalidate>
+			<div class="col-md-4">
+				<div class="form-group">
+					<label class="col-md-3 control-label">Product:</label>
+					<div class="col-md-8">
+						<select class="form-control" ng-model="promo.product" ng-options="product.name for product in products">
+						</select>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-md-3 control-label">Articals:</label>
+					<div class="col-md-8">
+						<select class="form-control" ng-model="promo.artical" ng-options="artical for artical in promo.product.articals" ng-disabled="!promo.product.articals">
+						</select>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-md-3 control-label">Promotinal matirials:</label>
+					<div class="col-md-8">
+						<select class="form-control" ng-model="promo.matirial" ng-options="matirial for matirial in promo.product.matirials" ng-disabled="!promo.product.matirials">
+						</select>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-lg-3 control-label">Other:</label>
+					<div class="col-lg-8">
+						<input class="form-control" type="text" ng-model="promo.other"/>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-md-9  control-label"></label>
+					<button class="btn btn-success" type=submit">
+						Send
+					</button>
+				</div>
+			</div>
+		</form>	
+	</div>
+</div>

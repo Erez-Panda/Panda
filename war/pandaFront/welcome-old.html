@@ -1,0 +1,170 @@
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+	<link type="text/css" rel="stylesheet" href="css/common.css">
+	<link type="text/css" rel="stylesheet" href="css/welcome.css">
+</head>
+<body>
+	<div class="welcome main-wrapper">
+		<div class="content-wrapper button doctor">
+			<div><span>Doctor Entrance</span></div>
+			<div class="welcome-info-wrapper">
+				<div class="welcome-text"><span>welcome text explaining about Panda for doctors</span></div>
+				<div class="info-text">
+					<span>welcome text explaining about Panda for doctors</span>
+					<a href="">learn more...</a>
+				</div>
+				<div class="promo-video"><video controls/></div>
+				<div class="register-button"><span>Register</span></div>
+			</div>
+		</div>
+		<div class="content-wrapper button pharma">
+			<div><span>Pharma Entrance</span></div>
+			<div class="welcome-info-wrapper">
+				<div class="welcome-text"><span>welcome text explaining about Panda for pharma companies</span></div>
+				<div class="info-text">
+					<span>specific information to pharma companies and the advantages of Panda to them</span>
+					<a href="">learn more...</a>
+				</div>
+				<div class="promo-video"><video controls/></div>
+				<div class="register-button"><span>Register</span></div>
+			</div>
+		</div>
+		<div class="content-wrapper button med-rep">
+			<div><span>Medical Rep Entrance</span></div>
+			<div class="welcome-info-wrapper">
+				<div class="welcome-text"><span>welcome text explaining about Panda for medical representatives</span></div>
+				<div class="info-text">
+					<span>specific information to medical representatives and the advantages of Panda to them</span>
+					<a href="">learn more...</a>
+				</div>
+				<div class="promo-video"><video controls/></div>
+				<div class="register-button"><span>Register</span></div>
+			</div>			
+		</div>
+		<div class="content-wrapper">
+			<div class="login">
+				<div>
+					<input type="text" placeholder="E-mail"/>
+				</div>
+				<div>
+					<input type="password" placeholder="Password"/>
+				</div>
+				<div>
+					<input type="button" value="Login"/>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div id='register-form' class='main-wrapper form'>
+		<span>Register Form</span>
+		<div class='input-wrapper'>
+			<input type='text' placeholder='First Name'><span>*</span>
+		</div>
+		<div class='input-wrapper'>
+			<input type='text' placeholder='Last Name'><span>*</span>
+		</div>
+		<div class='input-wrapper'>
+			<input type='email' placeholder='E-mail'><span>*</span>
+		</div>
+		<div class='input-wrapper'>
+			<input type='password' placeholder='Password'><span>*</span>
+		</div>
+		<div class='input-wrapper'>
+			<input type='password' placeholder='Retype Password'>
+		</div>
+		<div class='input-wrapper'>
+			<input type='text' placeholder='Phone'>
+		</div>
+		<div class='input-wrapper'>
+			<input type='text' placeholder='Country'>
+		</div class='input-wrapper'>
+		<div class='input-wrapper'>
+			<input type='text' placeholder='City'>
+		</div>
+		<div class='input-wrapper'>
+			<input type='text' placeholder='Address'>
+		</div>
+		<div class='input-wrapper'>
+			<input type='number' placeholder='Zip Code'>
+		</div>
+		<div class='next-button small-button'><span>Next</span></div>
+	</div>
+	<div id="academic-form" class='main-wrapper form'>
+		<span>Academic Information</span>
+		<div class='input-wrapper'>
+			<input type='text' placeholder='ID'><input type='button' value='Uplaod'/>
+			<div id='photo-upload'>
+				<div>
+					<img>
+				</div>
+				<input type='button' value='Uplaod Photo'/>
+			</div>
+		</div>
+		<div class='input-wrapper'>
+			<input id='grad-radio' type='radio' value='Graduate' checked /><label for='Graduate'>Graduate</label>
+			<input id='student-radio' type='radio' value='Student'/><label for='Student'>Student</label>
+			<div>
+				<input type='text' placeholder='Degree'>
+				<div id='grad-info'>
+					<input type='button' value='Upload degree scan'/>
+				</div>
+				<div id='student-info' style="display:none;">
+					<span>Year:</span><select  name="Year">
+						<option value="1">1</option>
+						<option value="2">2</option>
+						<option value="3">3</option>
+						<option value="4">4</option>
+					</select>
+					<input type='text' placeholder='Time to graduate'>
+				</div>
+			</div>
+		</div>
+		<div class='input-wrapper'>
+			<span>Years of experience:</span><select>
+				<option value="1">1</option>
+				<option value="2">2</option>
+				<option value="3">3</option>
+				<option value="4">4</option>
+				<option value="4+">4+</option>
+			</select>
+			<div>
+				<input type="checkbox"><span>Pharma experience</span>
+			</div>
+			<div>
+				<input type="checkbox"><span>Sales experience</span>
+			</div>
+			<div>
+				<textarea placeholder='Experience details'></textarea>
+			</div>
+		</div>
+		<div class='input-wrapper'>
+			<div>
+				<input type='text' placeholder='Primary Language'>
+			</div>
+			<div>
+				<input type='text' placeholder='Secondary Language'>
+				<span>Language Level:</span><select>
+					<option value="1">Fluent Level</option>
+					<option value="2">Business Level</option>
+					<option value="3">Conversational Level</option>
+					<option value="4">Beginner Level</option>
+				</select>
+			</div>
+		</div>
+		<div class='input-wrapper'>
+			<span>Work hours per week:</span><select>
+				<option value="1">40+</option>
+				<option value="2">30-39</option>
+				<option value="3">20-29</option>
+				<option value="4">10-19</option>
+				<option value="4">less than 10</option>
+			</select>
+		</div>
+
+		<div class='submit-button small-button'><span>Submit</span></div>
+	</div>
+	<script type="text/javascript" src="res/jquery-1.11.1.min.js"></script>
+	<script type="text/javascript" src="js/welcome.js"></script>
+</body>
+</html>

@@ -1,0 +1,23 @@
+<div class='whats-new'>
+	<div class='col-md-4'>
+		<h3>Call Status:</h3>
+		{{company.name}} has {{company.products}} active products.
+		 {{company.medReps}} Medical Representatives made {{company.deliveredCalls}} Tele-web calls, <strong>{{company.docCalls}}&nbsp;of them were initiated by Doctors.</strong>
+		<hr>
+		<h4>Call Progress<small> when this bar is full, {{company.name}} call target is achieved</small></h4>
+		<div class="progress">
+		  <div class="progress-bar" role="progressbar" aria-valuenow="{{progress}}" aria-valuemin="0" aria-valuemax="100" style="width: {{progress}}%;">
+		    {{progress}}%
+		  </div>
+		</div>
+	</div>
+	<div class='col-md-4'>
+		<h3>To Do:</h3>
+		<ul class="list-group">
+		  <a href="#"class="list-group-item" ng-repeat="message in messages" ng-click='changeTab(message.target, message.product)'>
+			  <strong>{{message.text}}</strong>
+		  </a>
+		</ul>
+	</div>
+
+</div>

@@ -1,0 +1,70 @@
+<div class="uploads">
+	<div class="row">
+		<div class="col-md-4">
+			<h4>Product:</h4>
+			<div class="ui-select">
+				<select class="form-control" ng-model="uploadCtrl.selectedProduct" ng-options="selectedProduct.name for selectedProduct in uploadCtrl.products">
+					<option value="">Available Products:</option>
+				</select>
+			</div>
+		</div>
+	</div>
+	<hr>
+	<div class="row" ng-show="uploadCtrl.selectedProduct.name">
+		<div class="col-md-4">
+			<div class="panel panel-default ">
+				<div class="panel-heading">Call Resources
+				</div>
+				<div class="panel-body">
+					<h3 ng-hide="uploadCtrl.selectedProduct.callResources">There are no available resources...</h3>
+					<ul ng-show="uploadCtrl.selectedProduct.callResources" class="list-group">
+					  <a href="#"class="list-group-item" ng-repeat="resource in uploadCtrl.selectedProduct.callResources">
+						  <strong>{{resource.name}}:</strong> {{resource.desc}}
+					  </a>
+					</ul>
+					<hr>
+					<add-call-resource></add-call-resource>
+				</div>
+			</div>
+		</div>
+		<div class="col-md-4">
+			<div class="panel panel-default ">
+				<div class="panel-heading">Training
+				</div>
+				<div class="panel-body">
+					<h4>Training:</h4>
+					<h3 class="ui-select" ng-hide="uploadCtrl.selectedProduct.training">No existing training for this product</h3>
+					<div class="ui-select" ng-show="uploadCtrl.selectedProduct.training">
+						<select class="form-control" ng-model="uploadCtrl.selectedProduct.selectedTraining" ng-options="selectedTraining.name for selectedTraining in uploadCtrl.selectedProduct.training">
+							<option value="">Available Training:</option>
+						</select>
+					</div>
+					<hr ng-show="uploadCtrl.selectedProduct.selectedTraining.resources">
+					<ul ng-show="uploadCtrl.selectedProduct.selectedTraining.resources" class="list-group">
+					  <a href="#"class="list-group-item" ng-repeat="resource in uploadCtrl.selectedProduct.selectedTraining.resources">
+						  <strong>{{resource.name}}:</strong> {{resource.desc}}
+					  </a>
+					</ul>
+					<hr>
+					<add-training-resource ng-show="uploadCtrl.selectedProduct.selectedTraining.name"></add-training-resource>
+					<hr ng-show="uploadCtrl.selectedProduct.selectedTraining.name">
+					<h4>Create new Training</h4>
+					<form name="createTrainingForm" class="form-horizontal" role="form" ng-submit="createTrainingForm.$valid && uploadCtrl.addTraining(uploadCtrl.training)" novalidate>
+						<div class="form-group">
+							<label class="col-lg-3 control-label">Name:</label>
+							<div class="col-lg-8">
+								<input class="form-control" type="text" ng-model="uploadCtrl.training.name" required>
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-md-3 control-label"></label>
+							<div class="col-md-8">
+								<input type="submit" class="btn btn-primary" value="Create">
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

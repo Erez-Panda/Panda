@@ -1,0 +1,2 @@
+serviceClass: com.panda.video.client.GreetingService
+path: 854FD0CD9677D41837FA01DE0B758E2F.gwt.rpc

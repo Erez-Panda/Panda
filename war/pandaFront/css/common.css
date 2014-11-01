@@ -1,0 +1,52 @@
+body {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+span {
+	cursor:default;
+}
+
+.navbar-default .navbar-nav>li:hover{
+ 	background-color:  #428bca;
+ }
+
+.main-wrapper .navbar-default .navbar-nav>.active>a:hover, .navbar-default .navbar-nav>.active>a:focus {
+	background-color: #428bca;
+}
+.main-wrapper{
+}
+
+.navbar-brand img {
+	padding:0;
+	margin: -15px 0px 0px 0px;
+	width: 48px;
+}
+
+.main-wrapper #cal-slide-content a.event-item{
+	color: #428bca;
+}
+
+.ng-invalid.ng-dirty{
+    border-color: #a94442;
+}
+
+/* show the move cursor as the user moves the mouse over the panel header.*/
+.draggable .panel-heading{
+    cursor: move;
+}
+
+.call-screen .panel-body{
+	padding:0;
+}
+
+.ui-icon-gripsmall-diagonal-se{
+	background:url('icons/glyphicons_215_resize_full.png'); 
+}
+.call-screen .btn-group{
+	margin: -7px -12px 0px 0px;
+}

@@ -1,0 +1,35 @@
+<div class={{type}}>
+<div class='info-page' ng-hide="onRegister">
+	<div class="row col-md-offset-2">
+		<div class="col-md-4">
+			<h3>Welcome {{type}}</h3>
+			<p>{{welcomeText}}</p>
+			<hr>
+		</div>
+		<div class="col-md-4">
+			<h3>Further information <small>more about panda</small></h3>
+			<p>{{infoText}}</p>
+			<div>
+				<a href="#">Learn more</a>
+			</div>
+			<hr>
+		</div>
+	</div>
+	<div class="row col-md-offset-2">
+		<div class="col-md-4">
+			<h3>How it works <small>a shot video</small></h3>
+			<div class="embed-responsive embed-responsive-16by9">
+				<iframe ng-src="{{videoSrc}}"></iframe>
+			</div>
+		</div>
+		<div class="col-md-4">
+			<h3>Join now</h3>
+			<p>And enjoy all of Panda advantages</p>
+			<div class="col-md-offset-8">
+				<button type="button" class="btn btn-primary btn-lg" ng-click="infoPage.register()">Register</button>
+			</div>
+		</div>
+	</div>
+</div>
+<register-form ng-show="onRegister"></register-form>
+</div>

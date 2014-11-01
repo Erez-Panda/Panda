@@ -1,0 +1,166 @@
+<div class="container">
+	<h1>Register</h1>
+	<hr>
+	<div class="profile">
+		<!-- left column -->
+		<div class="col-md-3">
+			<div class="text-center">
+				<img src="//placehold.it/100" class="avatar img-circle" alt="avatar">
+				<h6 ng-show="isEdit" >Change Photo</h6>
+
+				<input type="file" class="form-control" ng-show="isEdit" >
+			</div>
+		</div>
+
+
+		<div class="col-md-9 personal-info">
+			<ul class="nav nav-pills">
+				<li ng-class="{ active:isSet(1) }"><a href
+					ng-click="setTab(1)">Personal info</a></li>
+				<li ng-class="{ active:isSet(2) }"><a href
+					ng-click="setTab(2)">Call info</a></li>
+			</ul>
+			<hr>
+			<div ng-show="isSet(1)">
+				<form name="registerForm" class="form-horizontal" role="form" ng-submit="registerForm.$valid && registerCtrl.save(profile)" novalidate>
+					<div class="form-group">
+						<label class="col-lg-3 control-label" ng-show="isEdit" >*First name:</label>
+						<div class="col-lg-8">
+							<input class="form-control" type="text" ng-model="profile.name" name="firstName" required ng-disabled="!isEdit">
+						</div>
+					</div>
+					<div class="form-group" >
+						<label class="col-lg-3 control-label" ng-show="isEdit">*Last name:</label>
+						<div class="col-lg-8">
+							<input class="form-control" type="text" ng-model="profile.lastName" name="lastName" required ng-disabled="!isEdit">
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-lg-3 control-label" ng-show="isEdit">*Email:</label>
+						<div class="col-lg-8">
+							<input class="form-control" type="email" ng-model="profile.email" name="email" required ng-disabled="!isEdit">
+						</div>
+					</div>
+
+					<div class="form-group">
+						<label class="col-lg-3 control-label" ng-show="isEdit">Address:</label>
+						<div class="col-lg-8">
+							<input class="form-control" type="text" ng-model="profile.address" placeholder="Address" ng-disabled="!isEdit">
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-lg-3 control-label" ng-show="isEdit" >Specialty:</label>
+						<div class="col-md-8">
+							<div class="ui-select"> 
+								<select class="form-control" ng-model="profile.specialty" ng-options="specialty for specialty in specialties" ng-disabled="!isEdit">
+								</select>
+							</div>
+						</div>
+					</div>
+					<div class="form-group" ng-hide="isEdit" >
+						<div class="col-md-8">
+							<a href="#">edit</a>
+						</div>
+					</div>
+					<div class="form-group" ng-show="isEdit">
+						<label class="col-lg-3 control-label"></label>
+						<button class="btn btn-primary" type="submit">Save</button>
+					</div>
+				</form>
+				<div class="alert alert-danger" role="alert" ng-show="isError()">
+					<strong>Error: </strong>
+					<input class="input-alert" ng-value="error" disabled/>
+				</div>
+			</div>
+			<div ng-show="isSet(2)">
+				<form name="professionalForm" class="form-horizontal" role="form" ng-submit="professionalForm.$valid && save(profile)" novalidate>
+					<h4>Call Information</h4>
+					<div class="form-group">
+						<label class="col-md-3 control-label">Prefered Language</label>
+						<div class="col-md-8">
+							<select class="form-control" ng-model="profile.lang" ng-options="lang for lang in languages" ng-disabled="!isEdit">
+							</select>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-md-3 control-label">Prefered Hours</label>
+						<div class="col-md-8">
+							<select class="form-control" ng-model="profile.callHour" ng-options="hour for hour in callHours" ng-disabled="!isEdit">
+							</select>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-md-3 control-label">Call frequency</label>
+						<div class="col-md-8">
+							<select class="form-control" ng-model="profile.callFreq" ng-options="freq for freq in frequency" ng-disabled="!isEdit">
+							</select>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-md-3 control-label">Main fields of interest:</label>
+						<div class="col-md-8">
+							<div>
+								<label class="control-label">
+									<input type="checkbox" ng-model="profile.foi.diabetes" ng-disabled="!isEdit">Diabetes
+								</label>
+							</div>
+							<div>
+								<label class="control-label">
+									<input type="checkbox" ng-model="profile.foi.cancer" ng-disabled="!isEdit">Cancer
+								</label>
+							</div>
+							<div>
+								<label class="control-label">
+									<input type="checkbox" ng-model="profile.foi.osteoporosis" ng-disabled="!isEdit">Osteoporosis
+								</label>
+							</div>
+							<div>
+								<label class="control-label">
+									<input type="checkbox" ng-model="profile.foi.ed" ng-disabled="!isEdit">ED
+								</label>
+							</div>
+							<div>
+								<label class="control-label">
+									<input type="checkbox" ng-model="profile.foi.cardiovascular" ng-disabled="!isEdit">Cardiovascular
+								</label>
+							</div>
+						</div>
+					</div>
+					<hr>
+					<div class="form-group">
+						<label class="col-md-3 control-label">How would you like to be scheduled to Tele-web calls:</label>
+						<div class="col-md-8">
+							<div>
+								<label class="control-label">
+									<input type="checkbox" ng-model="profile.scheduleBy.email" ng-disabled="!isEdit">Email
+								</label>
+							</div>
+							<div>
+								<label class="control-label">
+									<input type="checkbox" ng-model="profile.scheduleBy.phone" ng-disabled="!isEdit">Phone Call
+								</label>
+							</div>
+							<div>
+								<label class="control-label">
+									<input type="checkbox" ng-model="profile.scheduleBy.sms" ng-disabled="!isEdit">SMS
+								</label>
+							</div>
+							<div>
+								<label class="control-label">
+									<input type="checkbox" ng-model="profile.scheduleBy.appNotification" ng-disabled="!isEdit">App Notification <a href="">Download the app</a>
+								</label>
+							</div>
+						</div>
+					</div>
+					<hr>
+					<div class="form-group">
+						<div class="col-md-8">
+							<input type="submit" class="btn btn-primary" value="Save">
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+<hr>

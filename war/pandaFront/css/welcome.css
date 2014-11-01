@@ -1,0 +1,15 @@
+.home .btn-lg{
+	width:90%;
+	height:80%;
+}
+.home .row{
+	height:250px;
+}
+.home .col-md-4 {
+	height: 100%;
+}
+.input-alert {
+	border: none;
+	background: none;
+	width: 80%;
+}

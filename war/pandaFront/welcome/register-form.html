@@ -1,0 +1,103 @@
+<div class="container">
+	<h1>Register</h1>
+	<hr>
+	<div class="row">
+		<!-- left column -->
+		<div class="col-md-3">
+			<div class="text-center">
+				<img src="//placehold.it/100" class="avatar img-circle" alt="avatar">
+				<h6>Upload photo</h6>
+
+				<input type="file" class="form-control">
+			</div>
+		</div>
+
+		<!-- edit form column -->
+		<div class="col-md-9 personal-info">
+			<div ng-show="registerCtrl.isSet(1)">
+				<form name="registerForm" class="form-horizontal" role="form" ng-submit="registerForm.$valid && registerCtrl.save(profile)" novalidate>
+					<div class="form-group" ng-hide="registerCtrl.isType('Pharmaceutical Company')">
+						<label class="col-lg-3 control-label">*First name:</label>
+						<div class="col-lg-8">
+							<input class="form-control" type="text" ng-model="profile.name" name="firstName" ng-required="!registerCtrl.isType('Pharmaceutical Company')">
+						</div>
+					</div>
+					<div class="form-group" ng-show="registerCtrl.isType('Pharmaceutical Company')">
+						<label class="col-lg-3 control-label">*Company name:</label>
+						<div class="col-lg-8">
+							<input class="form-control" type="text" ng-model="profile.companyName" name="firstName" ng-required="registerCtrl.isType('Pharmaceutical Company')">
+						</div>
+					</div>
+					<div class="form-group" ng-show="registerCtrl.isType('Pharmaceutical Company')">
+						<label class="col-lg-3 control-label">*Contact person:</label>
+						<div class="col-lg-8">
+							<input class="form-control" type="text" ng-model="profile.contantPerson" name="lastName" ng-required="registerCtrl.isType('Pharmaceutical Company')">
+						</div>
+					</div>
+					<div class="form-group" ng-hide="registerCtrl.isType('Pharmaceutical Company')">
+						<label class="col-lg-3 control-label">*Last name:</label>
+						<div class="col-lg-8">
+							<input class="form-control" type="text" ng-model="profile.lastName" name="lastName" ng-required="!registerCtrl.isType('Pharmaceutical Company')">
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-lg-3 control-label">*Email:</label>
+						<div class="col-lg-8">
+							<input class="form-control" type="email" ng-model="profile.email" name="email" required>
+						</div>
+					</div>
+					<div class="form-group" ng-hide="registerCtrl.isType('Doctor')">
+						<label class="col-md-3 control-label">Phone:</label>
+						<div class="col-md-8">
+							<input class="form-control" type="text" ng-model="profile.phone">
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-md-3 control-label">*Password:</label>
+						<div class="col-md-8">
+							<input class="form-control" type="password" ng-model="profile.password"  name="password" required>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-md-3 control-label">*Confirm password:</label>
+						<div class="col-md-8">
+							<input class="form-control" type="password" ng-model="profile.repassword" name="repassword" required>
+						</div>
+					</div>
+					<div class="form-group" ng-show="registerCtrl.isType('Medical Representative')">
+						<label class="col-lg-3 control-label">Address:</label>
+						<div class="col-lg-8">
+							<input class="form-control" type="text" ng-model="profile.address">
+						</div>
+					</div>
+					<div class="form-group" ng-show="registerCtrl.isType('Doctor')">
+						<label class="col-lg-3 control-label">Specialty:</label>
+						<div class="col-md-8">
+							<div class="ui-select">
+								<select class="form-control" ng-model="profile.specialty" ng-options="specialty for specialty in specialties">
+									<option value="">Choose one:</option>
+								</select>
+							</div>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-md-4 col-md-offset-6 control-label"></label>
+						<button class="btn btn-primary" type="submit" ng-click="registerCtrl.showError()">
+						Next <span class="glyphicon glyphicon-chevron-right"></span>
+						</button>
+					</div>
+				</form>
+				<div class="alert alert-danger" role="alert" ng-show="registerCtrl.isError()">
+					<strong>Error: </strong>
+					<input class="input-alert" ng-value="error" disabled/>
+				</div>
+			</div>
+			<div ng-show="registerCtrl.isSet(2)">
+				<med-rep-form ng-show="registerCtrl.isType('Medical Representative')"></med-rep-form>
+				<doctor-form ng-show="registerCtrl.isType('Doctor')"></doctor-form>
+				<pharma-form ng-show="registerCtrl.isType('Pharmaceutical Company')"></pharma-form>
+			</div>
+		</div>
+	</div>
+</div>
+<hr>
