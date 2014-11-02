@@ -33,7 +33,7 @@
 		}
 	});
 	
-	app.directive('home', function(){
+	app.directive('home', ['$http', function($http){
 		var setTab;
 		return{
 			restrict: 'E',
@@ -46,14 +46,12 @@
 					setTab(tab);
 				}
 				this.login = function(){
-					//send to server
-					var href = document.location.href;
-					if ($scope.user.email == "med-rep"){
-						document.location.href = (href.replace('welcome','medrep')) 
-					}
-					if ($scope.user.email == "pharma"){
-						document.location.href = (href.replace('welcome','pharma')) 
-					}
+					$http.post('/login',$scope.user).success(function(user){
+						var href = document.location.href;
+						document.location.href = (href.replace('welcome','medrep'))
+					}).error(function(b){
+						var a =b;
+					});
 				}
 			},
 			link: function(scope, element, attrs, controller) {
@@ -61,7 +59,7 @@
 			},
 			controllerAs: 'homeCtrl'
 		}
-	});
+	}]);
 	
 	app.directive('doctors', function($sce){
 		return{
@@ -118,7 +116,7 @@
 	});
 	
 	
-	app.directive('registerForm', function(){
+	app.directive('registerForm',['$http', function($http){
 		function watchForm(scope){
 			scope.$watch('registerForm.firstName.$invalid', function(invalid){
 				if (scope.registerForm.firstName.$dirty){
@@ -181,7 +179,8 @@
 					$scope.profile = profile;
 					console.log($scope.profile);
 					this.setTab(2);
-					//send data
+					$http.post('/user', $scope.profile).success(function (m){console.log(m)});
+					
 				}
 				this.isType = function(type){
 					return this.formType === type;
@@ -210,7 +209,7 @@
 				watchForm(scope);
 			}
 		};
-	});
+	}]);
 	
 	app.directive('medRepForm', function(){
 		return {

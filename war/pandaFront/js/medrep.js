@@ -11,17 +11,23 @@
 		};
 	});
 	
-	app.directive('notifications', function(){
+	app.directive('notifications', ['$http',function($http){
 		return {
 			restrict: 'E',
 			templateUrl:'common/notifications.html',
 			controller: function(){
+				$http.post('/login',"").success(function (user){
+					if (!user.firstName){
+						var href = document.location.href;
+						document.location.href = (href.replace('medrep','welcome'));
+					}
+				})
 				var board = this;
 				board.notifications = Data.notifications; //should get from server
 			},
 			controllerAs: 'notificationCtrl'
 		};
-	});
+	}]);
 	
 	app.directive('training', function(){
 		return {
