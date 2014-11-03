@@ -2,10 +2,14 @@ package com.panda.video.server;
 
 import java.util.Date;
 
+import com.googlecode.objectify.annotation.Entity;
+import com.googlecode.objectify.annotation.Id;
+
+@Entity
 public class User {
 	private String firstName;
 	private String lastName;
-	private String email;
+	@Id	private String email;
 	private String password;
 	private String phone;
 	public enum Type {MEDREP, PHARMA, DOCTOR};
