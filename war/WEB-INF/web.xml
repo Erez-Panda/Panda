@@ -45,7 +45,16 @@
     <servlet-name>LoginServlet</servlet-name>
     <url-pattern>/login</url-pattern>
   </servlet-mapping>
-
+  
+  <servlet>
+    <servlet-name>ListUsersServlet</servlet-name>
+    <servlet-class>com.panda.video.server.ListUsersServlet</servlet-class>
+  </servlet>
+  
+  <servlet-mapping>
+    <servlet-name>ListUsersServlet</servlet-name>
+    <url-pattern>/listUsers</url-pattern>
+  </servlet-mapping>
   <!-- Default page to serve -->
   <welcome-file-list>
     <welcome-file>PandaVideoChat.html</welcome-file>

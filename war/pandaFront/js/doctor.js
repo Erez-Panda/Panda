@@ -1,7 +1,8 @@
 (function (){
 	var app = angular.module('welcome',[]);
+	var _user; 
 	
-	app.directive('tabs', function($compile){
+	app.directive('tabs', ['$http','$compile', function($http, $compile){
 		function appendTabs(tabs, scope){
 			var tabsElm = angular.element(document.getElementById("tabs"));
 			for (var tab in tabs){
@@ -14,6 +15,15 @@
 			templateUrl: 'common/tabs.html',
 			scope:{},
 			controller: function ($scope){
+				$http.post('/login',"").success(function (user){
+					if (!user.firstName){
+						var href = document.location.href;
+						document.location.href = (href.replace('doctor','welcome'));
+					} else {
+						_user = user;
+						appendTabs($scope.tabs, $scope);
+					}
+				})
 				$scope.tabs = [{name:'Notifications', directive:'notifications'},
 				               {name:'Calendar', directive:'calendar'},
 				               {name:'Profile', directive:'profile'},
@@ -27,12 +37,12 @@
 				$scope.isSet = function (tabIndex){
 					return $scope.currTab === tabIndex;
 				};
-				appendTabs($scope.tabs, $scope);
+				
 
 			},
 			controllerAs:'tabCtrl'
 		}
-	});
+	}]);
 	
 	app.directive('features', function(){
 		return {
@@ -124,7 +134,7 @@
 			templateUrl:'doctor/profile.html',
 			scope: {},
 			controller: function($scope){
-				$scope.profile = Data.profile; //server
+				$scope.profile = _user;
 				$scope.specialties = Data.specialties; // server
 				$scope.languages = ['English','Franch'];
 				$scope.callHours = ['Morning (9:00-12:00)','Noon (12:00-16:00)', 'Evening (16:00-20:00)'];

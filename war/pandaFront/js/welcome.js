@@ -48,7 +48,19 @@
 				this.login = function(){
 					$http.post('/login',$scope.user).success(function(user){
 						var href = document.location.href;
-						document.location.href = (href.replace('welcome','medrep'))
+						var target;
+						switch(user.type){
+							case "MEDREP":
+								target = "medrep";
+								break;
+							case "PHARMA":
+								target = "pharma";
+								break;
+							case "DOCTOR":
+								target = "doctor";
+								break;
+						}
+						document.location.href = (href.replace('welcome',target))
 					}).error(function(b){
 						var a =b;
 					});
@@ -67,7 +79,8 @@
 			templateUrl: 'welcome/info-page.html',
 			scope:{},
 			controller: function ($scope){
-				$scope.type = "Doctor";
+				$scope.types = ["","",'Doctor'];
+				$scope.type = 2;
 				$scope.welcomeText = "welcome text explaining about Panda for doctors\n Text should be longer\n will look better";
 				$scope.infoText = "welcome text explaining about Panda for doctors\n Text should be longer\n will look better";
 				$scope.videoSrc= $sce.trustAsResourceUrl("http://www.youtube.com/embed/PgVb2DTCr_E");
@@ -85,7 +98,8 @@
 			templateUrl: 'welcome/info-page.html',
 			scope:{},
 			controller: function ($scope){
-				$scope.type = "Medical Representative";
+				$scope.types = ["Medical Representative","",""];
+				$scope.type = 0;
 				$scope.welcomeText = "welcome text explaining about Panda for Medical Representatives\n Text should be longer\n will look better";
 				$scope.infoText = "welcome text explaining about Panda for Medical Representatives\n Text should be longer\n will look better";
 				$scope.videoSrc= $sce.trustAsResourceUrl("http://www.youtube.com/embed/g78utcLQrJ4");
@@ -103,7 +117,8 @@
 			templateUrl: 'welcome/info-page.html',
 			scope:{},
 			controller: function ($scope){
-				$scope.type = "Pharmaceutical Company";
+				$scope.types = ["","Pharmaceutical Company",""];
+				$scope.type = 1;
 				$scope.welcomeText = "welcome text explaining about Panda for Pharmaceutical Company\n Text should be longer\n will look better";
 				$scope.infoText = "welcome text explaining about Panda for Pharmaceutical Company\n Text should be longer\n will look better";
 				$scope.videoSrc= $sce.trustAsResourceUrl("http://www.youtube.com/embed/GWNS9UikfMk");
@@ -157,6 +172,7 @@
 			templateUrl:'welcome/register-form.html',
 			scope:{},
 			controller: function($scope){
+				var ctrl = this;
 				$scope.profile = {};
 				$scope.degreesList = Data.degreesList; //should get from server
 				$scope.specialties = Data.specialties; //should get from server
@@ -177,9 +193,16 @@
 				};
 				this.save = function(profile){
 					$scope.profile = profile;
-					console.log($scope.profile);
-					this.setTab(2);
-					$http.post('/user', $scope.profile).success(function (m){console.log(m)});
+					var types=["MEDREP", "PHARMA", "DOCTOR"];
+					$scope.profile.type = types[ctrl.formType];
+					$http.post('/user', $scope.profile).success(function (resp){
+						if (resp.error){
+							$scope.error = resp.message;
+							$scope.dirtyInput = true;
+						}else{
+							ctrl.setTab(2);
+						}
+					});
 					
 				}
 				this.isType = function(type){
@@ -197,7 +220,7 @@
 			},
 			controllerAs: 'registerCtrl',
 			link: function(scope, element, attrs, ctrl) {
-				ctrl.formType = element.parent()[0].className;
+				ctrl.formType = parseInt(element.parent()[0].className);
 				scope.registerForm.repassword.$validators.matchPassword = function(modelValue, viewValue) {
 			          if (viewValue == scope.profile.password) {
 			            // it is valid

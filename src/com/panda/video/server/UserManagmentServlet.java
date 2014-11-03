@@ -19,8 +19,13 @@ public class UserManagmentServlet extends HttpServlet {
 		
 		String userJson = req.getReader().readLine();
 		User user = JSON.constructFromJson(userJson);
-		//TODO make sure email in new
-		DBWrapper.addUser(user);
+		User existingUser = DBWrapper.getUser(user.getEmail());
+		if (null != existingUser){
+			JSON j = new JSON();
+			resp.getWriter().print(j.toJson(new ErrorMessage("Email Already Exist")));
+		}else{
+			DBWrapper.addUser(user);
+		}
 		
 
 	}

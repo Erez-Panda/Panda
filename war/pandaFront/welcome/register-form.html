@@ -16,28 +16,28 @@
 		<div class="col-md-9 personal-info">
 			<div ng-show="registerCtrl.isSet(1)">
 				<form name="registerForm" class="form-horizontal" role="form" ng-submit="registerForm.$valid && registerCtrl.save(profile)" novalidate>
-					<div class="form-group" ng-hide="registerCtrl.isType('Pharmaceutical Company')">
+					<div class="form-group" ng-hide="registerCtrl.isType(1)">
 						<label class="col-lg-3 control-label">*First name:</label>
 						<div class="col-lg-8">
-							<input class="form-control" type="text" ng-model="profile.firstName" name="firstName" ng-required="!registerCtrl.isType('Pharmaceutical Company')">
+							<input class="form-control" type="text" ng-model="profile.firstName" name="firstName" ng-required="!registerCtrl.isType(1)">
 						</div>
 					</div>
-					<div class="form-group" ng-show="registerCtrl.isType('Pharmaceutical Company')">
+					<div class="form-group" ng-show="registerCtrl.isType(1)">
 						<label class="col-lg-3 control-label">*Company name:</label>
 						<div class="col-lg-8">
-							<input class="form-control" type="text" ng-model="profile.companyName" name="firstName" ng-required="registerCtrl.isType('Pharmaceutical Company')">
+							<input class="form-control" type="text" ng-model="profile.companyName" name="firstName" ng-required="registerCtrl.isType(1)">
 						</div>
 					</div>
-					<div class="form-group" ng-show="registerCtrl.isType('Pharmaceutical Company')">
+					<div class="form-group" ng-show="registerCtrl.isType(1)">
 						<label class="col-lg-3 control-label">*Contact person:</label>
 						<div class="col-lg-8">
-							<input class="form-control" type="text" ng-model="profile.contantPerson" name="lastName" ng-required="registerCtrl.isType('Pharmaceutical Company')">
+							<input class="form-control" type="text" ng-model="profile.contantPerson" name="lastName" ng-required="registerCtrl.isType(1)">
 						</div>
 					</div>
-					<div class="form-group" ng-hide="registerCtrl.isType('Pharmaceutical Company')">
+					<div class="form-group" ng-hide="registerCtrl.isType(1)">
 						<label class="col-lg-3 control-label">*Last name:</label>
 						<div class="col-lg-8">
-							<input class="form-control" type="text" ng-model="profile.lastName" name="lastName" ng-required="!registerCtrl.isType('Pharmaceutical Company')">
+							<input class="form-control" type="text" ng-model="profile.lastName" name="lastName" ng-required="!registerCtrl.isType(1)">
 						</div>
 					</div>
 					<div class="form-group">
@@ -46,7 +46,7 @@
 							<input class="form-control" type="email" ng-model="profile.email" name="email" required>
 						</div>
 					</div>
-					<div class="form-group" ng-hide="registerCtrl.isType('Doctor')">
+					<div class="form-group" ng-hide="registerCtrl.isType(2)">
 						<label class="col-md-3 control-label">Phone:</label>
 						<div class="col-md-8">
 							<input class="form-control" type="text" ng-model="profile.phone">
@@ -64,13 +64,13 @@
 							<input class="form-control" type="password" ng-model="profile.repassword" name="repassword" required>
 						</div>
 					</div>
-					<div class="form-group" ng-show="registerCtrl.isType('Medical Representative')">
+					<div class="form-group" ng-show="registerCtrl.isType(0)">
 						<label class="col-lg-3 control-label">Address:</label>
 						<div class="col-lg-8">
 							<input class="form-control" type="text" ng-model="profile.address">
 						</div>
 					</div>
-					<div class="form-group" ng-show="registerCtrl.isType('Doctor')">
+					<div class="form-group" ng-show="registerCtrl.isType(2)">
 						<label class="col-lg-3 control-label">Specialty:</label>
 						<div class="col-md-8">
 							<div class="ui-select">
@@ -93,9 +93,9 @@
 				</div>
 			</div>
 			<div ng-show="registerCtrl.isSet(2)">
-				<med-rep-form ng-show="registerCtrl.isType('Medical Representative')"></med-rep-form>
-				<doctor-form ng-show="registerCtrl.isType('Doctor')"></doctor-form>
-				<pharma-form ng-show="registerCtrl.isType('Pharmaceutical Company')"></pharma-form>
+				<med-rep-form ng-show="registerCtrl.isType(0)"></med-rep-form>
+				<doctor-form ng-show="registerCtrl.isType(2)"></doctor-form>
+				<pharma-form ng-show="registerCtrl.isType(1)"></pharma-form>
 			</div>
 		</div>
 	</div>
