@@ -1,5 +1,7 @@
 package com.panda.video.server;
 
+import static com.panda.video.server.OfyService.ofy;
+
 import java.io.IOException;
 
 import javax.servlet.http.HttpServlet;
@@ -18,21 +20,26 @@ public class LoginServlet extends HttpServlet {
 			throws IOException {
 
 		HttpSession session = req.getSession();
-		String userJson = req.getReader().readLine();
+		String msgJson = req.getReader().readLine();
+		Message msg = JSON.constructMessage(msgJson);
 		JSON j = new JSON();
 		String sessionUser = (String)session.getAttribute("user");
 		if (sessionUser != null){
 			resp.getWriter().print(sessionUser);
-		} else if (userJson != null) {
-			User login = JSON.constructFromJson(userJson);
-			User user = DBWrapper.getUser(login.getEmail());
-			if (user.getPassword().equals(login.getPassword())){
-				session.setAttribute("user", j.toJson(user));
-				//setting session to expiry in 30 mins
-				session.setMaxInactiveInterval(30*60);
-				resp.getWriter().print(j.toJson(user));
-			} else {
-				resp.getWriter().print("no user");
+		} else if (msg != null) {
+			if (msg.getType().equals("login")){
+				User login = JSON.constructUser(msg.getMessage());
+				User user = ofy().load().type(User.class).id(login.getEmail()).now();
+				if (null != user){
+					if (user.getPassword().equals(login.getPassword())){
+						session.setAttribute("user", j.toJson(user));
+						//setting session to expiry in 30 mins
+						session.setMaxInactiveInterval(30*60);
+						resp.getWriter().print(j.toJson(user));
+					} else {
+						resp.getWriter().print("no user");
+					}
+				}
 			}
 		} else {
 			resp.getWriter().print("no user");

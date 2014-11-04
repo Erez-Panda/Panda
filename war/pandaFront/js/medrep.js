@@ -1,5 +1,6 @@
 (function (){
 	var app = angular.module('medRep',[]);
+	var currentUser;
 	
 	app.controller('TabController', function(){
 		this.currTab = 1;
@@ -21,6 +22,7 @@
 						var href = document.location.href;
 						document.location.href = (href.replace('medrep','welcome'));
 					}
+					currentUser = user;
 				})
 				var board = this;
 				board.notifications = Data.notifications; //should get from server
@@ -89,13 +91,19 @@
 		};
 	});
 	
-	app.directive('profile', function(){
+	app.directive('profile', ['$http', function($http){
 		return {
 			restrict: 'E',
 			templateUrl:'medrep/profile.html',
 			controller: function(){
 				var profileCtrl = this;
-				profileCtrl.profile = Data.profile; //should get from server
+				/*
+				$http.post('/user', {type:"get-profile",userId:currentUser.email}).success(function (profile){
+						$.extend(currentUser,profile);
+						profileCtrl.profile = currentUser; 
+				});
+				*/
+				profileCtrl.profile = Data.profile;
 				profileCtrl.degreesList = Data.degreesList; //should get from server
 				
 				//also handle pills
@@ -121,7 +129,7 @@
 			},
 			controllerAs: 'profileCtrl'
 		};
-	});
+	}]);
 	
 	app.directive('call', function(){
 		var callData = {};

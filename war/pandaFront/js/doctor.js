@@ -128,13 +128,17 @@
 		};
 	});
 	
-	app.directive('profile', function(){
+	app.directive('profile',['$http', function($http){
 		return {
 			restrict: 'E',
 			templateUrl:'doctor/profile.html',
 			scope: {},
 			controller: function($scope){
-				$scope.profile = _user;
+				$http.post('/user', {type:"get-profile",userId:_user.email}).success(function (profile){
+					$.extend(_user,profile);
+					$scope.profile = _user; 
+				});
+				//$scope.profile = _user;
 				$scope.specialties = Data.specialties; // server
 				$scope.languages = ['English','Franch'];
 				$scope.callHours = ['Morning (9:00-12:00)','Noon (12:00-16:00)', 'Evening (16:00-20:00)'];
@@ -154,7 +158,7 @@
 			},
 			controllerAs: 'profileCtrl'
 		};
-	});
+	}]);
 	
 	app.directive('call', function(){
 		var callData = {};

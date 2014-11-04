@@ -2,8 +2,11 @@ package com.panda.video.server;
 
 import java.util.Date;
 
+import com.googlecode.objectify.Key;
+import com.googlecode.objectify.Ref;
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
+import com.googlecode.objectify.annotation.Load;
 
 @Entity
 public class User {
@@ -14,35 +17,15 @@ public class User {
 	private String phone;
 	public enum Type {MEDREP, PHARMA, DOCTOR};
 	private String type;
-	private Date created;
 	private String specialty;
+	private Date created;
+	private String companyName;
+	private String contantPerson;
+	@Load Ref<Profile> profile;
 	
-	
-	public User(String first, String last, String mail, String pass, String ph, String t, Date d, String spl){
-		firstName = first;
-		lastName = last;
-		email = mail;
-		password = pass;
-		phone = ph;
-		type = t;
-		created = d;
-		specialty = spl;
-	}
-	
-	public User(User u){
-		this.firstName = u.getFirstName();
-		this.lastName = u.getLastName();
-		this.email = u.getEmail();
-		this.password = u.getPassword();
-		this.phone = u.getPhone();
-		this.type = u.getType();
-		this.created = u.getCreated();
-	}
-	
-	public User(){
-		
-	}
-	
+    public Profile getProfile() { return profile.get(); }
+    public void setProfile(Profile value) { profile = Ref.create(value); }
+    
 	public String getFirstName(){
 		return firstName;
 	}
@@ -95,7 +78,7 @@ public class User {
 		return created;
 	}
 	
-	public String getSpecialty(){
-		return specialty;
+	public void Created(){
+		created = new Date();
 	}
 }

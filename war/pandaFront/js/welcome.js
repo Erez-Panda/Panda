@@ -1,6 +1,6 @@
 (function (){
 	var app = angular.module('welcome',[]);
-	
+	var currentUser;
 	app.directive('tabs', function($compile){
 		function appendTabs(tabs, scope){
 			var tabsElm = angular.element(document.getElementById("tabs"));
@@ -46,7 +46,7 @@
 					setTab(tab);
 				}
 				this.login = function(){
-					$http.post('/login',$scope.user).success(function(user){
+					$http.post('/login',{type:'login', message:JSON.stringify($scope.user)}).success(function(user){
 						var href = document.location.href;
 						var target;
 						switch(user.type){
@@ -195,11 +195,12 @@
 					$scope.profile = profile;
 					var types=["MEDREP", "PHARMA", "DOCTOR"];
 					$scope.profile.type = types[ctrl.formType];
-					$http.post('/user', $scope.profile).success(function (resp){
+					$http.post('/user', {type:"new-user",message:JSON.stringify($scope.profile)}).success(function (resp){
 						if (resp.error){
 							$scope.error = resp.message;
 							$scope.dirtyInput = true;
 						}else{
+							currentUser = resp;
 							ctrl.setTab(2);
 						}
 					});
@@ -234,7 +235,7 @@
 		};
 	}]);
 	
-	app.directive('medRepForm', function(){
+	app.directive('medRepForm', ['$http', function($http){
 		return {
 			restrict: 'E',
 			templateUrl:'welcome/med-rep-form.html',
@@ -252,25 +253,28 @@
 				};
 				this.save = function(profile){
 					$scope.profile = profile;
-					console.log($scope.profile);
-					//send data
-					var href = document.location.href;
-					document.location.href = (href.replace('welcome','medrep'));
+					$http.post('/user', {type:"new-med-profile",message:JSON.stringify($scope.profile), userId:currentUser.email}).success(function (resp){
+						if (resp.error){
 
+						}else{
+							var href = document.location.href;
+							document.location.href = (href.replace('welcome','medrep'));
+						}
+					});
 				}
 				
 			},
 			controllerAs: 'medRegisterCtrl'
 		};
-	});
+	}]);
 	
-	app.directive('doctorForm', function(){
+	app.directive('doctorForm', ['$http', function($http){
 		return {
 			restrict: 'E',
 			templateUrl:'welcome/doctor-form.html',
 			scope:{},
 			controller: function($scope){
-				$scope.profile = {foi:{}, scheduleBy:{email:true}};
+				$scope.profile = {foi:[], scheduleBy:[true]};
 				$scope.languages = ['English','Franch'];
 				$scope.profile.lang = $scope.languages[0];
 				$scope.callHours = ['Morning (9:00-12:00)','Noon (12:00-16:00)', 'Evening (16:00-20:00)'];
@@ -279,19 +283,23 @@
 				$scope.profile.callFreq = $scope.frequency[0];
 				this.save = function(profile){
 					$scope.profile = profile;
-					console.log($scope.profile);
-					//send data
-					var href = document.location.href;
-					document.location.href = (href.replace('welcome','doctor'));
+					$http.post('/user', {type:"new-doc-profile",message:JSON.stringify($scope.profile), userId:currentUser.email}).success(function (resp){
+						if (resp.error){
+
+						}else{
+							var href = document.location.href;
+							document.location.href = (href.replace('welcome','doctor'));
+						}
+					});
 				}
 
 				
 			},
 			controllerAs: 'doctorRegisterCtrl'
 		};
-	});
+	}]);
 	
-	app.directive('pharmaForm', function(){
+	app.directive('pharmaForm', ['$http', function($http){
 		return {
 			restrict: 'E',
 			templateUrl:'welcome/pharma-form.html',
@@ -300,10 +308,14 @@
 				$scope.product ={};
 				this.save = function(profile){
 					$scope.profile = profile;
-					console.log($scope.profile);
-					//send data
-					var href = document.location.href;
-					document.location.href = (href.replace('welcome','pharma'));
+					$http.post('/user', {type:"new-pharma-profile",message:JSON.stringify($scope.profile), userId:currentUser.email}).success(function (resp){
+						if (resp.error){
+
+						}else{
+							var href = document.location.href;
+							document.location.href = (href.replace('welcome','pharma'));
+						}
+					});
 				}
 				this.purchase = function (){
 					
@@ -313,7 +325,7 @@
 			},
 			controllerAs: 'pharmaRegisterCtrl'
 		};
-	});
+	}]);
 	
 
 })();

@@ -1,6 +1,6 @@
 (function (){
 	var app = angular.module('pharma',[]);
-	
+	//TODO refactor to tab directive
 	app.directive('tabs', function(){
 		return{
 			restrict: 'E',

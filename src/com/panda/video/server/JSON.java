@@ -8,9 +8,35 @@ public class JSON {
 		String json = gson.toJson(obj);
 		return json;
 	}
-	public static User constructFromJson(String json){
+	public static User constructUser(String json){
 		Gson gson = new Gson();
 		return gson.fromJson(json, User.class);
 	}
+	
+	public static Message constructMessage(String json){
+		Gson gson = new Gson();
+		return gson.fromJson(json, Message.class);
+	}
+	
+	public static Profile constructProfile(String json){
+		Gson gson = new Gson();
+		return gson.fromJson(json, Profile.class);
+	}
+	
+	public static MedRepProfile constructMedProfile(String json){
+		Gson gson = new Gson();
+		return gson.fromJson(json, MedRepProfile.class);
+	}
+	
+	public static DoctorProfile constructDocProfile(String json){
+		Gson gson = new Gson();
+		return gson.fromJson(json, DoctorProfile.class);
+	}
+	
+	public static PharmaProfile constructPharmaProfile(String json){
+		Gson gson = new Gson();
+		return gson.fromJson(json, PharmaProfile.class);
+	}
+	
 
 }
