@@ -14,58 +14,8 @@
 <link type="text/css" rel="stylesheet" href="res/calendar/calendar.min.css">
 </head>
 <body>
-	<div class="main-wrapper container-fluid"
-		ng-controller="TabController as tab">
-		<nav class="navbar navbar-default navbar-static-top" role="navigation">
-			<div class="container">
-				<!-- Brand and toggle get grouped for better mobile display -->
-				<div class="navbar-header">
-					<button type="button" class="navbar-toggle collapsed"
-						data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
-						<span class="sr-only">Toggle navigation</span> <span
-							class="icon-bar"></span> <span class="icon-bar"></span> <span
-							class="icon-bar"></span>
-					</button>
-					<a class="navbar-brand" href="#"><img alt="Panda"
-						src=images/panda_logo.jpg></a>
-				</div>
-
-				<!-- Collect the nav links, forms, and other content for toggling -->
-				<div class="collapse navbar-collapse"
-					id="bs-example-navbar-collapse-1">
-
-					<ul class="nav navbar-nav">
-						<li ng-class="{ active:tab.isSet(1) }"><a href
-							ng-click="tab.setTab(1)"> Notifications</a></li>
-						<li ng-class="{ active:tab.isSet(2) }"><a href
-							ng-click="tab.setTab(2)"> Training</a></li>
-						<li ng-class="{ active:tab.isSet(3) }"><a href
-							ng-click="tab.setTab(3)"> Calendar</a></li>
-						<li ng-class="{ active:tab.isSet(4) }"><a href
-							ng-click="tab.setTab(4)">Profile</a></li>
-						<li ng-class="{ active:tab.isSet(5) }"><a href
-							ng-click="tab.setTab(5)">Calls</a></li>
-					</ul>
-				</div>
-				<!-- /.navbar-collapse -->
-			</div>
-			<!-- /.container -->
-		</nav>
-		<div ng-show="tab.isSet(1)">
-			<notifications></notifications>
-		</div>
-		<div ng-show="tab.isSet(2)">
-			<training></training>
-		</div>
-		<div ng-show="tab.isSet(3)">
-			<calendar></calendar>
-		</div>
-		<div ng-show="tab.isSet(4)">
-			<profile></profile>
-		</div>
-		<div ng-show="tab.isSet(5)">
-			<call></call>
-		</div>
+	<div class="main-wrapper container-fluid">
+		<tabs></tabs>
 	</div>
 	<script type="text/javascript" src="data.js"></script>
 	<script type="text/javascript" src="res/angular.min.js"></script>

@@ -64,10 +64,14 @@ public class UserManagmentServlet extends HttpServlet {
 			throws IOException {
 
 			String email = reqeust.getParameter("email");
-			User u = ofy().load().type(User.class).id(email).now();
-			Profile p = u.getProfile();
 			JSON j = new JSON();
-			response.getWriter().print("["+j.toJson(u)+","+j.toJson(p)+"]");
+			User u = ofy().load().type(User.class).id(email).now();
+			try{
+				Profile p = u.getProfile();
+				response.getWriter().print("["+j.toJson(u)+","+j.toJson(p)+"]");
+			}catch (Exception e){
+				response.getWriter().print("["+j.toJson(u)+"]");
+			}
 
 	}
 }

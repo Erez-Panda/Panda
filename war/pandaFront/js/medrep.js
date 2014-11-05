@@ -1,29 +1,63 @@
 (function (){
 	var app = angular.module('medRep',[]);
-	var currentUser;
+	var _user;
+	Array.prototype.clean = function(deleteValue) {
+		  for (var i = 0; i < this.length; i++) {
+		    if (this[i] == deleteValue) {         
+		      this.splice(i, 1);
+		      i--;
+		    }
+		  }
+		  return this;
+	};
 	
-	app.controller('TabController', function(){
-		this.currTab = 1;
-		this.setTab = function (tabIndex){
-			this.currTab = tabIndex;
-		};
-		this.isSet = function (tabIndex){
-			return this.currTab === tabIndex;
-		};
-	});
+	app.directive('tabs', ['$http','$compile', function($http, $compile){
+		function appendTabs(tabs, scope){
+			var tabsElm = angular.element(document.getElementById("tabs"));
+			for (var tab in tabs){
+				var directive = tabs[tab].directive;
+				tabsElm.append($compile('<div ng-model="myModel" ng-show="isSet(\''+directive+'\')"><'+directive+'>'+'</'+directive+'></div>')(scope));
+			}
+		}
+		return{
+			restrict: 'E',
+			templateUrl: 'common/tabs.html',
+			scope:{},
+			controller: function ($scope){
+				$http.post('/login',"").success(function (user){
+					if (!user.firstName){
+						var href = document.location.href;
+						document.location.href = (href.replace('doctor','welcome'));
+					} else {
+						_user = user;
+						appendTabs($scope.tabs, $scope);
+					}
+				})
+				$scope.tabs = [{name:'Notifications', directive:'notifications'},
+				               {name:'Training', directive:'training'},
+				               {name:'Calendar', directive:'calendar'},
+				               {name:'Profile', directive:'profile'},				               
+				               {name:'Call', directive:'call'}
+				];
+				$scope.currTab = 'notifications';
+				this.setTab = function (tabIndex){
+					$scope.currTab = tabIndex;
+				};
+				$scope.isSet = function (tabIndex){
+					return $scope.currTab === tabIndex;
+				};
+				
+
+			},
+			controllerAs:'tabCtrl'
+		}
+	}]);
 	
 	app.directive('notifications', ['$http',function($http){
 		return {
 			restrict: 'E',
 			templateUrl:'common/notifications.html',
 			controller: function(){
-				$http.post('/login',"").success(function (user){
-					if (!user.firstName){
-						var href = document.location.href;
-						document.location.href = (href.replace('medrep','welcome'));
-					}
-					currentUser = user;
-				})
 				var board = this;
 				board.notifications = Data.notifications; //should get from server
 			},
@@ -67,16 +101,23 @@
 		};
 	});
 	
-	app.directive('calendar', function(){
+	app.directive('calendar', ['$http', function($http){
 		return {
 			restrict: 'E',
 			templateUrl:'common/calendar.html',
 			controller: function(){
-			    this.calendar = $("#calendar").calendar(
+				var calendar;
+				$http.post('/calls', {type:"get-calls", userId:_user.email}).success(function (calls){
+					calls.clean(null);
+				    calendar = $("#calendar").calendar(
 			            {
 			                tmpl_path: "/pandaFront/res/calendar/tmpls/",
-			                events_source: function () { return Data.calls; } //should get from server
+			                events_source: function () { 
+			                	return calls; 
+			                }
 			            });
+				});
+
 				this.currView = 'month';
 				this.setView = function (view){
 					this.currView = view;
@@ -89,7 +130,7 @@
 			},
 			controllerAs: 'calCtrl'
 		};
-	});
+	}]);
 	
 	app.directive('profile', ['$http', function($http){
 		return {
@@ -97,13 +138,10 @@
 			templateUrl:'medrep/profile.html',
 			controller: function(){
 				var profileCtrl = this;
-				/*
-				$http.post('/user', {type:"get-profile",userId:currentUser.email}).success(function (profile){
-						$.extend(currentUser,profile);
-						profileCtrl.profile = currentUser; 
+				$http.post('/user', {type:"get-profile",userId:_user.email}).success(function (profile){
+						$.extend(_user,profile);
+						profileCtrl.profile = _user; 
 				});
-				*/
-				profileCtrl.profile = Data.profile;
 				profileCtrl.degreesList = Data.degreesList; //should get from server
 				
 				//also handle pills

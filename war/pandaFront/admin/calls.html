@@ -1,0 +1,74 @@
+<div class="col-md-4">
+	<form name="newCallForm" class="form-horizontal" role="form" ng-submit="newCall()" novalidate>
+		<div class="form-group">
+			<label class="control-label">Title:</label>
+			<div>
+				<input class="form-control" type="text" ng-model="call.title">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="control-label">Caller:</label>
+			<div class="ui-select">
+				<select class="form-control" ng-model="call.caller" ng-options="user.email for user in users">
+				</select>
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="control-label">Callee:</label>
+			<div class="ui-select">
+				<select class="form-control" ng-model="call.callee" ng-options="user.email for user in users">
+				</select>
+			</div>
+		</div>
+		<div class="form-group" >
+			<label class="control-label">Start time:</label>
+			<div>
+				<input class="form-control" type="date" ng-model="call.start">
+				<input class="form-control" type="time" ng-model="call.start">
+			</div>
+		</div>
+		<div class="form-group" >
+			<label class="control-label">End time:</label>
+			<div>
+				<input class="form-control" type="date" ng-model="call.end">
+				<input class="form-control" type="time" ng-model="call.end">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="control-label">product:</label>
+			<div class="ui-select">
+				<select class="form-control" ng-model="call.product" ng-options="product.name for product in products">
+				</select>
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="control-label">resources:</label>
+			<div class="ui-select">
+				<select class="form-control" ng-model="call.resource" ng-options="resource.name for resource in resources">
+				</select>
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="control-label"></label>
+			<button class="btn btn-primary" type="submit">
+				Create
+			</button>
+		</div>
+	</form>
+</div>
+<div class="col-md-4">
+	<div class="form-group">
+		<label class="control-label">Search:</label>
+		<div>
+			<input class="form-control" type="text" ng-model="searchText">
+		</div>
+	</div>
+	<ul class="list-group">
+	  <a href="#"class="list-group-item" ng-repeat="call in calls | filter:searchText">
+			{{call.title}}: {{call.start | date:'short'}} - id: {{call.callId}}
+	  </a>
+	</ul>
+	<button class="btn btn-danger" ng-click="deleteAll()">
+		Delete All
+	</button>
+</div>

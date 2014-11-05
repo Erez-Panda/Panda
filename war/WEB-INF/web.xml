@@ -7,16 +7,6 @@
 
   <!-- Servlets -->
   <servlet>
-    <servlet-name>greetServlet</servlet-name>
-    <servlet-class>com.panda.video.server.GreetingServiceImpl</servlet-class>
-  </servlet>
-  
-  <servlet-mapping>
-    <servlet-name>greetServlet</servlet-name>
-    <url-pattern>/pandavideochat/greet</url-pattern>
-  </servlet-mapping>
-  
-   <servlet>
     <servlet-name>tokenServlet</servlet-name>
     <servlet-class>com.panda.video.server.SessionTokenServlet</servlet-class>
   </servlet>
@@ -54,6 +44,16 @@
   <servlet-mapping>
     <servlet-name>ListUsersServlet</servlet-name>
     <url-pattern>/listUsers</url-pattern>
+  </servlet-mapping>
+   
+  <servlet>
+    <servlet-name>CallManagerServlet</servlet-name>
+    <servlet-class>com.panda.video.server.CallManagerServlet</servlet-class>
+  </servlet>
+  
+  <servlet-mapping>
+    <servlet-name>CallManagerServlet</servlet-name>
+    <url-pattern>/calls</url-pattern>
   </servlet-mapping>
   
   <filter>

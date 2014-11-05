@@ -35,7 +35,6 @@ public class ListUsersServlet extends HttpServlet {
 
 			// Useful for deleting items
 			ofy().delete().keys(allKeys);
-			
 			resp.getWriter().print("All users deleted");
 		}
 

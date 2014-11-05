@@ -1,6 +1,15 @@
 (function (){
 	var app = angular.module('welcome',[]);
 	var _user; 
+	Array.prototype.clean = function(deleteValue) {
+		  for (var i = 0; i < this.length; i++) {
+		    if (this[i] == deleteValue) {         
+		      this.splice(i, 1);
+		      i--;
+		    }
+		  }
+		  return this;
+	};
 	
 	app.directive('tabs', ['$http','$compile', function($http, $compile){
 		function appendTabs(tabs, scope){
@@ -104,16 +113,23 @@
 	});
 	
 	
-	app.directive('calendar', function(){
+	app.directive('calendar', ['$http', function($http){
 		return {
 			restrict: 'E',
 			templateUrl:'common/calendar.html',
 			controller: function(){
-			    this.calendar = $("#calendar").calendar(
+				var calendar;
+				$http.post('/calls', {type:"get-calls", userId:_user.email}).success(function (calls){
+					calls.clean(null);
+				    calendar = $("#calendar").calendar(
 			            {
 			                tmpl_path: "/pandaFront/res/calendar/tmpls/",
-			                events_source: function () { return Data.calls; } //should get from server
+			                events_source: function () { 
+			                	return calls; 
+			                }
 			            });
+				});
+
 				this.currView = 'month';
 				this.setView = function (view){
 					this.currView = view;
@@ -126,7 +142,7 @@
 			},
 			controllerAs: 'calCtrl'
 		};
-	});
+	}]);
 	
 	app.directive('profile',['$http', function($http){
 		return {

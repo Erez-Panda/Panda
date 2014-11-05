@@ -1,5 +1,6 @@
 package com.panda.video.server;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 import com.googlecode.objectify.Key;
@@ -9,7 +10,7 @@ import com.googlecode.objectify.annotation.Id;
 import com.googlecode.objectify.annotation.Load;
 
 @Entity
-public class User {
+public class User extends PandaEntity{
 	private String firstName;
 	private String lastName;
 	@Id	private String email;
@@ -18,11 +19,14 @@ public class User {
 	public enum Type {MEDREP, PHARMA, DOCTOR};
 	private String type;
 	private String specialty;
-	private Date created;
 	private String companyName;
 	private String contantPerson;
 	@Load Ref<Profile> profile;
+	@Load ArrayList<Ref<Call>> callList = new ArrayList<Ref<Call>>();
 	
+    public ArrayList<Ref<Call>> getCalls() { return callList; }
+    public void addCall(Call value) { callList.add(Ref.create(value)); }
+    
     public Profile getProfile() { return profile.get(); }
     public void setProfile(Profile value) { profile = Ref.create(value); }
     
@@ -74,11 +78,4 @@ public class User {
 		return type;
 	}
 	
-	public Date getCreated(){
-		return created;
-	}
-	
-	public void Created(){
-		created = new Date();
-	}
 }

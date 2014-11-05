@@ -1,7 +1,16 @@
 <div class="col-md-4">
+	<div class="form-group">
+		<label class="control-label">Search:</label>
+		<div>
+			<input class="form-control" type="text" ng-model="searchText">
+		</div>
+	</div>
 	<ul class="list-group">
-	  <a href="#"class="list-group-item" ng-repeat="user in users">
-			{{user.firstName}} {{user.lastName}} {{user.email}}
+	  <a href="#"class="list-group-item" ng-repeat="user in users | filter:searchText">
+			{{user.type}} {{user.firstName}} {{user.lastName}} {{user.email}}
 	  </a>
 	</ul>
+	<button class="btn btn-danger" ng-click="deleteAll()">
+		Delete All
+	</button>
 </div>

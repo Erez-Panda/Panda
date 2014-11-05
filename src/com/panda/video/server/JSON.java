@@ -38,5 +38,10 @@ public class JSON {
 		return gson.fromJson(json, PharmaProfile.class);
 	}
 	
+	public static Call constructCall(String json){
+		Gson gson = new Gson();
+		return gson.fromJson(json, Call.class);
+	}
+	
 
 }
