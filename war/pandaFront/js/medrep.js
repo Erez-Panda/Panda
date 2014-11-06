@@ -27,7 +27,7 @@
 				$http.post('/login',"").success(function (user){
 					if (!user.firstName){
 						var href = document.location.href;
-						document.location.href = (href.replace('doctor','welcome'));
+						document.location.href = (href.replace('medrep','welcome'));
 					} else {
 						_user = user;
 						appendTabs($scope.tabs, $scope);
