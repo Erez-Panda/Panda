@@ -65,25 +65,29 @@
 		};
 	}]);
 	
-	app.directive('training', function(){
+	app.directive('training', ['$http', function($http){
 		return {
 			restrict: 'E',
 			templateUrl:'medrep/training.html',
-			controller: function(){
-				var trainingCtrl = this;
-				this.currTraining = {};
-				trainingCtrl.dueIn30 = function(training) {
+			scope :{},
+			controller: function($scope){
+				$scope.currTraining = {};
+				$scope.dueIn30 = function(training) {
 					var d = new Date();
 					return training.dueDate < d.setDate(d.getDate()+30);
 				};
-				trainingCtrl.dueLater = function(training) {
+				$scope.dueLater = function(training) {
 					var d = new Date();
 					return training.dueDate >= d.setDate(d.getDate()+30);
 				};
-				this.setTraning = function(training){
-					this.currTraining = training;
+				$scope.setTraning = function(training){
+					$http.post('/resources', {type:"get-training-resources", userId:training.trainingId}).success(function (resources){
+						training.resources = resources;
+						$scope.currTraining = training;
+					});
+					
 				}
-				this.getProgress = function(training){
+				$scope.getProgress = function(training){
 					if (!training.resources){
 						return 0;
 					}
@@ -95,11 +99,17 @@
 					}
 					return Math.round(100*completed/training.resources.length);
 				}
-				trainingCtrl.trainings = Data.trainings; //should get from server
+				$scope.openResource = function (resource){
+					window.open(resource.url);
+				}
+				$http.post('/trainings', {type:"get-user-trainings", userId:_user.userId}).success(function (trainings){
+					$scope.trainings = trainings;
+				});
+				
 			},
 			controllerAs: 'trainingCtrl'
 		};
-	});
+	}]);
 	
 	app.directive('calendar', ['$http', function($http){
 		return {

@@ -33,6 +33,15 @@ public class ResourceManagerServlet extends HttpServlet {
 			//save resources somehow
 			resource.setUploader(uploader);
 			ofy().save().entity(resource).now();
+			if (null != resource.trainingId){
+				Training training = ofy().load().type(Training.class).id(resource.trainingId).now();
+				training.addResource(resource);
+				ofy().save().entity(training).now();
+			} else if (null != resource.productId){
+				Product product = ofy().load().type(Product.class).id(resource.productId).now();
+				product.addResource(resource);
+				ofy().save().entity(product).now();
+			}
 			resp.getWriter().print("OK");
 		} else if (msg.getType().equals("get-all")){
 			List<Resource> resources = ofy().load().type(Resource.class).list();
@@ -44,17 +53,26 @@ public class ResourceManagerServlet extends HttpServlet {
 			// Useful for deleting items
 			ofy().delete().keys(allKeys);
 			resp.getWriter().print("All products deleted");
-		}
-		else if (msg.getType().equals("get-products")){
-			User user = ofy().load().type(User.class).id(msg.getUserId()).now();
-			ArrayList<Ref<Product>> productRefs = user.getProducts();
-			List<Product> products = new ArrayList<Product>();
-			for(Iterator<Ref<Product>> i = productRefs.iterator(); i.hasNext(); ) {
-				Ref<Product> ref = i.next();
-				products.add(ref.get());
+		} else if (msg.getType().equals("get-resources")){
+			Product product = ofy().load().type(Product.class).id(msg.getUserId()).now();
+			ArrayList<Ref<Resource>> resourceRefs = product.getResources();
+			List<Resource> resources = new ArrayList<Resource>();
+			for(Iterator<Ref<Resource>> i = resourceRefs.iterator(); i.hasNext(); ) {
+				Ref<Resource> ref = i.next();
+				resources.add(ref.get());
 			}
 			JSON j = new JSON();
-			resp.getWriter().print(j.toJson(products));
+			resp.getWriter().print(j.toJson(resources));
+		} else if (msg.getType().equals("get-training-resources")){
+			Training training = ofy().load().type(Training.class).id(msg.getUserId()).now();
+			ArrayList<Ref<Resource>> resourceRefs = training.getResources();
+			List<Resource> resources = new ArrayList<Resource>();
+			for(Iterator<Ref<Resource>> i = resourceRefs.iterator(); i.hasNext(); ) {
+				Ref<Resource> ref = i.next();
+				resources.add(ref.get());
+			}
+			JSON j = new JSON();
+			resp.getWriter().print(j.toJson(resources));
 		}
 
 	}

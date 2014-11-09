@@ -64,7 +64,7 @@ public class FileUploadServlet extends HttpServlet {
 
 		Long id = Long.parseLong(reqeust.getParameter("id"));
 		ResourceData rd = ofy().load().type(ResourceData.class).id(id).now();
-		//response.setHeader("Content-Disposition","attachment; filename=" + rd.fileName);
+		response.setHeader("Content-Disposition","attachment; filename=" + rd.fileName);
 		response.getOutputStream().write(rd.getData(),0,rd.getData().length);
 
 	}

@@ -53,5 +53,10 @@ public class JSON {
 		return gson.fromJson(json, Resource.class);
 	}
 	
+	public static Training constructTraining(String json){
+		Gson gson = new Gson();
+		return gson.fromJson(json, Training.class);
+	}
+	
 
 }

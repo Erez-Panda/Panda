@@ -12,7 +12,7 @@ import com.googlecode.objectify.annotation.Load;
 public class Product extends PandaEntity{
 	@Id private Long productId;
 	private Ref<User> creator;
-	@Ignore public String creatorId; //for JSON construction 
+	@Ignore public Long creatorId; //for JSON construction 
 	@Load ArrayList<Ref<Resource>> resourcesList = new ArrayList<Ref<Resource>>();
 	@Load ArrayList<Ref<Training>> traningList = new ArrayList<Ref<Training>>();
 	private String name;
