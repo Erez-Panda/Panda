@@ -43,5 +43,15 @@ public class JSON {
 		return gson.fromJson(json, Call.class);
 	}
 	
+	public static Product constructProduct(String json){
+		Gson gson = new Gson();
+		return gson.fromJson(json, Product.class);
+	}
+	
+	public static Resource constructResource(String json){
+		Gson gson = new Gson();
+		return gson.fromJson(json, Resource.class);
+	}
+	
 
 }

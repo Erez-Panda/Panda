@@ -1,3 +1,2 @@
 # Module pandavideochat
 # RPC service class, partial path of RPC policy file
-com.panda.video.client.GreetingService, 854FD0CD9677D41837FA01DE0B758E2F.gwt.rpc

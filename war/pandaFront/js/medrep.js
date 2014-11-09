@@ -107,7 +107,7 @@
 			templateUrl:'common/calendar.html',
 			controller: function(){
 				var calendar;
-				$http.post('/calls', {type:"get-calls", userId:_user.email}).success(function (calls){
+				$http.post('/calls', {type:"get-calls", userId:_user.userId}).success(function (calls){
 					calls.clean(null);
 				    calendar = $("#calendar").calendar(
 			            {
@@ -138,7 +138,7 @@
 			templateUrl:'medrep/profile.html',
 			controller: function(){
 				var profileCtrl = this;
-				$http.post('/user', {type:"get-profile",userId:_user.email}).success(function (profile){
+				$http.post('/user', {type:"get-profile",userId:_user.userId}).success(function (profile){
 						$.extend(_user,profile);
 						profileCtrl.profile = _user; 
 				});

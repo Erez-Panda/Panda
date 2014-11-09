@@ -24,7 +24,7 @@ public class UserManagmentServlet extends HttpServlet {
 			if (msg.getType().equals("new-user")){
 				User user = JSON.constructUser(msg.getMessage());
 				user.Created();
-				User existingUser = ofy().load().type(User.class).id(user.getEmail()).now();
+				User existingUser = ofy().load().type(User.class).filter("email", user.getEmail()).first().now();
 				JSON j = new JSON();
 				if (null != existingUser){
 					response.getWriter().print(j.toJson(new ErrorMessage("Email Already Exist")));
@@ -62,16 +62,17 @@ public class UserManagmentServlet extends HttpServlet {
 	@Override
 	public void doGet(HttpServletRequest reqeust, HttpServletResponse response)
 			throws IOException {
-
+/*
 			String email = reqeust.getParameter("email");
 			JSON j = new JSON();
-			User u = ofy().load().type(User.class).id(email).now();
+			User u = ofy().load().type(User.class).filter("email", email).list().first().now();
 			try{
 				Profile p = u.getProfile();
 				response.getWriter().print("["+j.toJson(u)+","+j.toJson(p)+"]");
 			}catch (Exception e){
 				response.getWriter().print("["+j.toJson(u)+"]");
 			}
+			*/
 
 	}
 }

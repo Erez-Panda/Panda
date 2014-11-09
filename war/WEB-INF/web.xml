@@ -56,6 +56,36 @@
     <url-pattern>/calls</url-pattern>
   </servlet-mapping>
   
+  <servlet>
+    <servlet-name>ProductManagerServlet</servlet-name>
+    <servlet-class>com.panda.video.server.ProductManagerServlet</servlet-class>
+  </servlet>
+  
+  <servlet-mapping>
+    <servlet-name>ProductManagerServlet</servlet-name>
+    <url-pattern>/products</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
+    <servlet-name>ResourceManagerServlet</servlet-name>
+    <servlet-class>com.panda.video.server.ResourceManagerServlet</servlet-class>
+  </servlet>
+  
+  <servlet-mapping>
+    <servlet-name>ResourceManagerServlet</servlet-name>
+    <url-pattern>/resources</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
+    <servlet-name>FileUploadServlet</servlet-name>
+    <servlet-class>com.panda.video.server.FileUploadServlet</servlet-class>
+  </servlet>
+  
+  <servlet-mapping>
+    <servlet-name>FileUploadServlet</servlet-name>
+    <url-pattern>/fileUpload</url-pattern>
+  </servlet-mapping>
+  
   <filter>
         <filter-name>ObjectifyFilter</filter-name>
         <filter-class>com.googlecode.objectify.ObjectifyFilter</filter-class>

@@ -6,8 +6,8 @@
 		</div>
 	</div>
 	<ul class="list-group">
-	  <a href="#"class="list-group-item" ng-repeat="user in users | filter:searchText">
-			{{user.type}} {{user.firstName}} {{user.lastName}} {{user.email}} {{user.userId}}
+	  <a ng-href="{{resource.url}}"class="list-group-item" ng-repeat="resource in resources | filter:searchText">
+			{{resource.name}} {{resource.url}}
 	  </a>
 	</ul>
 	<button class="btn btn-danger" ng-click="deleteAll()">

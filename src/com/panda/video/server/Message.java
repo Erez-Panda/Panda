@@ -3,7 +3,7 @@ package com.panda.video.server;
 public class Message {
 	private String message;
 	private String type;
-	private String userId;
+	private Long userId;
 	
 	public String getMessage(){
 		return message;
@@ -13,7 +13,7 @@ public class Message {
 		return type;
 	}
 	
-	public String getUserId(){
+	public Long getUserId(){
 		return userId;
 	}
 

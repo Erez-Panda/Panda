@@ -39,7 +39,9 @@
 					appendTabs($scope.tabs, $scope);
 				})
 				$scope.tabs = [{name:'Users', directive:'users'},
-				               {name:'Calls', directive:'calls'}
+				               {name:'Calls', directive:'calls'},
+				               {name:'Products', directive:'products'},
+				               {name:'Resources', directive:'resources'}
 				];
 				$scope.currTab = 'users';
 				this.setTab = function (tabIndex){
@@ -117,6 +119,66 @@
 				
 			},
 			controllerAs: 'callsCtrl'
+		};
+	}]);
+	
+	app.directive('products',['$http', function($http){
+		return {
+			restrict: 'E',
+			templateUrl:'admin/products.html',
+			scope: {},
+			controller: function($scope){
+				$scope.product ={};
+				$scope.hcpSegments = ['A','B','C'];
+				$scope.callNumbers = [100,200,300,400,500];
+				onUserUpdate(function(users){
+					$scope.users = users;
+				});
+				$http.post('/products', {type:"get-all"}).success(function (products){
+					$scope.products = products;
+				});
+				$scope.deleteAll = function(){
+					$http.post('/products', {type:"delete-all"}).success(function (){
+						$scope.products = [];
+					});	
+				}
+				$scope.newProduct = function (){
+					var productData = {
+							name: $scope.product.name,
+							creatorId:$scope.product.creator.email,
+							deliveryDate: $scope.product.deliveryDate.getTime(),
+							endDate: $scope.product.endDate.getTime(),
+							numOfCalls: $scope.product.numOfCalls,
+							hcp: $scope.product.hcp
+						};
+					$http.post('/products', {type:"new-product", message: JSON.stringify(productData)}).success(function (){
+						$scope.products.push($scope.product);
+						$scope.product ={};
+					});
+				}
+				
+			},
+			controllerAs: 'productsCtrl'
+		};
+	}]);
+	
+	app.directive('resources',['$http', function($http){
+		return {
+			restrict: 'E',
+			templateUrl:'admin/resources.html',
+			scope: {},
+			controller: function($scope){
+				$http.post('/resources', {type:"get-all"}).success(function (resources){
+					$scope.resources = resources;
+				});
+				$scope.deleteAll = function(){
+					$http.post('/resources', {type:"delete-all"}).success(function (){
+						$scope.resources = [];
+					});	
+				}
+				
+			},
+			controllerAs: 'resourcesCtrl'
 		};
 	}]);
 	

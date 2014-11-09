@@ -1,0 +1,71 @@
+<div class="col-md-4">
+	<form name="newProductForm" class="form-horizontal" role="form" ng-submit="newProduct()" novalidate>
+	<div class="form-group">
+		<label class="control-label">Creator:</label>
+		<div class="ui-select">
+			<select class="form-control" ng-model="product.creator" ng-options="user.email for user in users">
+			</select>
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-lg-3 control-label">Product name:</label>
+		<div class="col-lg-8">
+			<input class="form-control" type="text" ng-model="product.name" required>
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-md-3 control-label">Number of requested calls</label>
+		<div class="col-md-8">
+			<select class="form-control" ng-model="product.numOfCalls" ng-options="calls for calls in callNumbers">
+			</select>
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-md-3 control-label">HCP segment</label>
+		<div class="col-md-8">
+			<select class="form-control" ng-model="product.hcp" ng-options="segment for segment in hcpSegments">
+			</select>
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-lg-3 control-label">Delivery date:</label>
+		<div class="col-lg-8">
+			<input class="form-control" type="date" ng-model="product.deliveryDate" required>
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-md-3 control-label">Product maturity phase:</label>
+		<div class="col-md-8">
+			<select class="form-control" ng-model="product.maturityPhase" ng-options="maturity for maturity in ['launch','existing','mature']">
+			</select>
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-lg-3 control-label">End date:</label>
+		<div class="col-lg-8">
+			<input class="form-control" type="date" ng-model="product.endDate" required>
+		</div>
+	</div>
+	<div class="form-group">
+		<div class="col-md-8">
+			<button type="submit" class="btn btn-success" >Purchase</button>
+		</div>
+	</div>
+	</form>
+</div>
+<div class="col-md-4">
+	<div class="form-group">
+		<label class="control-label">Search:</label>
+		<div>
+			<input class="form-control" type="text" ng-model="searchText">
+		</div>
+	</div>
+	<ul class="list-group">
+	  <a href="#"class="list-group-item" ng-repeat="product in products | filter:searchText">
+			{{product.name}}: - id: {{product.callId}}
+	  </a>
+	</ul>
+	<button class="btn btn-danger" ng-click="deleteAll()">
+		Delete All
+	</button>
+</div>

@@ -1,5 +1,6 @@
 package com.panda.video.server;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 import com.googlecode.objectify.Ref;
@@ -20,7 +21,7 @@ public class Call extends PandaEntity{
 	private Long end;
 	@Load Ref<Product> product;
 	@Ignore public Long productId; //for JSON construction 
-	@Load Ref<Resource[]> resourcesList;
+	@Load ArrayList<Ref<Resource>> resourcesList = new ArrayList<Ref<Resource>>();
 	
     public Product getProduct() { return product.get(); }
     public void setProduct(Product value) { product = Ref.create(value); }
@@ -30,9 +31,8 @@ public class Call extends PandaEntity{
     
     public User getCallee() { return callee.get(); }
     public void setCallee(User value) { callee = Ref.create(value); }
-
-    
-    public Resource[] getResourcesList() { return resourcesList.get(); }
-    public void setResourcesList(Resource[] value) { resourcesList = Ref.create(value); }
+	
+    public ArrayList<Ref<Resource>> getResources() { return resourcesList; }
+    public void addCall(Resource value) { resourcesList.add(Ref.create(value)); }
 
 }

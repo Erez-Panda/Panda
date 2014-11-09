@@ -47,20 +47,22 @@
 				}
 				this.login = function(){
 					$http.post('/login',{type:'login', message:JSON.stringify($scope.user)}).success(function(user){
-						var href = document.location.href;
-						var target;
-						switch(user.type){
-							case "MEDREP":
-								target = "medrep";
-								break;
-							case "PHARMA":
-								target = "pharma";
-								break;
-							case "DOCTOR":
-								target = "doctor";
-								break;
+						if (user.type){
+							var href = document.location.href;
+							var target;
+							switch(user.type){
+								case "MEDREP":
+									target = "medrep";
+									break;
+								case "PHARMA":
+									target = "pharma";
+									break;
+								case "DOCTOR":
+									target = "doctor";
+									break;
+							}
+							document.location.href = (href.replace('welcome',target));
 						}
-						document.location.href = (href.replace('welcome',target))
 					}).error(function(b){
 						var a =b;
 					});
@@ -253,7 +255,7 @@
 				};
 				this.save = function(profile){
 					$scope.profile = profile;
-					$http.post('/user', {type:"new-med-profile",message:JSON.stringify($scope.profile), userId:currentUser.email}).success(function (resp){
+					$http.post('/user', {type:"new-med-profile",message:JSON.stringify($scope.profile), userId:currentUser.userId}).success(function (resp){
 						if (resp.error){
 
 						}else{
@@ -283,7 +285,7 @@
 				$scope.profile.callFreq = $scope.frequency[0];
 				this.save = function(profile){
 					$scope.profile = profile;
-					$http.post('/user', {type:"new-doc-profile",message:JSON.stringify($scope.profile), userId:currentUser.email}).success(function (resp){
+					$http.post('/user', {type:"new-doc-profile",message:JSON.stringify($scope.profile), userId:currentUser.userId}).success(function (resp){
 						if (resp.error){
 
 						}else{
@@ -308,7 +310,7 @@
 				$scope.product ={};
 				this.save = function(profile){
 					$scope.profile = profile;
-					$http.post('/user', {type:"new-pharma-profile",message:JSON.stringify($scope.profile), userId:currentUser.email}).success(function (resp){
+					$http.post('/user', {type:"new-pharma-profile",message:JSON.stringify($scope.profile), userId:currentUser.userId}).success(function (resp){
 						if (resp.error){
 
 						}else{

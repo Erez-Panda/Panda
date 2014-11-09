@@ -3,11 +3,14 @@ package com.panda.video.server;
 import static com.panda.video.server.OfyService.ofy;
 
 import java.io.IOException;
+import java.util.List;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+
+import com.googlecode.objectify.cmd.Query;
 
 public class LoginServlet extends HttpServlet {
 	/**
@@ -29,7 +32,7 @@ public class LoginServlet extends HttpServlet {
 		} else if (msg != null) {
 			if (msg.getType().equals("login")){
 				User login = JSON.constructUser(msg.getMessage());
-				User user = ofy().load().type(User.class).id(login.getEmail()).now();
+				User user = ofy().load().type(User.class).filter("email", login.getEmail()).first().now();
 				if (null != user){
 					if (user.getPassword().equals(login.getPassword())){
 						session.setAttribute("user", j.toJson(user));
@@ -40,6 +43,8 @@ public class LoginServlet extends HttpServlet {
 						resp.getWriter().print("no user");
 					}
 				}
+			} else if(msg.getType().equals("logout")){
+				session.invalidate();
 			}
 		} else {
 			resp.getWriter().print("no user");

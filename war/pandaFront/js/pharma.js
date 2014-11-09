@@ -1,12 +1,53 @@
 (function (){
 	var app = angular.module('pharma',[]);
-	//TODO refactor to tab directive
-	app.directive('tabs', function(){
+	var _user; 
+	
+	app.service('fileUpload', ['$http', function ($http) {
+	    this.uploadFileToUrl = function(file, uploadUrl, callback){
+	        var fd = new FormData();
+	        fd.append('file', file);
+	        $http.post(uploadUrl, fd, {
+	            transformRequest: angular.identity,
+	            headers: {'Content-Type': undefined}
+	        })
+	        .success(function(id){
+	        	callback(id);
+	        	console.log(id);
+	        })
+	        .error(function(){
+	        });
+	    }
+	}]);
+	
+	app.directive('tabs', ['$http','$compile', function($http, $compile){
+		function appendTabs(tabs, scope){
+			var tabsElm = angular.element(document.getElementById("tabs"));
+			for (var tab in tabs){
+				var directive = tabs[tab].directive;
+				tabsElm.append($compile('<div ng-model="myModel" ng-show="isSet(\''+directive+'\')"><'+directive+'>'+'</'+directive+'></div>')(scope));
+			}
+		}
 		return{
 			restrict: 'E',
-			templateUrl: 'pharma/tabs.html',
+			templateUrl: 'common/tabs.html',
 			scope:{},
 			controller: function ($scope){
+				$http.post('/login',"").success(function (user){
+					if (!user.companyName){
+						var href = document.location.href;
+						document.location.href = (href.replace('pharma','welcome'));
+					} else {
+						_user = user;
+						appendTabs($scope.tabs, $scope);
+					}
+				})
+				$scope.tabs = [{name:'Whats-new', directive:'whats-new'},
+				               {name:'Uploads', directive:'uploads'},
+				               {name:'Calendar', directive:'calendar'},
+				               {name:'Profile', directive:'profile'},
+				               {name:'Dashboard', directive:'dashboard'},
+				               {name:'Call', directive:'call'}
+				];
 				$scope.currTab = 'whats-new';
 				this.setTab = function (tabIndex){
 					$scope.currTab = tabIndex;
@@ -14,10 +55,12 @@
 				$scope.isSet = function (tabIndex){
 					return $scope.currTab === tabIndex;
 				};
+				
+
 			},
-			controllerAs:'tab'
+			controllerAs:'tabCtrl'
 		}
-	});
+	}]);
 	
 
 	app.directive('whatsNew', function(){
@@ -42,7 +85,7 @@
 		};
 	});
 	
-	app.directive('addCallResource', function(){
+	app.directive('addCallResource', ['$parse', 'fileUpload', function($parse, fileUpload){
 		var addCallResource;
 		return {
 			require: '^uploads',
@@ -53,17 +96,29 @@
 				$scope.resource = {};
 				$scope.resourceTypes = Data.resourceTypes; //should get from server
 				$scope.addResource = function (){
-					addCallResource($scope.resource);
-					$scope.resource = {};
+			        //console.log('file is ' + JSON.stringify($scope.resource.file));
+			        var uploadUrl = "/fileUpload";
+			        fileUpload.uploadFileToUrl($scope.resource.file, uploadUrl, function(id){
+			        	$scope.resource.url = "/fileUpload?id="+id;
+						addCallResource($scope.resource);
+						$scope.resource = {}; 	
+			        });
+
 				}
 
 			},
 			controllerAs: 'addResCtrl',
 			link: function(scope, element, attrs, controller) {
 				addCallResource = controller.addCallResource;
+	            
+	            element.bind('change', function(){
+	                scope.$apply(function(){
+	                	scope.resource.file = element.find('input')[2].files[0];
+	                });
+	            });
 			}
 		};
-	});
+	}]);
 	
 	app.directive('addTrainingResource', function(){
 		var addTrainingResource;
@@ -88,13 +143,15 @@
 		};
 	});
 	
-	app.directive('uploads', function(){
+	app.directive('uploads', ['$http', function($http){
 		return {
 			restrict: 'E',
 			templateUrl:'pharma/uploads.html',
 			controller: function(){
 				var uploadCtrl = this;
-				uploadCtrl.products = Data.products; //should get from server
+				$http.post('/products', {type:"get-products", userId:_user.userId}).success(function (products){
+					uploadCtrl.products = products;
+				});
 				uploadCtrl.selectedProduct = {};
 				uploadCtrl.training = {};
 				
@@ -102,8 +159,10 @@
 					if (!uploadCtrl.selectedProduct.callResources){
 						uploadCtrl.selectedProduct.callResources = [];
 					}
-					uploadCtrl.selectedProduct.callResources.push(resource);
-					uploadCtrl.callResource = {};
+					$http.post('/resources', {type:"new-resource",message:JSON.stringify(resource), userId:_user.userId}).success(function (){
+						uploadCtrl.selectedProduct.callResources.push(resource);
+						uploadCtrl.callResource = {};
+					});
 				};
 				uploadCtrl.addTrainingResource = function (resource){
 					if (!uploadCtrl.selectedProduct.selectedTraining.resources){
@@ -124,7 +183,7 @@
 			},
 			controllerAs: 'uploadCtrl'
 		};
-	});
+	}]);
 	
 	app.directive('calendar', function(){
 		return {

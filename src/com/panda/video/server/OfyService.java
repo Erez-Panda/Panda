@@ -15,6 +15,7 @@ public class OfyService {
         factory().register(Call.class);
         factory().register(Resource.class);
         factory().register(Training.class);
+        factory().register(ResourceData.class);
     }
 
     public static Objectify ofy() {
