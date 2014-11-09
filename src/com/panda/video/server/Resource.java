@@ -9,10 +9,13 @@ import com.googlecode.objectify.annotation.Ignore;
 public class Resource extends PandaEntity{
 	@Id private Long resourceId;
 	private Ref<User> uploader; 
-	@Ignore public String uploaderId; //for JSON construction 
+	@Ignore public Long uploaderId; //for JSON construction 
+	@Ignore public Long productId; //for JSON construction
+	@Ignore public Long trainingId; //for JSON construction
 	private String url;
 	private String type;
 	private String name;
+	private String desc;
 	private String permission;
 	private Ref<User>[] users; 
 	

@@ -14,9 +14,9 @@ public class Call extends PandaEntity{
 	private String title;
 	@Id private Long callId;
 	@Load Ref<User> caller;
-	@Ignore public String callerId; //for JSON construction 
+	@Ignore public Long callerId; //for JSON construction 
 	@Load Ref<User> callee;
-	@Ignore public String calleeId; //for JSON construction 
+	@Ignore public Long calleeId; //for JSON construction 
 	private Long start;
 	private Long end;
 	@Load Ref<Product> product;

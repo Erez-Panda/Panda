@@ -2,28 +2,28 @@
 <div class="col-md-4 col-md-offset-0 training">
 	<h3>Due in 30 days:</h3>
 	<ul class="list-group">
-	  <a href="#"class="list-group-item" ng-repeat="training in trainingCtrl.trainings | filter:trainingCtrl.dueIn30">
+	  <a href="#"class="list-group-item" ng-repeat="training in trainings | filter:dueIn30">
 			Due Date: {{training.dueDate | date: 'shortDate'}}-
 		  <strong>{{training.name}}</strong>
 		  <div class="btn-group btn-group-sm pull-right">
-			<button class="btn btn-primary" ng-click="trainingCtrl.setTraning(training)">start</button>
+			<button class="btn btn-primary" ng-click="setTraning(training)">start</button>
 		</div>
 	  </a>
 	</ul>
 	<h3>Due later:</h3>
 	<ul class="list-group">
-	  <a href="#"class="list-group-item" ng-repeat="training in trainingCtrl.trainings | filter:trainingCtrl.dueLater">
+	  <a href="#"class="list-group-item" ng-repeat="training in trainings | filter:dueLater">
 			Due Date: {{training.dueDate | date: 'shortDate'}}-
 		  <strong>{{training.name}}</strong>
 		  <div class="btn-group btn-group-sm pull-right">
-			<button class="btn btn-primary" ng-click="trainingCtrl.setTraning(training)">start</button>
+			<button class="btn btn-primary" ng-click="setTraning(training)">start</button>
 		</div>
 	  </a>
 	</ul>
 </div>
-<div class="col-md-4" ng-show="trainingCtrl.currTraining.name">
+<div class="col-md-4" ng-show="currTraining.name">
 	<div class="panel panel-default ">
-		<div class="panel-heading">{{trainingCtrl.currTraining.name}} - Due date:{{trainingCtrl.currTraining.dueDate | date: 'shortDate'}}
+		<div class="panel-heading">{{currTraining.name}} - Due date:{{currTraining.dueDate | date: 'shortDate'}}
 			<div class="btn-group btn-group-sm pull-right">
 				<button class="btn btn-default" ng-click="">
 					<span class="glyphicon glyphicon-minus"></span>
@@ -32,14 +32,14 @@
 		</div>
 		<div class="panel-body">
 			<h4>Description:</h4>
-			<div>{{trainingCtrl.currTraining.desc}}</div>
+			<div>{{currTraining.desc}}</div>
 			<hr>
 			<ul class="list-group">
-			  <a href="#"class="list-group-item" ng-repeat="resource in trainingCtrl.currTraining.resources">
+			  <a href="#"class="list-group-item" ng-repeat="resource in currTraining.resources">
 			  	<span class="glyphicon" ng-class="resource.completed ? 'glyphicon-ok' : 'glyphicon-unchecked'"></span>
 				  <strong> - {{resource.name}}</strong>
 				  <div class="btn-group btn-group-sm pull-right">
-					<button class="btn btn-primary">{{resource.type == 'video' ? 'Watch' : 'Learn'}}</button>
+					<button class="btn btn-primary" ng-click="openResource(resource)">{{resource.type == 'video' ? 'Watch' : 'Learn'}}</button>
 					<button class="btn btn-primary">Test</button>
 				</div>
 			  </a>
@@ -47,8 +47,8 @@
 			<hr>
 			<h4>Progress:</h4>
 			<div class="progress">
-			  <div class="progress-bar" role="progressbar" aria-valuenow="{{trainingCtrl.getProgress(trainingCtrl.currTraining)}}" aria-valuemin="0" aria-valuemax="100" style="width: {{trainingCtrl.getProgress(trainingCtrl.currTraining)}}%;">
-			    {{trainingCtrl.getProgress(trainingCtrl.currTraining)}}%
+			  <div class="progress-bar" role="progressbar" aria-valuenow="{{getProgress(currTraining)}}" aria-valuemin="0" aria-valuemax="100" style="width: {{getProgress(currTraining)}}%;">
+			    {{getProgress(currTraining)}}%
 			  </div>
 			</div>
 		</div>

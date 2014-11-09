@@ -41,7 +41,8 @@
 				$scope.tabs = [{name:'Users', directive:'users'},
 				               {name:'Calls', directive:'calls'},
 				               {name:'Products', directive:'products'},
-				               {name:'Resources', directive:'resources'}
+				               {name:'Resources', directive:'resources'},
+				               {name:'Trainings', directive:'trainings'}
 				];
 				$scope.currTab = 'users';
 				this.setTab = function (tabIndex){
@@ -104,8 +105,8 @@
 				$scope.newCall = function (){
 					var callData = {
 							title: $scope.call.title,
-							callerId:$scope.call.caller.email,
-							calleeId:$scope.call.callee.email,
+							callerId:$scope.call.caller.userId,
+							calleeId:$scope.call.callee.userId,
 							start: $scope.call.start.getTime(),
 							end: $scope.call.end.getTime(),
 							productId: $scope.call.product.productId,
@@ -145,7 +146,7 @@
 				$scope.newProduct = function (){
 					var productData = {
 							name: $scope.product.name,
-							creatorId:$scope.product.creator.email,
+							creatorId:$scope.product.creator.userId,
 							deliveryDate: $scope.product.deliveryDate.getTime(),
 							endDate: $scope.product.endDate.getTime(),
 							numOfCalls: $scope.product.numOfCalls,
@@ -168,6 +169,7 @@
 			templateUrl:'admin/resources.html',
 			scope: {},
 			controller: function($scope){
+				
 				$http.post('/resources', {type:"get-all"}).success(function (resources){
 					$scope.resources = resources;
 				});
@@ -176,6 +178,37 @@
 						$scope.resources = [];
 					});	
 				}
+				
+			},
+			controllerAs: 'resourcesCtrl'
+		};
+	}]);
+	
+	app.directive('trainings',['$http', function($http){
+		return {
+			restrict: 'E',
+			templateUrl:'admin/trainings.html',
+			scope: {},
+			controller: function($scope){
+				$scope.assignUser = {};
+				onUserUpdate(function(users){
+					$scope.users = users;
+				});
+				$http.post('/trainings', {type:"get-all"}).success(function (trainings){
+					$scope.trainings = trainings;
+				});
+				$scope.deleteAll = function(){
+					$http.post('/trainings', {type:"delete-all"}).success(function (){
+						$scope.trainings = [];
+					});	
+				}
+				$scope.assignTraining = function (training){
+					if ($scope.assignUser && $scope.assignUser.userId && training && training.trainingId){
+						$http.post('/trainings', {type:"assign-training", userId:$scope.assignUser.userId, trainingId: training.trainingId} ).success(function (){
+						});
+					}
+				}
+				
 				
 			},
 			controllerAs: 'resourcesCtrl'

@@ -26,12 +26,16 @@ public class User extends PandaEntity{
 	@Load Ref<Profile> profile;
 	@Load ArrayList<Ref<Call>> callList = new ArrayList<Ref<Call>>();
 	@Load ArrayList<Ref<Product>> productList = new ArrayList<Ref<Product>>();
+	@Load ArrayList<Ref<Training>> trainingList = new ArrayList<Ref<Training>>();
 	
     public ArrayList<Ref<Call>> getCalls() { return callList; }
     public void addCall(Call value) { callList.add(Ref.create(value)); }
     
     public ArrayList<Ref<Product>> getProducts() { return productList; }
     public void addProduct(Product value) { productList.add(Ref.create(value)); }
+    
+    public ArrayList<Ref<Training>> getTrainings() { return trainingList; }
+    public void addTraining(Training value) { trainingList.add(Ref.create(value)); }
     
     public Profile getProfile() { return profile.get(); }
     public void setProfile(Profile value) { profile = Ref.create(value); }

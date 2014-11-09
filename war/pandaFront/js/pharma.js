@@ -120,7 +120,7 @@
 		};
 	}]);
 	
-	app.directive('addTrainingResource', function(){
+	app.directive('addTrainingResource', ['$parse', 'fileUpload', function($parse, fileUpload){
 		var addTrainingResource;
 		return {
 			require: '^uploads',
@@ -131,55 +131,94 @@
 				$scope.resource = {};
 				$scope.resourceTypes = Data.resourceTypes; //should get from server
 				$scope.addResource = function (){
-					addTrainingResource($scope.resource);
-					$scope.resource = {};
+			        var uploadUrl = "/fileUpload";
+			        fileUpload.uploadFileToUrl($scope.resource.file, uploadUrl, function(id){
+			        	$scope.resource.url = "/fileUpload?id="+id;
+						addTrainingResource($scope.resource);
+						$scope.resource = {};
+			        });
 				}
 
 			},
 			controllerAs: 'addResCtrl',
 			link: function(scope, element, attrs, controller) {
 				addTrainingResource = controller.addTrainingResource;
+	            element.bind('change', function(){
+	                scope.$apply(function(){
+	                	scope.resource.file = element.find('input')[2].files[0];
+	                });
+	            });
 			}
 		};
-	});
+	}]);
 	
 	app.directive('uploads', ['$http', function($http){
 		return {
 			restrict: 'E',
 			templateUrl:'pharma/uploads.html',
-			controller: function(){
-				var uploadCtrl = this;
+			scope:{},
+			controller: function($scope){
 				$http.post('/products', {type:"get-products", userId:_user.userId}).success(function (products){
-					uploadCtrl.products = products;
+					
+					$scope.products = products;
 				});
-				uploadCtrl.selectedProduct = {};
-				uploadCtrl.training = {};
+				$scope.selectedProduct = {};
+				$scope.training = {};
 				
-				uploadCtrl.addCallResource = function (resource){
-					if (!uploadCtrl.selectedProduct.callResources){
-						uploadCtrl.selectedProduct.callResources = [];
+				this.addCallResource = function (resource){
+					if (!$scope.selectedProduct.callResources){
+						$scope.selectedProduct.callResources = [];
 					}
+					resource.productId = $scope.selectedProduct.productId;
 					$http.post('/resources', {type:"new-resource",message:JSON.stringify(resource), userId:_user.userId}).success(function (){
-						uploadCtrl.selectedProduct.callResources.push(resource);
-						uploadCtrl.callResource = {};
+						$scope.selectedProduct.callResources.push(resource);
+						$scope.callResource = {};
 					});
 				};
-				uploadCtrl.addTrainingResource = function (resource){
-					if (!uploadCtrl.selectedProduct.selectedTraining.resources){
-						uploadCtrl.selectedProduct.selectedTraining.resources = [];
+				this.addTrainingResource = function (resource){
+					if (!$scope.selectedProduct.selectedTraining.resources){
+						$scope.selectedProduct.selectedTraining.resources = [];
 					}
-					uploadCtrl.selectedProduct.selectedTraining.resources.push(resource);
-					uploadCtrl.callResource = {};
+					resource.trainingId = $scope.selectedProduct.selectedTraining.trainingId;
+					$http.post('/resources', {type:"new-resource",message:JSON.stringify(resource), userId:_user.userId}).success(function (){
+						$scope.selectedProduct.selectedTraining.resources.push(resource);
+						$scope.callResource = {};
+					});
+
 				};
-				uploadCtrl.addTraining = function (training){
-					if (!uploadCtrl.selectedProduct.training){
-						uploadCtrl.selectedProduct.training = [];
+				$scope.addTraining = function (training){
+					if (!$scope.selectedProduct.training){
+						$scope.selectedProduct.training = [];
 					}
-					uploadCtrl.selectedProduct.training.push(training);
-					uploadCtrl.selectedProduct.selectedTraining = training;
-					uploadCtrl.training = {};
+					training.productId = $scope.selectedProduct.productId;
+					training.dueDate = training.dueDate.getTime();
+					$http.post('/trainings', {type:"new-training",message:JSON.stringify(training), userId:_user.userId}).success(function (){
+						$scope.selectedProduct.training.push(training);
+						$scope.selectedProduct.selectedTraining = training;
+						$scope.training = {};
+					});
+
 				};
 				
+			},
+			link: function(scope, element, attrs, controller) {
+				scope.$watch('selectedProduct', function (value){
+					if (value && value.productId){
+						$http.post('/resources', {type:"get-resources", userId:value.productId}).success(function (resources){
+							scope.selectedProduct.callResources = resources;
+						});
+						$http.post('/trainings', {type:"get-trainings", userId:value.productId}).success(function (trainings){
+							scope.selectedProduct.training = trainings;
+						});
+					}
+				});
+				scope.$watch('selectedProduct.selectedTraining', function (value){
+					if (value && value.trainingId){
+						$http.post('/resources', {type:"get-training-resources", userId:value.trainingId}).success(function (resources){
+							scope.selectedProduct.selectedTraining.resources = resources;
+						});
+					}
+				});
 			},
 			controllerAs: 'uploadCtrl'
 		};
