@@ -19,6 +19,7 @@
 				               {name:'Medical Representatives', directive:'med-rep'},
 				               {name:'Pharmaceutical Company', directive:'pharma'}
 				];
+				$scope.noLogin = true;
 				$scope.currTab = 'home';
 				this.setTab = function (tabIndex){
 					$scope.currTab = tabIndex;
@@ -259,8 +260,10 @@
 						if (resp.error){
 
 						}else{
-							var href = document.location.href;
-							document.location.href = (href.replace('welcome','medrep'));
+							$http.post('/login',{type:'login', message:JSON.stringify(currentUser)}).success(function(user){
+								var href = document.location.href;
+								document.location.href = (href.replace('welcome','medrep'));
+							});
 						}
 					});
 				}
@@ -289,8 +292,10 @@
 						if (resp.error){
 
 						}else{
-							var href = document.location.href;
-							document.location.href = (href.replace('welcome','doctor'));
+							$http.post('/login',{type:'login', message:JSON.stringify(currentUser)}).success(function(user){
+								var href = document.location.href;
+								document.location.href = (href.replace('welcome','doctor'));
+							});
 						}
 					});
 				}
@@ -314,8 +319,10 @@
 						if (resp.error){
 
 						}else{
-							var href = document.location.href;
-							document.location.href = (href.replace('welcome','pharma'));
+							$http.post('/login',{type:'login', message:JSON.stringify(currentUser)}).success(function(user){
+								var href = document.location.href;
+								document.location.href = (href.replace('welcome','pharma'));
+							});
 						}
 					});
 				}

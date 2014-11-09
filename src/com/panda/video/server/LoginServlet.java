@@ -27,9 +27,7 @@ public class LoginServlet extends HttpServlet {
 		Message msg = JSON.constructMessage(msgJson);
 		JSON j = new JSON();
 		String sessionUser = (String)session.getAttribute("user");
-		if (sessionUser != null){
-			resp.getWriter().print(sessionUser);
-		} else if (msg != null) {
+		if (msg != null) {
 			if (msg.getType().equals("login")){
 				User login = JSON.constructUser(msg.getMessage());
 				User user = ofy().load().type(User.class).filter("email", login.getEmail()).first().now();
@@ -44,8 +42,11 @@ public class LoginServlet extends HttpServlet {
 					}
 				}
 			} else if(msg.getType().equals("logout")){
+				session.setAttribute("user", null);
 				session.invalidate();
 			}
+		} else if (sessionUser != null){
+			resp.getWriter().print(sessionUser);
 		} else {
 			resp.getWriter().print("no user");
 		}

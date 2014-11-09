@@ -23,6 +23,7 @@ public class ListUsersServlet extends HttpServlet {
 	@Override
 	public void doPost(HttpServletRequest req, HttpServletResponse resp)
 			throws IOException {
+		try{
 		String msgJson = req.getReader().readLine();
 		Message msg = JSON.constructMessage(msgJson);
 		if (msg.getType().equals("get-all")){
@@ -37,12 +38,16 @@ public class ListUsersServlet extends HttpServlet {
 			ofy().delete().keys(allKeys);
 			resp.getWriter().print("All users deleted");
 		}
+		}catch(Exception e){
+			resp.getWriter().print(e.toString());
+		}
 
 	}
 
 	@Override
 	public void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws IOException {
+		/*
 		String delete = req.getParameter("delete");
 		if (null!= delete && delete.equals("true")){
 			// You can query for just keys, which will return Key objects much more efficiently than fetching whole objects
@@ -57,6 +62,7 @@ public class ListUsersServlet extends HttpServlet {
 			JSON j = new JSON();
 			resp.getWriter().print(j.toJson(users));
 		}
+		*/
 
 	}
 

@@ -20,6 +20,10 @@
 				<li ng-class="{ active:isSet(tab.directive)}"  ng-repeat="tab in tabs"><a href
 					ng-click="tabCtrl.setTab(tab.directive)"> {{tab.name}}</a></li>
 			</ul>
+			<a href="#" class="pull-right" ng-click="logout()" ng-hide="noLogin">
+				 <span class="glyphicon glyphicon-log-out"></span> Logout
+			</a>
+
 		</div>
 		<!-- /.navbar-collapse -->
 	</div>

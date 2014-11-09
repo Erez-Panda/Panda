@@ -55,6 +55,12 @@
 				$scope.isSet = function (tabIndex){
 					return $scope.currTab === tabIndex;
 				};
+				$scope.logout = function(){
+					$http.post('/login',{type:"logout"}).success(function (){
+						var href = document.location.href;
+						document.location.href = (href.replace('pharma','welcome'));
+					})
+				}
 				
 
 			},
