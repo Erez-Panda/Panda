@@ -14,25 +14,32 @@ public class Profile {
 
 @Subclass(index=true)
 class DoctorProfile extends Profile{
-	private String lang;
-	private String callHour;
-	private String callFreq;
+	String lang;
+	String callHour;
+	String callFreq;
 	ArrayList<Boolean> foi = new ArrayList<Boolean>();
 	ArrayList<Boolean> scheduleBy = new ArrayList<Boolean>();
-	private boolean onDemand;
-	private boolean sendInfo;
+	boolean onDemand;
+	boolean sendInfo;
+	public void update(DoctorProfile profile) {
+		if (null != profile.lang){this.lang = profile.lang;}
+		if (null != profile.callHour){this.callHour = profile.callHour;	}
+		if (null != profile.callFreq){this.callFreq = profile.callFreq ;}
+		if (null != profile.foi){this.foi = profile.foi;	}
+		if (null != profile.scheduleBy){this.scheduleBy = profile.scheduleBy;}
+	}
 }
 
 @Subclass(index=true)
 class MedRepProfile extends Profile{
-	private String degree;
-	private String currentYear;
-	private String dgreeScanUrl;
-	private int experience;
-	private int workHours;
-	private String idNumber;
-	private boolean salesExperience;
-	private boolean pharmaExperience;
+	String degree;
+	String currentYear;
+	String dgreeScanUrl;
+	int experience;
+	int workHours;
+	String idNumber;
+	boolean salesExperience;
+	boolean pharmaExperience;
 }
 
 @Subclass(index=true)

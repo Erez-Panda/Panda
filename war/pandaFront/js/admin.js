@@ -1,16 +1,26 @@
 (function (){
 	var app = angular.module('admin',[]);
 	var _user; 
-	var onUpdateCb =[];
+	var onUserUpdateCb =[];
+	var onProductUpdateCb =[];
 	function userUpdate(userList){
-		for (var callback in onUpdateCb){
-			onUpdateCb[callback](userList);
+		for (var callback in onUserUpdateCb){
+			onUserUpdateCb[callback](userList);
 		}
-		
 	}
 	
 	function onUserUpdate(callback){
-		onUpdateCb.push(callback);
+		onUserUpdateCb.push(callback);
+	}
+	
+	function productUpdate(productList){
+		for (var callback in onProductUpdateCb){
+			onProductUpdateCb[callback](productList);
+		}
+	}
+	
+	function onProductUpdate(callback){
+		onProductUpdateCb.push(callback);
 	}
 	
 	app.directive('tabs', ['$http','$compile', function($http, $compile){
@@ -42,7 +52,8 @@
 				               {name:'Calls', directive:'calls'},
 				               {name:'Products', directive:'products'},
 				               {name:'Resources', directive:'resources'},
-				               {name:'Trainings', directive:'trainings'}
+				               {name:'Trainings', directive:'trainings'},
+				               {name:'Static data', directive:'static-data'}
 				];
 				$scope.currTab = 'users';
 				this.setTab = function (tabIndex){
@@ -64,6 +75,7 @@
 			templateUrl:'admin/users.html',
 			scope: {},
 			controller: function($scope){
+				$scope.alertInfo = "";
 				$http.post('/listUsers', {type:"get-all"}).success(function (users){
 					$scope.users = users;
 					userUpdate(users);
@@ -73,6 +85,13 @@
 						$scope.users = [];
 					});	
 				}
+				$scope.deleteEntry = function(entry){
+					$http.post('/user', {type:"delete-user", id:entry.userId}).success(function (){
+						$scope.users.splice($scope.users.indexOf(entry),1);
+						$scope.alertInfo = "User was deleted";
+					});	
+				}
+				
 				
 			},
 			controllerAs: 'usersCtrl'
@@ -85,6 +104,7 @@
 			templateUrl:'admin/calls.html',
 			scope: {},
 			controller: function($scope){
+				$scope.alertInfo = "";
 				var now = new Date();
 				now.setMilliseconds(0);
 				now.setSeconds(0);
@@ -95,7 +115,9 @@
 				$http.post('/calls', {type:"get-all"}).success(function (calls){
 					$scope.calls = calls;
 				});
-				$scope.products = [{name:"lolo"}] ;// get from server
+				onProductUpdate(function(products){
+					$scope.products = products;
+				})
 				$scope.resources = [{name:"koko"}]; // get from server
 				$scope.deleteAll = function(){
 					$http.post('/calls', {type:"delete-all"}).success(function (){
@@ -115,6 +137,7 @@
 					$http.post('/calls', {type:"new-call", message: JSON.stringify(callData)}).success(function (users){
 						$scope.calls.push($scope.call);
 						$scope.call = {start: now, end: now};
+						$scope.alertInfo = "New call was added";
 					});
 				}
 				
@@ -130,13 +153,21 @@
 			scope: {},
 			controller: function($scope){
 				$scope.product ={};
-				$scope.hcpSegments = ['A','B','C'];
-				$scope.callNumbers = [100,200,300,400,500];
+				$http.post('/static-data', {type:"get-call-quantities"}).success(function (options){
+					$scope.callQuantities = options;
+					$scope.product.callQuantity = $scope.callQuantities[0];
+				});
+
+				$http.post('/static-data', {type:"get-hcp-segments"}).success(function (options){
+					$scope.hcpSegments = options;
+					$scope.product.hcp = $scope.hcpSegments[0];
+				});
 				onUserUpdate(function(users){
 					$scope.users = users;
 				});
 				$http.post('/products', {type:"get-all"}).success(function (products){
 					$scope.products = products;
+					productUpdate(products);
 				});
 				$scope.deleteAll = function(){
 					$http.post('/products', {type:"delete-all"}).success(function (){
@@ -149,8 +180,9 @@
 							creatorId:$scope.product.creator.userId,
 							deliveryDate: $scope.product.deliveryDate.getTime(),
 							endDate: $scope.product.endDate.getTime(),
-							numOfCalls: $scope.product.numOfCalls,
-							hcp: $scope.product.hcp
+							callQuantity: $scope.product.callQuantity.name,
+							hcp: $scope.product.hcp.name,
+							maturityPhase: $scope.product.hcp.maturityPhase
 						};
 					$http.post('/products', {type:"new-product", message: JSON.stringify(productData)}).success(function (){
 						$scope.products.push($scope.product);
@@ -209,6 +241,42 @@
 					}
 				}
 				
+				
+			},
+			controllerAs: 'resourcesCtrl'
+		};
+	}]);
+	
+	app.directive('staticData',['$http', function($http){
+		return {
+			restrict: 'E',
+			templateUrl:'admin/static-data.html',
+			scope: {},
+			controller: function($scope){
+				$scope.options = [];
+				$scope.newEntry = "";
+				$scope.setTab = function (tabIndex){
+					$http.post('/static-data', {type:"get-"+tabIndex}).success(function (options){
+						$scope.options = options;
+					});
+					$scope.currTab = tabIndex;
+				};
+				$scope.isSet = function (tabIndex){
+					return $scope.currTab === tabIndex;
+				};
+				
+				$scope.addEntry = function(){
+					$http.post('/static-data', {type:"add-"+$scope.currTab, message: JSON.stringify({name: $scope.newEntry})}).success(function (id){
+						$scope.options.push({name: $scope.newEntry, id: id});
+						$scope.newEntry = "";
+					});	
+				}
+				$scope.deleteEntry = function(entry){
+					$http.post('/static-data', {type:"delete-"+$scope.currTab, id:entry.id}).success(function (){
+						$scope.options.splice($scope.options.indexOf(entry),1);
+					});	
+				}
+				$scope.setTab('degrees');
 				
 			},
 			controllerAs: 'resourcesCtrl'

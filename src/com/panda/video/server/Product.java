@@ -19,7 +19,7 @@ public class Product extends PandaEntity{
 	private Long deliveryDate;
 	private String maturityPhase;
 	private Long endDate;
-	private int numOfCalls;
+	private int callQuantity;
 	private String hcp;
 	
     public User getCreator() { return creator.get(); }

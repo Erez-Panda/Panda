@@ -6,132 +6,60 @@
 		<div class="col-md-3">
 			<div class="text-center">
 				<img src="//placehold.it/100" class="avatar img-circle" alt="avatar">
-				<h6>Upload a different photo...</h6>
+				<h6 ng-show="isEdit" >Change Photo</h6>
 
-				<input type="file" class="form-control">
+				<input type="file" class="form-control"  ng-show="isEdit">
 			</div>
 		</div>
 
 		<!-- edit form column -->
 		<div class="col-md-9 personal-info">
-			<ul class="nav nav-pills">
-				<li ng-class="{ active:profileCtrl.isSet(1) }"><a href
-					ng-click="profileCtrl.setTab(1)">Personal info</a></li>
-				<li ng-class="{ active:profileCtrl.isSet(2) }"><a href
-					ng-click="profileCtrl.setTab(2)">Professional info</a></li>
-			</ul>
-			<div ng-show="profileCtrl.isSet(1)">
-				<form name="personalForm" class="form-horizontal" role="form" ng-submit="personalForm.$valid && profileCtrl.saveChanges(profileCtrl.profile)" novalidate>
+			<div >
+				<form name="personalForm" class="form-horizontal" role="form" ng-submit="personalForm.$valid && saveChanges()" novalidate>
 					<div class="form-group">
-						<label class="col-lg-3 control-label">First name:</label>
+						<label class="col-lg-3 control-label" ng-show="isEdit">First name:</label>
 						<div class="col-lg-8">
-							<input class="form-control" type="text" ng-model="profileCtrl.profile.firstName" required>
+							<input class="form-control" type="text" ng-model="profile.firstName" required ng-disabled="!isEdit">
 						</div>
 					</div>
 					<div class="form-group">
-						<label class="col-lg-3 control-label">Last name:</label>
+						<label class="col-lg-3 control-label" ng-show="isEdit">Last name:</label>
 						<div class="col-lg-8">
-							<input class="form-control" type="text" ng-model="profileCtrl.profile.lastName" required>
+							<input class="form-control" type="text" ng-model="profile.lastName" required ng-disabled="!isEdit">
 						</div>
 					</div>
 					<div class="form-group">
-						<label class="col-lg-3 control-label">Address:</label>
+						<label class="col-lg-3 control-label" ng-show="isEdit">Address:</label>
 						<div class="col-lg-8">
-							<input class="form-control" type="text" ng-model="profileCtrl.profile.address">
+							<input class="form-control" type="text" ng-model="profile.address" ng-disabled="!isEdit">
 						</div>
 					</div>
 					<div class="form-group">
-						<label class="col-lg-3 control-label">Email:</label>
+						<label class="col-lg-3 control-label" ng-show="isEdit">Email:</label>
 						<div class="col-lg-8">
-							<input class="form-control" type="email"	ng-model="profileCtrl.profile.email" required>
+							<input class="form-control" type="email"	ng-model="profile.email" required ng-disabled="!isEdit">
 						</div>
 					</div>
 					<div class="form-group">
-						<label class="col-md-3 control-label">Phone:</label>
+						<label class="col-md-3 control-label" ng-show="isEdit">Phone:</label>
 						<div class="col-md-8">
-							<input class="form-control" type="text" ng-model="profileCtrl.profile.phone">
+							<input class="form-control" type="text" ng-model="profile.phone" ng-disabled="!isEdit">
 						</div>
 					</div>
-					<div class="form-group">
-						<label class="col-md-3 control-label"></label>
+					<div class="form-group" ng-hide="isEdit" >
 						<div class="col-md-8">
-							<input type="submit" class="btn btn-primary" value="Save Changes">
+							<a href="#" ng-click="enableEdit()">edit</a>
 						</div>
+					</div>
+					<div class="form-group" ng-show="isEdit">
+						<label class="col-lg-3 control-label"></label>
+						<button class="btn btn-primary" type="submit">Save</button>
 					</div>
 				</form>
-			</div>
-			<div ng-show="profileCtrl.isSet(2)">
-				<form name="professionalForm" class="form-horizontal" role="form" ng-submit="professionalForm.$valid && profileCtrl.saveChanges(profileCtrl.profile)" novalidate>
-					<div class="form-group">
-						<label class="col-md-3 control-label">Type of degree:</label>
-						<div class="col-md-8">
-							<div class="ui-select">
-								<select class="form-control" ng-model="profileCtrl.profile.degree" ng-options="dgree for dgree in profileCtrl.degreesList">
-									<option value="">Choose one:</option>
-								</select>
-							</div>
-						</div>
-					</div>
-					<div class="form-group" >
-						<label class="radio col-md-3 control-label">
-						  <input  type="radio" ng-model="profileCtrl.currRadio" value="graduate"> Graduate
-						</label>
-						<label class="radio col-md-2 control-label">
-						  <input  type="radio" ng-model="profileCtrl.currRadio" value="student"> Student
-						</label>
-					</div>
-					<div class="form-group" ng-show="profileCtrl.isRadio('graduate')">
-						<label class="col-md-3 control-label"></label>
-						<div class="col-md-8">
-							<h6>Upload your Graduate Certificate</h6>
-							<input type="file" class="form-control">
-						</div>
-					</div>
-					<div class="form-group" ng-show="profileCtrl.isRadio('student')">
-						<label class="col-md-3 control-label">Current year of studies:</label>
-						<div class="col-md-8">
-							<select class="form-control" ng-model="profileCtrl.profile.currentYear" ng-options="year for year in [1,2,3,4]">
-								<option value="">Choose one:</option>
-							</select>
-						</div>
-					</div>
-					<div class="form-group">
-						<label class="col-md-3 control-label">Years of Experience:</label>
-						<div class="col-md-8">
-							<input class="form-control" type="number" ng-model="profileCtrl.profile.experience" min="0" max="99">
-							<div>
-								<label class="control-label">
-									<input type="checkbox" ng-model="profileCtrl.profile.salesExperience">Sales Experience
-								</label>
-							</div>
-							<div>
-								<label class="control-label">
-								<input type="checkbox" ng-model="profileCtrl.profile.pharmaExperience">Pharma Experience
-								</label>
-							</div>
-						</div>
-					</div>
-					<div class="form-group">
-						<label class="col-md-3 control-label">Work hours per week:</label>
-						<div class="col-md-8">
-							<input class="form-control" type="number" ng-model="profileCtrl.profile.workHours" min="0" max="99">
-						</div>
-					</div>
-					<div class="form-group">
-						<label class="col-md-3 control-label">ID number:</label>
-						<div class="col-md-8">
-							<input class="form-control" type="number" ng-model="profileCtrl.profile.idNumber" min="0">
-							<h6>Upload your ID scan</h6>
-							<input type="file" class="form-control">
-						</div>
-					</div>
-					<div class="form-group">
-						<label class="col-md-3 control-label"></label>
-						<div class="col-md-8">
-							<input type="submit" class="btn btn-primary" value="Save Changes">
-						</div>
-					</div>
-				</form>
+				<div class="alert alert-danger" role="alert" ng-show="isError()">
+					<strong>Error: </strong>
+					<input class="input-alert" ng-value="error" disabled/>
+				</div>
 			</div>
 		</div>
 	</div>

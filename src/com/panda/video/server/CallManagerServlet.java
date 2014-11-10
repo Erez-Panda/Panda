@@ -55,8 +55,7 @@ public class CallManagerServlet extends HttpServlet {
 			// Useful for deleting items
 			ofy().delete().keys(allKeys);
 			resp.getWriter().print("All calls deleted");
-		}
-		else if (msg.getType().equals("get-calls")){
+		} else if (msg.getType().equals("get-calls")){
 			User caller = ofy().load().type(User.class).id(msg.getUserId()).now();
 			ArrayList<Ref<Call>> callRefs = caller.getCalls();
 			List<Call> calls = new ArrayList<Call>();
@@ -66,6 +65,21 @@ public class CallManagerServlet extends HttpServlet {
 			}
 			JSON j = new JSON();
 			resp.getWriter().print(j.toJson(calls));
+		} else if (msg.getType().equals("get-current-call")){
+			User caller = ofy().load().type(User.class).id(msg.getUserId()).now();
+			Long currTime = Long.parseLong(msg.getMessage());
+			ArrayList<Ref<Call>> callRefs = caller.getCalls();
+			Call call = null;
+			for(Iterator<Ref<Call>> i = callRefs.iterator(); i.hasNext(); ) {
+				Ref<Call> ref = i.next();
+				call = ref.get();
+				if (call.start <= (currTime + (15*60*1000)) && currTime < call.end){
+					JSON j = new JSON();
+					resp.getWriter().print(j.toJson(call));
+					return;
+				}	
+			}
+			resp.getWriter().print("");
 		}
 
 	}

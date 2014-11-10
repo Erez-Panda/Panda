@@ -44,7 +44,6 @@ public class UserManagmentServlet extends HttpServlet {
 				User user = ofy().load().type(User.class).id(msg.getUserId()).now();
 				user.setProfile(profile);
 				ofy().save().entity(user).now();
-				
 			} else if (msg.getType().equals("new-pharma-profile")){
 				PharmaProfile profile = JSON.constructPharmaProfile(msg.getMessage());
 				ofy().save().entity(profile).now();
@@ -56,7 +55,19 @@ public class UserManagmentServlet extends HttpServlet {
 				Profile p = user.getProfile();
 				JSON j = new JSON();
 				response.getWriter().print(j.toJson(p));
-			} 
+			}  else if (msg.getType().equals("update-user")){
+				User user = JSON.constructUser(msg.getMessage());
+				User oldUser =  ofy().load().type(User.class).id(msg.getUserId()).now();
+				oldUser.update(user);
+				ofy().save().entity(oldUser).now();
+			} else if (msg.getType().equals("update-doc-profile")){
+				DoctorProfile profile = JSON.constructDocProfile(msg.getMessage());
+				DoctorProfile oldProfile =  ofy().load().type(DoctorProfile.class).id(msg.getUserId()).now();
+				oldProfile.update(profile);
+				ofy().save().entity(oldProfile).now();
+			} else if (msg.getType().equals("delete-user")){
+				ofy().delete().type(User.class).id(msg.getId()); 
+			}
 	}
 	
 	@Override

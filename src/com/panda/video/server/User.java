@@ -18,11 +18,12 @@ public class User extends PandaEntity{
 	@Index private String email;
 	private String password;
 	private String phone;
+	String address;
 	public enum Type {MEDREP, PHARMA, DOCTOR};
 	@Index private String type;
-	private String specialty;
-	private String companyName;
-	private String contantPerson;
+	String specialty;
+	String companyName;
+	String contantPerson;
 	@Load Ref<Profile> profile;
 	@Load ArrayList<Ref<Call>> callList = new ArrayList<Ref<Call>>();
 	@Load ArrayList<Ref<Product>> productList = new ArrayList<Ref<Product>>();
@@ -86,6 +87,17 @@ public class User extends PandaEntity{
 	
 	public String getType(){
 		return type;
+	}
+	public void update(User user) {
+		if (null != user.getFirstName()){this.firstName = user.getFirstName();}
+		if (null != user.getLastName()){this.lastName = user.getLastName();	}
+		if (null != user.getEmail()){this.email = user.getEmail() ;}
+		if (null != user.getPassword()){this.password = user.getPassword();	}
+		if (null != user.getPhone()){this.phone = user.getPhone();}
+		if (null != user.specialty){this.specialty = user.specialty;}
+		if (null != user.companyName){this.companyName = user.companyName;}
+		if (null != user.contantPerson){this.contantPerson = user.contantPerson;}
+		if (null != user.address){this.address = user.address;}
 	}
 	
 }

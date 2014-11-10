@@ -74,7 +74,7 @@
 						<label class="col-lg-3 control-label">Specialty:</label>
 						<div class="col-md-8">
 							<div class="ui-select">
-								<select class="form-control" ng-model="profile.specialty" ng-options="specialty for specialty in specialties">
+								<select class="form-control" ng-model="profile.specialty" ng-options="specialty.name for specialty in specialties">
 									<option value="">Choose one:</option>
 								</select>
 							</div>
