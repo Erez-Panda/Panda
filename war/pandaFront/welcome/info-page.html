@@ -3,12 +3,12 @@
 	<div class="row col-md-offset-2">
 		<div class="col-md-4">
 			<h3>Welcome {{types[type]}}</h3>
-			<p>{{welcomeText}}</p>
+			<p ng-repeat="text in welcomeTexts">{{text}}</p>
 			<hr>
 		</div>
 		<div class="col-md-4">
-			<h3>Further information <small>more about panda</small></h3>
-			<p>{{infoText}}</p>
+			<h3>Further information <small>How to get started?</small></h3>
+			<p ng-repeat="text in infoTexts">{{text}}</p>
 			<div>
 				<a href="#">Learn more</a>
 			</div>
@@ -17,7 +17,7 @@
 	</div>
 	<div class="row col-md-offset-2">
 		<div class="col-md-4">
-			<h3>How it works <small>a shot video</small></h3>
+			<h3>How it works <small>a short video</small></h3>
 			<div class="embed-responsive embed-responsive-16by9">
 				<iframe ng-src="{{videoSrc}}"></iframe>
 			</div>

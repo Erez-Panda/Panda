@@ -84,8 +84,19 @@
 			controller: function ($scope){
 				$scope.types = ["","",'Doctor'];
 				$scope.type = 2;
-				$scope.welcomeText = "welcome text explaining about Panda for doctors\n Text should be longer\n will look better";
-				$scope.infoText = "welcome text explaining about Panda for doctors\n Text should be longer\n will look better";
+				$scope.welcomeTexts = ["Panda enables you to get valuable medical information from a certified company sales rep for any given drug exactly when you need it. Panda gives you the information you need on your terms.",
+				                       "You'll be able to just click and order samples, articles, promotional materials & medical letters on any drug available in the market. The items will be delivered to you according to your needs.",
+				                       "Panda helps you live smarter, decide on how much time you want to spend on work, giving you time to focus on what’s most important.",
+				                       "We vet all our sales reps who undergo exhaustive trainings by pharma companies as well as thorough interviews.",
+				                       "Our skilled professionals go above and beyond on every job. Sales reps are rated and reviewed after each task.",
+				                       "Select the product you need medical information about, then choose the Sales rep you’d like to work with.",
+				                       "Online communication makes it easy for you to stay in touch with your Sales rep."];
+				$scope.infoTexts = ["1. Register online: log in and complete a short application form",
+				                    "2. Choose a product from the list",
+				                    "3. Choose a time that fits your schedule – use our online scheduling system to choose a time that fits your needs",
+				                    "4. Optional: choose a sales rep you'd like to work with.",
+				                    "5.  You're done. Your assigned Panda sales rep will call you at the time you specified.",
+				                    "6. Once you entered our community, you'll be able to visit our app/website and order samples, articles, promotional materials and medical letters for any given drug available in the market. "];
 				$scope.videoSrc= $sce.trustAsResourceUrl("http://www.youtube.com/embed/PgVb2DTCr_E");
 				this.register = function(){
 					$scope.onRegister = true;
@@ -103,8 +114,18 @@
 			controller: function ($scope){
 				$scope.types = ["Medical Representative","",""];
 				$scope.type = 0;
-				$scope.welcomeText = "welcome text explaining about Panda for Medical Representatives\n Text should be longer\n will look better";
-				$scope.infoText = "welcome text explaining about Panda for Medical Representatives\n Text should be longer\n will look better";
+				$scope.welcomeTexts = ["Panda helps you get valuable job experience in the pharma industry. You'll interact with health care professionals and work with the largest pharmaceutical companies around.",
+				                       "Panda helps you earn more for less time invested. You choose how many hours you work a day and in most cases you'll earn more than the average fiels sales reps earns.",
+				                       "Panda helps you live smarter, decide on how much time you want to spend on work, giving you time to focus on what’s most important.",
+				                       "You work from home with all the convenience that comes with it. Flexible hours and convenience are key elements of what we do.",
+				                       "We find clients for you. We present you new and interesting job opportunities as they arise",
+				                       "We handle payments. You're paid quickly after each task via our online payment system.",
+				                       "We provide support. You're not alone. Our member services team supports you 24/7 if you have any issues or questions.",
+				                       "You'll become part of the Panda community. Our skilled professionals will be working with you and interacting with you throughout your work."];
+				$scope.infoTexts = ["1. Apply online: Complete your application",
+				                    "2. Get verified. We're big on Trust and compliance, so we require identity verification and in-person/online interviews",
+				                    "3. Pass the Training. Complete an online training on a specific product and pass the exams associated with it.",
+				                    " 4. Start making calls - wait for assignments offered by the system and connect with Physicians to perform the calls"];
 				$scope.videoSrc= $sce.trustAsResourceUrl("http://www.youtube.com/embed/g78utcLQrJ4");
 				this.register = function(){
 					$scope.onRegister = true;
@@ -122,8 +143,17 @@
 			controller: function ($scope){
 				$scope.types = ["","Pharmaceutical Company",""];
 				$scope.type = 1;
-				$scope.welcomeText = "welcome text explaining about Panda for Pharmaceutical Company\n Text should be longer\n will look better";
-				$scope.infoText = "welcome text explaining about Panda for Pharmaceutical Company\n Text should be longer\n will look better";
+				$scope.welcomeTexts = ["Panda allows you to expand your capacity utilization, create new profit opportunities while reducing transaction costs. You'll reach larger audiences with increased satisfaction of your customers.",
+				                       "Panda helps you save valuable time on reps' training without scarifying quality of interaction with your customers, giving you time to focus on other areas.",
+				                       "We vet all our sales reps, who undergo exhaustive trainings and exams as well as strict interviews.",
+				                       "Our skilled professionals go above and beyond on every job. Sales reps are rated and reviewed after each task.",
+				                       "Online communication makes it easy for you to stay in touch with your Sales reps.",
+				                       "Pay securely online only when the task is complete."];
+				$scope.infoTexts = ["1. Register online: log in and complete a short application form",
+				                    "2. Get verified. We're big on Trust and compliance, so we require identity verification and one of our representatives will get back to you shortly",
+				                    "3. Secure the payment. Fill in the payment details. You can rest assure that we only charge for calls once they've been completed.",
+				                    "4. Upload Materials – upload all the relevant materials for training and teleweb calls through our system. We guarantee to start making call to physicians no later than 14 days upon the upload of materials.",
+				                    "5. You're done -  Your assigned Panda sales reps will start making calls to physicians according to your requirements and you'll receive detailed reports to inform on progress and performance."];
 				$scope.videoSrc= $sce.trustAsResourceUrl("http://www.youtube.com/embed/GWNS9UikfMk");
 				this.register = function(){
 					$scope.onRegister = true;
@@ -335,18 +365,7 @@
 					$scope.product.hcp = $scope.hcpSegments[0];
 				});
 				this.save = function(){
-					var productData = {
-							name: $scope.product.name,
-							creatorId:currentUser.userId,
-							deliveryDate: $scope.product.deliveryDate.getTime(),
-							endDate: $scope.product.endDate.getTime(),
-							callQuantity: $scope.product.callQuantity.name,
-							hcp: $scope.product.hcp.name,
-							maturityPhase: $scope.product.hcp.maturityPhase
-						};
-					$http.post('/products', {type:"new-product", message: JSON.stringify(productData)}).success(function (){
 
-					});
 					$http.post('/user', {type:"new-pharma-profile",message:JSON.stringify({}), userId:currentUser.userId}).success(function (resp){
 
 						if (resp.error){
@@ -360,7 +379,18 @@
 					});
 				}
 				this.purchase = function (){
-					
+					var productData = {
+							name: $scope.product.name,
+							creatorId:currentUser.userId,
+							deliveryDate: $scope.product.deliveryDate.getTime(),
+							endDate: $scope.product.endDate.getTime(),
+							callQuantity: $scope.product.callQuantity.name,
+							hcp: $scope.product.hcp.name,
+							maturityPhase: $scope.product.hcp.maturityPhase
+						};
+					$http.post('/products', {type:"new-product", message: JSON.stringify(productData)}).success(function (){
+
+					});	
 				}
 
 				

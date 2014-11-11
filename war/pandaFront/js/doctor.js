@@ -162,9 +162,20 @@
 				});
 				//$scope.profile = _user;
 				$scope.specialties = Data.specialties; // server
-				$scope.languages = ['English','Franch'];
-				$scope.callHours = ['Morning (9:00-12:00)','Noon (12:00-16:00)', 'Evening (16:00-20:00)'];
-				$scope.frequency = ['Once in two weeks', 'Once a month', 'Once a qurter', 'Once in six months'];
+				$http.post('/static-data', {type:"get-call-frequencies"}).success(function (options){
+					$scope.frequency = options;
+					$scope.profile.callFreq = $scope.frequency[0];
+				});
+
+				$http.post('/static-data', {type:"get-languages"}).success(function (options){
+					$scope.languages = options;
+					$scope.profile.lang = $scope.languages[0];
+				});
+
+				$http.post('/static-data', {type:"get-call-hours"}).success(function (options){
+					$scope.callHours = options;
+					$scope.profile.callHour = $scope.callHours[0];
+				});
 				$scope.isEdit = false;
 				$scope.currTab = 1;
 				$scope.setTab = function (tabIndex){
@@ -189,9 +200,9 @@
 				$scope.saveProfile = function(){
 					$scope.isEdit = false;
 					var updateProfile = {
-							lang: $scope.profile.lang,
-							callHour: $scope.profile.callHour,
-							callFreq: $scope.profile.ecallFreqmail,
+							lang: $scope.profile.lang.name,
+							callHour: $scope.profile.callHour.name,
+							callFreq: $scope.profile.ecallFreq.name,
 							foi: $scope.profile.foi,
 							scheduleBy: $scope.profile.scheduleBy
 					}
@@ -324,15 +335,15 @@
 				$scope.selectedRes;
 				$scope.activeCall = false;
 				$scope.currImg = 0;
-				this.nextImg = function (){
+				$scope.nextImg = function (){
 					$scope.currImg++;
 					callData.connection.send(JSON.stringify({type:"load_res", url:$scope.selectedRes.urls[$scope.currImg]}));
 				}
-				this.prevImg = function (){
+				$scope.prevImg = function (){
 					$scope.currImg--;
 					callData.connection.send(JSON.stringify({type:"load_res", url:$scope.selectedRes.urls[$scope.currImg]}));
 				}
-				this.startCall = function(){
+				$scope.startCall = function(){
 					$scope.activeCall = true;
 					getUserMedia({video:false, audio:true}, function(stream){
 						callData.call = VideoChat.callToRemotePeer(callData.peer,callData.remotePeerId, stream, onStream);
@@ -342,7 +353,7 @@
 					});
 				}
 				
-				this.startVideoCall = function(){
+				$scope.startVideoCall = function(){
 					$scope.activeCall = true;
 					getUserMedia({video:true, audio:true}, function(stream){
 						callData.call = VideoChat.callToRemotePeer(callData.peer,callData.remotePeerId, stream, onStream);
@@ -352,14 +363,14 @@
 					});
 				}
 				
-				this.stopCall = function(){
+				$scope.stopCall = function(){
 					$('.call-screen video').attr('src','');
 					if (callData.call && callData.call.stream){
 						callData.call.stream.stop();
 					}
 					$scope.activeCall = false;
 				}
-				this.chat = function(){
+				$scope.chat = function(){
 					updateTextarea("Me: " +$scope.chatText);
 					callData.connection.send(JSON.stringify({type:"chat_text", text:$scope.chatText}));
 					$scope.chatText = "";

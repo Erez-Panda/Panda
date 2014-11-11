@@ -1,7 +1,28 @@
-<html>
+<!DOCTYPE html>
+<html ng-app="test" lang="en">
 <head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<title>Test</title>
+<link type="text/css" rel="stylesheet" href="res/bootstrap.min.css">
 </head>
 <body>
-<img src = "http://127.0.0.1:8888/fileUpload?id=6298002603900928">
+	<test></test>
+	
+	<form action="https://api.cloudconvert.org/convert" method="POST" enctype="multipart/form-data">
+    <input type="hidden" name="apikey" value="n_gv1zWhZ9NdHf65cHUAktR4LNDvXaqlknKt4QUu9rBMKIk5TQuW-FpeYqfNVZLYL5ZPJThvc9BZGI-t1oOLDg">
+    <input type="hidden" name="input" value="upload">
+    <input type="hidden" name="download" value="inline">
+    <input type="hidden" name="inputformat" value="pdf">
+    <input type="hidden" name="outputformat" value="jpg">
+    <input type="file" name="file">
+    <input type="submit" value="Convert!">
+</form>
+	<script type="text/javascript" src="res/angular.min.js"></script>
+	<script type="text/javascript" src="res/jquery-1.11.1.min.js"></script>
+	<script type="text/javascript" src="res/bootstrap.min.js"></script>
+	<script type="text/javascript" src="test.js"></script>
 </body>
 </html>

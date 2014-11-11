@@ -77,21 +77,21 @@
 					<div class="form-group">
 						<label class="col-md-3 control-label">Prefered Language</label>
 						<div class="col-md-8">
-							<select class="form-control" ng-model="profile.lang" ng-options="lang for lang in languages" ng-disabled="!isEdit">
+							<select class="form-control" ng-model="profile.lang" ng-options="lang.name for lang in languages" ng-disabled="!isEdit">
 							</select>
 						</div>
 					</div>
 					<div class="form-group">
 						<label class="col-md-3 control-label">Prefered Hours</label>
 						<div class="col-md-8">
-							<select class="form-control" ng-model="profile.callHour" ng-options="hour for hour in callHours" ng-disabled="!isEdit">
+							<select class="form-control" ng-model="profile.callHour" ng-options="hour.name for hour in callHours" ng-disabled="!isEdit">
 							</select>
 						</div>
 					</div>
 					<div class="form-group">
 						<label class="col-md-3 control-label">Call frequency</label>
 						<div class="col-md-8">
-							<select class="form-control" ng-model="profile.callFreq" ng-options="freq for freq in frequency" ng-disabled="!isEdit">
+							<select class="form-control" ng-model="profile.callFreq" ng-options="freq.name for freq in frequency" ng-disabled="!isEdit">
 							</select>
 						</div>
 					</div>

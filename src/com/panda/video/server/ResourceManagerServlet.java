@@ -73,6 +73,8 @@ public class ResourceManagerServlet extends HttpServlet {
 			}
 			JSON j = new JSON();
 			resp.getWriter().print(j.toJson(resources));
+		} else if (msg.getType().equals("delete-resource")){
+			ofy().delete().type(Resource.class).id(msg.getId()); 
 		}
 
 	}

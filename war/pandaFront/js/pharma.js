@@ -405,15 +405,15 @@
 				$scope.selectedRes;
 				$scope.activeCall = false;
 				$scope.currImg = 0;
-				this.nextImg = function (){
+				$scope.nextImg = function (){
 					$scope.currImg++;
 					callData.connection.send(JSON.stringify({type:"load_res", url:$scope.selectedRes.urls[$scope.currImg]}));
 				}
-				this.prevImg = function (){
+				$scope.prevImg = function (){
 					$scope.currImg--;
 					callData.connection.send(JSON.stringify({type:"load_res", url:$scope.selectedRes.urls[$scope.currImg]}));
 				}
-				this.startCall = function(){
+				$scope.startCall = function(){
 					$scope.activeCall = true;
 					getUserMedia({video:false, audio:true}, function(stream){
 						callData.call = VideoChat.callToRemotePeer(callData.peer,callData.remotePeerId, stream, onStream);
@@ -423,7 +423,7 @@
 					});
 				}
 				
-				this.startVideoCall = function(){
+				$scope.startVideoCall = function(){
 					$scope.activeCall = true;
 					getUserMedia({video:true, audio:true}, function(stream){
 						callData.call = VideoChat.callToRemotePeer(callData.peer,callData.remotePeerId, stream, onStream);
@@ -433,14 +433,14 @@
 					});
 				}
 				
-				this.stopCall = function(){
+				$scope.stopCall = function(){
 					$('.call-screen video').attr('src','');
 					if (callData.call && callData.call.stream){
 						callData.call.stream.stop();
 					}
 					$scope.activeCall = false;
 				}
-				this.chat = function(){
+				$scope.chat = function(){
 					updateTextarea("Me: " +$scope.chatText);
 					callData.connection.send(JSON.stringify({type:"chat_text", text:$scope.chatText}));
 					$scope.chatText = "";

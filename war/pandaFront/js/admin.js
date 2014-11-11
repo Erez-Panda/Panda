@@ -153,6 +153,7 @@
 			scope: {},
 			controller: function($scope){
 				$scope.product ={};
+				$scope.alertInfo = "";
 				$http.post('/static-data', {type:"get-call-quantities"}).success(function (options){
 					$scope.callQuantities = options;
 					$scope.product.callQuantity = $scope.callQuantities[0];
@@ -187,6 +188,7 @@
 					$http.post('/products', {type:"new-product", message: JSON.stringify(productData)}).success(function (){
 						$scope.products.push($scope.product);
 						$scope.product ={};
+						$scope.alertInfo = "New product was added";
 					});
 				}
 				
@@ -201,13 +203,19 @@
 			templateUrl:'admin/resources.html',
 			scope: {},
 			controller: function($scope){
-				
+				$scope.alertInfo="";
 				$http.post('/resources', {type:"get-all"}).success(function (resources){
 					$scope.resources = resources;
 				});
 				$scope.deleteAll = function(){
 					$http.post('/resources', {type:"delete-all"}).success(function (){
 						$scope.resources = [];
+					});	
+				}
+				$scope.deleteEntry = function(entry){
+					$http.post('/resources', {type:"delete-resource", id:entry.resourceId}).success(function (){
+						$scope.resources.splice($scope.resources.indexOf(entry),1);
+						$scope.alertInfo = "Resource was deleted";
 					});	
 				}
 				
