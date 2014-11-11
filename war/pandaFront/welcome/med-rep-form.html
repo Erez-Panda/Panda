@@ -3,7 +3,7 @@
 		<label class="col-md-3 control-label">Type of degree:</label>
 		<div class="col-md-8">
 			<div class="ui-select">
-				<select class="form-control" ng-model="profile.degree" ng-options="dgree for dgree in degreesList">
+				<select class="form-control" ng-model="profile.degree" ng-options="degree.name for degree in degreesList">
 					<option value="">Choose one:</option>
 				</select>
 			</div>

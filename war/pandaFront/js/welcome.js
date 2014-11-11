@@ -177,27 +177,24 @@
 			controller: function($scope){
 				var ctrl = this;
 				$scope.profile = {};
-				$scope.degreesList = Data.degreesList; //should get from server
-				$scope.specialties = Data.specialties; //should get from server
-
+				$http.post('/static-data', {type:"get-doctor-specialties"}).success(function (options){
+					$scope.specialties = options;
+				});
+				
 				$scope.currTab = 1;
-				$scope.currRadio = 'graduate';
 				this.setTab = function (tabIndex){
 					$scope.currTab = tabIndex;
 				};
 				this.isSet = function (tabIndex){
 					return $scope.currTab === tabIndex;
 				};
-				this.setRadio = function (radio){
-					$scope.currRadio = radio;
-				};
-				this.isRadio = function (radio){
-					return $scope.currRadio === radio;
-				};
 				this.save = function(profile){
 					$scope.profile = profile;
 					var types=["MEDREP", "PHARMA", "DOCTOR"];
 					$scope.profile.type = types[ctrl.formType];
+					if ($scope.profile.specialty){
+						$scope.profile.specialty = $scope.profile.specialty.name;
+					}
 					$http.post('/user', {type:"new-user",message:JSON.stringify($scope.profile)}).success(function (resp){
 						if (resp.error){
 							$scope.error = resp.message;
@@ -245,8 +242,10 @@
 			scope:{},
 			controller: function($scope){
 				$scope.profile = {};
-				$scope.degreesList = Data.degreesList; //should get from server
-				//also handle pills
+				$http.post('/static-data', {type:"get-degrees"}).success(function (options){
+					$scope.degreesList = options;
+				});
+
 				$scope.currRadio = 'graduate';
 				this.setRadio = function (radio){
 					$scope.currRadio = radio;
@@ -256,6 +255,7 @@
 				};
 				this.save = function(profile){
 					$scope.profile = profile;
+					$scope.profile.degree = $scope.profile.degree.name;
 					$http.post('/user', {type:"new-med-profile",message:JSON.stringify($scope.profile), userId:currentUser.userId}).success(function (resp){
 						if (resp.error){
 
@@ -280,14 +280,26 @@
 			scope:{},
 			controller: function($scope){
 				$scope.profile = {foi:[], scheduleBy:[true]};
-				$scope.languages = ['English','Franch'];
-				$scope.profile.lang = $scope.languages[0];
-				$scope.callHours = ['Morning (9:00-12:00)','Noon (12:00-16:00)', 'Evening (16:00-20:00)'];
-				$scope.profile.callHour = $scope.callHours[0];
-				$scope.frequency = ['Once in two weeks', 'Once a month', 'Once a qurter', 'Once in six months'];
-				$scope.profile.callFreq = $scope.frequency[0];
+				$http.post('/static-data', {type:"get-call-frequencies"}).success(function (options){
+					$scope.frequency = options;
+					$scope.profile.callFreq = $scope.frequency[0];
+				});
+
+				$http.post('/static-data', {type:"get-languages"}).success(function (options){
+					$scope.languages = options;
+					$scope.profile.lang = $scope.languages[0];
+				});
+
+				$http.post('/static-data', {type:"get-call-hours"}).success(function (options){
+					$scope.callHours = options;
+					$scope.profile.callHour = $scope.callHours[0];
+				});
+
 				this.save = function(profile){
 					$scope.profile = profile;
+					$scope.profile.lang = $scope.profile.lang.name;
+					$scope.profile.callHour = $scope.profile.callHour.name;
+					$scope.profile.callFreq = $scope.profile.callFreq.name;
 					$http.post('/user', {type:"new-doc-profile",message:JSON.stringify($scope.profile), userId:currentUser.userId}).success(function (resp){
 						if (resp.error){
 
@@ -313,9 +325,30 @@
 			scope:{},
 			controller: function($scope){
 				$scope.product ={};
-				this.save = function(profile){
-					$scope.profile = profile;
-					$http.post('/user', {type:"new-pharma-profile",message:JSON.stringify($scope.profile), userId:currentUser.userId}).success(function (resp){
+				$http.post('/static-data', {type:"get-call-quantities"}).success(function (options){
+					$scope.callQuantities = options;
+					$scope.product.callQuantity = $scope.callQuantities[0];
+				});
+
+				$http.post('/static-data', {type:"get-hcp-segments"}).success(function (options){
+					$scope.hcpSegments = options;
+					$scope.product.hcp = $scope.hcpSegments[0];
+				});
+				this.save = function(){
+					var productData = {
+							name: $scope.product.name,
+							creatorId:currentUser.userId,
+							deliveryDate: $scope.product.deliveryDate.getTime(),
+							endDate: $scope.product.endDate.getTime(),
+							callQuantity: $scope.product.callQuantity.name,
+							hcp: $scope.product.hcp.name,
+							maturityPhase: $scope.product.hcp.maturityPhase
+						};
+					$http.post('/products', {type:"new-product", message: JSON.stringify(productData)}).success(function (){
+
+					});
+					$http.post('/user', {type:"new-pharma-profile",message:JSON.stringify({}), userId:currentUser.userId}).success(function (resp){
+
 						if (resp.error){
 
 						}else{

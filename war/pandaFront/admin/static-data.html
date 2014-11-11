@@ -1,0 +1,38 @@
+<ul class="nav nav-pills">
+	<li ng-class="{ active:isSet('degrees') }"><a href
+		ng-click="setTab('degrees')">Degrees</a></li>
+	<li ng-class="{ active:isSet('doctor-specialties') }"><a href
+		ng-click="setTab('doctor-specialties')">Doctor-specialties</a></li>
+	<li ng-class="{ active:isSet('resource-types') }"><a href
+		ng-click="setTab('resource-types')">Resource-types</a></li>
+	<li ng-class="{ active:isSet('languages') }"><a href
+		ng-click="setTab('languages')">Languages</a></li>
+	<li ng-class="{ active:isSet('call-hours') }"><a href
+		ng-click="setTab('call-hours')">Call-hours</a></li>
+	<li ng-class="{ active:isSet('call-frequencies') }"><a href
+		ng-click="setTab('call-frequencies')">Call-frequencies</a></li>
+	<li ng-class="{ active:isSet('hcp-segments') }"><a href
+		ng-click="setTab('hcp-segments')">Hcp-segments</a></li>
+	<li ng-class="{ active:isSet('call-quantities') }"><a href
+		ng-click="setTab('call-quantities')">Call-quantities</a></li>
+</ul>
+<hr>
+<div class="col-md-4">
+	<div class="form-group">
+		<label class="control-label">New Entry:</label>
+		<div>
+			<input class="form-control" type="text" ng-model="newEntry">
+		</div>
+	</div>
+	<button class="btn btn-primary" ng-click="addEntry()">
+		Add
+	</button>
+	<ul class="list-group">
+	  <li class="list-group-item" ng-repeat="option in options">
+			{{option.name}}
+			<button class="btn btn-xs btn-danger pull-right" ng-click="deleteEntry(option)">
+		  	Delete
+		  </button>
+	  </li>
+	</ul>
+</div>

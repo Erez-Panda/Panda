@@ -16,14 +16,14 @@
 	<div class="form-group">
 		<label class="col-md-3 control-label">Number of requested calls</label>
 		<div class="col-md-8">
-			<select class="form-control" ng-model="product.numOfCalls" ng-options="calls for calls in callNumbers">
+			<select class="form-control" ng-model="product.callQuantity" ng-options="calls.name for calls in callQuantities">
 			</select>
 		</div>
 	</div>
 	<div class="form-group">
 		<label class="col-md-3 control-label">HCP segment</label>
 		<div class="col-md-8">
-			<select class="form-control" ng-model="product.hcp" ng-options="segment for segment in hcpSegments">
+			<select class="form-control" ng-model="product.hcp" ng-options="segment.name for segment in hcpSegments">
 			</select>
 		</div>
 	</div>

@@ -7,6 +7,7 @@ import com.googlecode.objectify.Ref;
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
 import com.googlecode.objectify.annotation.Ignore;
+import com.googlecode.objectify.annotation.Index;
 import com.googlecode.objectify.annotation.Load;
 
 @Entity
@@ -17,8 +18,8 @@ public class Call extends PandaEntity{
 	@Ignore public Long callerId; //for JSON construction 
 	@Load Ref<User> callee;
 	@Ignore public Long calleeId; //for JSON construction 
-	private Long start;
-	private Long end;
+	@Index Long start;
+	Long end;
 	@Load Ref<Product> product;
 	@Ignore public Long productId; //for JSON construction 
 	@Load ArrayList<Ref<Resource>> resourcesList = new ArrayList<Ref<Resource>>();

@@ -4,6 +4,7 @@ public class Message {
 	private String message;
 	private String type;
 	private Long userId;
+	private Long id;
 	private Long trainingId;
 	
 	public String getMessage(){
@@ -16,6 +17,10 @@ public class Message {
 	
 	public Long getUserId(){
 		return userId;
+	}
+	
+	public Long getId(){
+		return id;
 	}
 	
 	public Long getTrainingId(){

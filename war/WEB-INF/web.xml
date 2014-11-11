@@ -86,6 +86,17 @@
     <url-pattern>/trainings</url-pattern>
   </servlet-mapping>
   
+  
+  <servlet>
+    <servlet-name>StaticDataServlet</servlet-name>
+    <servlet-class>com.panda.video.server.StaticDataServlet</servlet-class>
+  </servlet>
+  
+  <servlet-mapping>
+    <servlet-name>StaticDataServlet</servlet-name>
+    <url-pattern>/static-data</url-pattern>
+  </servlet-mapping>
+  
   <servlet>
     <servlet-name>FileUploadServlet</servlet-name>
     <servlet-class>com.panda.video.server.FileUploadServlet</servlet-class>
@@ -106,7 +117,7 @@
   </filter-mapping>
   <!-- Default page to serve -->
   <welcome-file-list>
-    <welcome-file>PandaVideoChat.html</welcome-file>
+    <welcome-file>pandaFront/welcome.html</welcome-file>
   </welcome-file-list>
 
 </web-app>

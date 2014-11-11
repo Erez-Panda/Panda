@@ -57,6 +57,10 @@ public class JSON {
 		Gson gson = new Gson();
 		return gson.fromJson(json, Training.class);
 	}
+	public static StaticEntity constructStaticEntity(String json){
+		Gson gson = new Gson();
+		return gson.fromJson(json, StaticEntity.class);
+	}
 	
 
 }

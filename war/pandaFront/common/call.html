@@ -1,22 +1,22 @@
-<div class='call-screen'>	
+<div class='call-screen' ng-hide="noCall">	
 	<div class="col-md-8">
 		<div class="panel panel-default ">
 			<div class="panel-heading">Presentation
 				<div class="btn-group pull-right">
-					<button class="btn btn-primary" ng-disabled="callCtrl.currImg === 0" class="btn btn-default btn-lg" ng-click="callCtrl.prevImg()">
+					<button class="btn btn-primary" ng-disabled="currImg === 0" class="btn btn-default btn-lg" ng-click="prevImg()">
 						<span class="glyphicon glyphicon-circle-arrow-left"></span>
 					</button>
-					<button class="btn btn-primary" ng-disabled="!callCtrl.selectedRes.urls || callCtrl.currImg === callCtrl.selectedRes.urls.length-1" class="btn btn-default btn-lg" ng-click="callCtrl.nextImg()">
+					<button class="btn btn-primary" ng-disabled="!selectedRes.urls || currImg === selectedRes.urls.length-1" class="btn btn-default btn-lg" ng-click="nextImg()">
 						<span class="glyphicon glyphicon-circle-arrow-right"></span>
 					</button>
 				</div>
 			</div>
 			<div class="panel-body">
-				<img src="//placehold.it/1280X720" ng-src="{{callCtrl.selectedRes.urls[callCtrl.currImg]}}" alt="" class="img-responsive center-block">
+				<img src="//placehold.it/1280X720" ng-src="{{selectedRes.urls[currImg]}}" alt="" class="img-responsive center-block">
 			</div>
 			<div class="panel-footer">
 				<div class="ui-select">
-					<select class="form-control" ng-model="callCtrl.selectedRes" ng-options="selectedRes.name for selectedRes in callCtrl.currCall.resoucres">
+					<select class="form-control" ng-model="selectedRes" ng-options="selectedRes.name for selectedRes in currCall.resoucres">
 						<option value="">Available Resources:</option>
 					</select>
 				</div>
@@ -27,15 +27,15 @@
 		<div class="panel panel-default draggable resizable">
 			<div class="panel-heading">Video
 				<div class="btn-group pull-right">
-					<button class="btn btn-success" ng-show="callCtrl.peerActive && !callCtrl.activeCall" ng-click="callCtrl.startCall()">
+					<button class="btn btn-success" ng-show="peerActive && !activeCall" ng-click="startCall()">
 						<span class="glyphicon glyphicon-earphone"></span>
 					</button>
-					<button class="btn btn-success" ng-show="callCtrl.peerActive && !callCtrl.activeCall" ng-click="callCtrl.startVideoCall()">
+					<button class="btn btn-success" ng-show="peerActive && !activeCall" ng-click="startVideoCall()">
 						<span class="glyphicon glyphicon-facetime-video"></span>
 					</button>
 				</div>
 				<div class="btn-group pull-right">
-					<button class="btn btn-danger" ng-show="callCtrl.activeCall" ng-click="callCtrl.stopCall()">
+					<button class="btn btn-danger" ng-show="activeCall" ng-click="stopCall()">
 						<span class="glyphicon glyphicon-remove-circle"></span>
 					</button>
 				</div>
@@ -56,12 +56,12 @@
 					<label class="sr-only" for="chat">chat</label>
 					<div class="form-group">
 					    <div class="input-group">
-							<input type="text" class="form-control" ng-model="callCtrl.chatText" placeholder="Say somthing">
+							<input type="text" class="form-control" ng-model="chatText" placeholder="Say somthing">
 					    </div>
 				    </div>
 				    <div class="form-group">
 					    <div class="input-group">
-							<button class="btn btn-info" ng-disabled="!callCtrl.activeConnection" ng-click="callCtrl.chat()">
+							<button class="btn btn-info" ng-disabled="!activeConnection" ng-click="chat()">
 								<span class="glyphicon glyphicon-play"></span>
 							</button>
 					    </div>
@@ -70,4 +70,7 @@
 			</div>
 		</div>
 	</div>
+</div>
+<div class='call-screen' ng-Show="noCall">	
+	<h3>You have no scheduled call any time soon</h3>
 </div>

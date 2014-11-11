@@ -173,7 +173,33 @@
 				$scope.isSet = function (tabIndex){
 					return $scope.currTab === tabIndex;
 				};
-				$scope.edit = function (){
+				$scope.saveChanges = function(){
+					$scope.isEdit = false;
+					var updateUser = {
+							firstName: $scope.profile.firstName,
+							lastName: $scope.profile.lastName,
+							email: $scope.profile.email,
+							password: $scope.profile.password,
+							phone: $scope.profile.phone,
+							address: $scope.profile.address
+					}
+					$http.post('/user', {type:"update-user",message: JSON.stringify(updateUser), userId:_user.userId}).success(function (profile){
+					});
+				}
+				$scope.saveProfile = function(){
+					$scope.isEdit = false;
+					var updateProfile = {
+							lang: $scope.profile.lang,
+							callHour: $scope.profile.callHour,
+							callFreq: $scope.profile.ecallFreqmail,
+							foi: $scope.profile.foi,
+							scheduleBy: $scope.profile.scheduleBy
+					}
+					$http.post('/user', {type:"update-doc-profile",message: JSON.stringify(updateProfile), userId:$scope.profile.id}).success(function (profile){
+
+					});
+				}
+				$scope.enableEdit = function(){
 					$scope.isEdit = true;
 				}
 				
@@ -182,7 +208,7 @@
 		};
 	}]);
 	
-	app.directive('call', function(){
+	app.directive('call', ['$http', function($http){
 		var callData = {};
 		
 		function uiInit(callCtrl){
@@ -192,7 +218,7 @@
 		    });
 			$('.call-screen select').change(function(){
 				setTimeout(function(){
-					callData.connection.send(JSON.stringify({type:"load_res", url:callCtrl.selectedRes.urls[callCtrl.currImg]}));
+					callData.connection.send(JSON.stringify({type:"load_res", url:$scope.selectedRes.urls[$scope.currImg]}));
 				},0);
 				
 			});
@@ -231,15 +257,15 @@
 		return {
 			restrict: 'E',
 			templateUrl:'common/call.html',
-			controller: function(){
+			scope: {},
+			controller: function($scope){
 				uiInit(this);
-				var callCtrl = this;
 				function onStream(remoteStream){
-					//callCtrl.video = window.URL.createObjectURL(remoteStream);
+					//$scope.video = window.URL.createObjectURL(remoteStream);
 					$('.call-screen video').attr('src',window.URL.createObjectURL(remoteStream));
 				}
 				function onData(remoteData){
-					//callCtrl.chatLog += remoteData + "\n";
+					//$scope.chatLog += remoteData + "\n";
 					try{
 						var message = JSON.parse(remoteData);
 						if (message.type=="load_res"){
@@ -252,56 +278,62 @@
 
 					}catch(e){}
 				}
-				callCtrl.currCall = Data.currentCall; //should get from server
-				VideoChat.openPeer(callCtrl.currCall.id, function(peer,id){
-					callData.peer = peer;
-					callData.peer.id = id;
-					callCtrl.peerActive = true;
-					if (callCtrl.currCall.id == callData.peer.id){ //meaning this is the first person in page
-						//wait for someone to connect to you
-					} else { // connect to remote peer with the call id
-						callData.remotePeerId = callCtrl.currCall.id;
-						callData.connection = VideoChat.connectToRemotePeer(callData.peer,callData.remotePeerId, onData);
-						callCtrl.activeConnection = true;
+				$http.post('/calls', {type:"get-current-call",message: (new Date()).getTime() ,userId:_user.userId}).success(function (call){
+					if (call){
+						$scope.currCall = call;
+						VideoChat.openPeer($scope.currCall.callId, function(peer,id){
+							callData.peer = peer;
+							callData.peer.id = id;
+							$scope.peerActive = true;
+							if ($scope.currCall.callId == callData.peer.id){ //meaning this is the first person in page
+								//wait for someone to connect to you
+							} else { // connect to remote peer with the call id
+								callData.remotePeerId = $scope.currCall.callId;
+								callData.connection = VideoChat.connectToRemotePeer(callData.peer,callData.remotePeerId, onData);
+								$scope.activeConnection = true;
+							}
+							}, function (connection){
+								$scope.activeConnection = true;
+								callData.connection = connection;
+								callData.remotePeerId = connection.peer;
+							}, function (call){
+								$scope.activeCall = true;
+								callData.call = call;
+								answerCall(function(){
+									getUserMedia({video:true, audio:true}, function(stream){
+										callData.call.stream = stream;
+										callData.call.answer(stream);
+										},function(error){
+										console.log(error);
+									});
+									},function(){
+										getUserMedia({video:false, audio:true}, function(stream){
+											callData.call.stream = stream;
+											callData.call.answer(stream);
+											},function(error){
+											console.log(error);
+										});
+									}, function(){})
+							}, onData, onStream);
+					}else {
+						$scope.noCall = true;
 					}
-					}, function (connection){
-						callCtrl.activeConnection = true;
-						callData.connection = connection;
-						callData.remotePeerId = connection.peer;
-					}, function (call){
-						callCtrl.activeCall = true;
-						callData.call = call;
-						answerCall(function(){
-							getUserMedia({video:true, audio:true}, function(stream){
-								callData.call.stream = stream;
-								callData.call.answer(stream);
-								},function(error){
-								console.log(error);
-							});
-							},function(){
-								getUserMedia({video:false, audio:true}, function(stream){
-									callData.call.stream = stream;
-									callData.call.answer(stream);
-									},function(error){
-									console.log(error);
-								});
-							}, function(){})
-					}, onData, onStream);
-				callCtrl.chatText;
-				callCtrl.chatLog = "";
-				callCtrl.selectedRes;
-				callCtrl.activeCall = false;
-				callCtrl.currImg = 0;
+				});
+				$scope.chatText;
+				$scope.chatLog = "";
+				$scope.selectedRes;
+				$scope.activeCall = false;
+				$scope.currImg = 0;
 				this.nextImg = function (){
-					callCtrl.currImg++;
-					callData.connection.send(JSON.stringify({type:"load_res", url:callCtrl.selectedRes.urls[callCtrl.currImg]}));
+					$scope.currImg++;
+					callData.connection.send(JSON.stringify({type:"load_res", url:$scope.selectedRes.urls[$scope.currImg]}));
 				}
 				this.prevImg = function (){
-					callCtrl.currImg--;
-					callData.connection.send(JSON.stringify({type:"load_res", url:callCtrl.selectedRes.urls[callCtrl.currImg]}));
+					$scope.currImg--;
+					callData.connection.send(JSON.stringify({type:"load_res", url:$scope.selectedRes.urls[$scope.currImg]}));
 				}
 				this.startCall = function(){
-					callCtrl.activeCall = true;
+					$scope.activeCall = true;
 					getUserMedia({video:false, audio:true}, function(stream){
 						callData.call = VideoChat.callToRemotePeer(callData.peer,callData.remotePeerId, stream, onStream);
 						callData.call.stream = stream;
@@ -311,7 +343,7 @@
 				}
 				
 				this.startVideoCall = function(){
-					callCtrl.activeCall = true;
+					$scope.activeCall = true;
 					getUserMedia({video:true, audio:true}, function(stream){
 						callData.call = VideoChat.callToRemotePeer(callData.peer,callData.remotePeerId, stream, onStream);
 						callData.call.stream = stream;
@@ -325,18 +357,18 @@
 					if (callData.call && callData.call.stream){
 						callData.call.stream.stop();
 					}
-					callCtrl.activeCall = false;
+					$scope.activeCall = false;
 				}
 				this.chat = function(){
-					updateTextarea("Me: " +callCtrl.chatText);
-					callData.connection.send(JSON.stringify({type:"chat_text", text:callCtrl.chatText}));
-					callCtrl.chatText = "";
+					updateTextarea("Me: " +$scope.chatText);
+					callData.connection.send(JSON.stringify({type:"chat_text", text:$scope.chatText}));
+					$scope.chatText = "";
 				}
 				
 			},
 			controllerAs: 'callCtrl'
 		};
-	});
+	}]);
 
 	
 

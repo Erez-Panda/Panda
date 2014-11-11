@@ -16,6 +16,15 @@ public class OfyService {
         factory().register(Resource.class);
         factory().register(Training.class);
         factory().register(ResourceData.class);
+        factory().register(StaticEntity.class); 
+        factory().register(DegreeOption.class);
+        factory().register(DoctorSpecialty.class);
+        factory().register(ResourceType.class);
+        factory().register(LanguageOption.class);
+        factory().register(CallHourOption.class);
+        factory().register(CallFrequencyOption.class);
+        factory().register(HcpSegmentOption.class);
+        factory().register(CallQuantityOption.class);     
     }
 
     public static Objectify ofy() {

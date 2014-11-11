@@ -2,16 +2,6 @@
 	<h1>Register</h1>
 	<hr>
 	<div class="profile">
-		<!-- left column -->
-		<div class="col-md-3">
-			<div class="text-center">
-				<img src="//placehold.it/100" class="avatar img-circle" alt="avatar">
-				<h6 ng-show="isEdit" >Change Photo</h6>
-
-				<input type="file" class="form-control" ng-show="isEdit" >
-			</div>
-		</div>
-
 
 		<div class="col-md-9 personal-info">
 			<ul class="nav nav-pills">
@@ -22,7 +12,16 @@
 			</ul>
 			<hr>
 			<div ng-show="isSet(1)">
-				<form name="registerForm" class="form-horizontal" role="form" ng-submit="registerForm.$valid && registerCtrl.save(profile)" novalidate>
+				<!-- left column -->
+				<div class="col-md-3">
+					<div class="text-center">
+						<img src="//placehold.it/100" class="avatar img-circle" alt="avatar">
+						<h6 ng-show="isEdit" >Change Photo</h6>
+		
+						<input type="file" class="form-control" ng-show="isEdit" >
+					</div>
+				</div>
+				<form name="registerForm" class="form-horizontal col-lg-8" role="form" ng-submit="registerForm.$valid && saveChanges()" novalidate>
 					<div class="form-group">
 						<label class="col-lg-3 control-label" ng-show="isEdit" >*First name:</label>
 						<div class="col-lg-8">
@@ -59,7 +58,7 @@
 					</div>
 					<div class="form-group" ng-hide="isEdit" >
 						<div class="col-md-8">
-							<a href="#">edit</a>
+							<a href="#" ng-click="enableEdit()">edit</a>
 						</div>
 					</div>
 					<div class="form-group" ng-show="isEdit">
@@ -73,7 +72,7 @@
 				</div>
 			</div>
 			<div ng-show="isSet(2)">
-				<form name="professionalForm" class="form-horizontal" role="form" ng-submit="professionalForm.$valid && save(profile)" novalidate>
+				<form name="professionalForm" class="form-horizontal" role="form" ng-submit="professionalForm.$valid && saveProfile()" novalidate>
 					<h4>Call Information</h4>
 					<div class="form-group">
 						<label class="col-md-3 control-label">Prefered Language</label>
@@ -153,10 +152,14 @@
 						</div>
 					</div>
 					<hr>
-					<div class="form-group">
+					<div class="form-group" ng-hide="isEdit" >
 						<div class="col-md-8">
-							<input type="submit" class="btn btn-primary" value="Save">
+							<a href="#" ng-click="enableEdit()">edit</a>
 						</div>
+					</div>
+					<div class="form-group" ng-show="isEdit">
+						<label class="col-lg-3 control-label"></label>
+						<button class="btn btn-primary" type="submit">Save</button>
 					</div>
 				</form>
 			</div>
