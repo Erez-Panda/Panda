@@ -109,7 +109,7 @@
 					window.open(resource.url);
 				}
 				$http.post('/trainings', {type:"get-user-trainings", userId:_user.userId}).success(function (trainings){
-					$scope.trainings = trainings;
+					$scope.trainings = trainings.clean(null);
 				});
 				
 			},

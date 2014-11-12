@@ -82,7 +82,7 @@
 					</div>
 					<div class="form-group">
 						<label class="col-md-4 col-md-offset-6 control-label"></label>
-						<button class="btn btn-primary" type="submit" ng-click="registerCtrl.showError()">
+						<button class="btn btn-primary" type="submit" ng-click="!registerForm.$valid && registerCtrl.showError()">
 						Next <span class="glyphicon glyphicon-chevron-right"></span>
 						</button>
 					</div>

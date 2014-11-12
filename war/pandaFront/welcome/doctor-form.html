@@ -3,7 +3,7 @@
 	<div class="form-group">
 		<label class="col-md-3 control-label">Prefered Language</label>
 		<div class="col-md-8">
-			<select class="form-control" ng-model="profile.lang" ng-options="lang.name for lang in languages">
+			<select class="form-control" ng-model="profile.lang" ng-options="lang.name for lang in languages | orderBy:name">
 			</select>
 		</div>
 	</div>
