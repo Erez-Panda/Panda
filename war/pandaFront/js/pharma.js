@@ -20,6 +20,7 @@
 	}]);
 	
 	app.directive('tabs', ['$http','$compile', function($http, $compile){
+		var selectCB = [];
 		function appendTabs(tabs, scope){
 			var tabsElm = angular.element(document.getElementById("tabs"));
 			for (var tab in tabs){
@@ -50,7 +51,13 @@
 				$scope.currTab = 'whats-new';
 				this.setTab = function (tabIndex){
 					$scope.currTab = tabIndex;
+					for (var i=0; i< selectCB.length; i++){
+						selectCB[i](tabIndex);
+					}
 				};
+				this.onSelect = function (tab, callback){
+					selectCB.push(function (t){if (t==tab){callback();}})
+				}
 				$scope.isSet = function (tabIndex){
 					return $scope.currTab === tabIndex;
 				};

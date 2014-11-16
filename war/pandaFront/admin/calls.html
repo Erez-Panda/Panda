@@ -64,13 +64,21 @@
 		</div>
 	</div>
 	<ul class="list-group">
-	  <a href="#"class="list-group-item" ng-repeat="call in calls | filter:searchText">
+	  <a href="#" ng-click="openPostData(call)" class="list-group-item" ng-repeat="call in calls | filter:searchText">
 			{{call.title}}: {{call.start | date:'short'}} - id: {{call.callId}}
 	  </a>
 	</ul>
 	<button class="btn btn-danger" ng-click="deleteAll()">
 		Delete All
 	</button>
+</div>
+<div class="col-md-4" ng-show="postCallData.postCallId">
+	<p>	doctor rating: {{postCallData.doctorRating}} </p>
+	<p> rep rating: {{postCallData.rating}} </p>
+	<p> rep details: {{postCallData.details}} </p>
+	<p> start: {{postCallData.start | date: 'short'}} </p>
+	<p> length: {{postCallData.callLength}} </p>
+	<p> session: {{postCallData.sessionNumber}} </p>
 </div>
 <div class="col-md-4">
 	<div class="alert alert-success alert-dismissible" role="alert" ng-show="alertInfo">

@@ -10,7 +10,7 @@ var VideoChat = (function(){
 		initPeerListeners(peer, onOpen, onConnect, onCall, onData, onStream);
 	}
 
-	function initPeerListeners(peer, onOpen, onConnect, onCall, onData, onStream){
+	function initPeerListeners(peer, onOpen, onConnect, onCall, onData, onStream, onClose){
 		peer.on('open', function(id) {
 			onOpen(peer,id);
 			console.log('My peer ID is: ' + id);
@@ -23,8 +23,8 @@ var VideoChat = (function(){
 		});
 
 		peer.on('call', function(call) {
-			initCallListeners(call, onStream);
-			onCall(call, onStream);
+			initCallListeners(call, onStream, onClose);
+			onCall(call, onStream, onClose);
 		});
 		peer.on('error', function(err) {
 			if (err.type == 'unavailable-id'){
@@ -54,6 +54,9 @@ var VideoChat = (function(){
 	function initCallListeners(call, onStream){
 		call.on('stream', function(remoteStream){
 			onStream(remoteStream);
+		});
+		call.on('close', function(){
+			onClose();
 		});
 	}
 	

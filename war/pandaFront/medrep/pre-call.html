@@ -1,0 +1,35 @@
+<div>
+	<div class="modal-header">
+		<h3 class="modal-title">Call Summary</h3>
+	</div>
+	<div class="modal-body">
+		<p>
+			Your next call is with <a href="#"> DR {{doctor.lastName}} </a> about {{product.name}}.
+		</p>
+		<div ng-show="firstCall">
+			<p>
+				This DR {{doctor.lastName}} first call about {{product.name}}.
+			</p>
+		</div>
+		<div ng-hide="firstCall">
+			<p>
+				Previous call with the DR was on {{lastCall.start | date: 'short'}} and was {{lastCall.callLength/(1000*60) | number:2}} minute long. 
+			</p>
+			<p>
+				This is the {{lastCall.sessionNumber}} call about {{product.name}}
+			</p>
+			<p>
+				Summary from last call:
+			</p>
+			<p>
+				{{lastCall.details}}
+			</p>
+		</div>
+		<p>
+			In this call you should focus on <strong>{{call.focus}}</strong>
+		</p>
+	</div>
+	<div class="modal-footer">
+		<button class="btn btn-primary" ng-click="ok()">OK</button>
+	</div>
+</div>

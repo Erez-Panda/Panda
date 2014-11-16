@@ -62,5 +62,10 @@ public class JSON {
 		return gson.fromJson(json, StaticEntity.class);
 	}
 	
+	public static PostCall constructPostCall(String json){
+		Gson gson = new Gson();
+		return gson.fromJson(json, PostCall.class);
+	}
+	
 
 }

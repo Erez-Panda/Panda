@@ -30,4 +30,6 @@ public class Product extends PandaEntity{
     
     public ArrayList<Ref<Training>> getTrainings() { return traningList; }
     public void addTraining(Training value) { traningList.add(Ref.create(value)); }
+    
+    public Long getId() {return productId;}
 }

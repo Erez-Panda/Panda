@@ -26,6 +26,7 @@ public class OfyService {
         factory().register(HcpSegmentOption.class);
         factory().register(CallQuantityOption.class); 
         factory().register(FieldOfInterestOption.class); 
+        factory().register(PostCall.class); 
     }
 
     public static Objectify ofy() {

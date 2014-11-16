@@ -35,5 +35,7 @@ public class Call extends PandaEntity{
 	
     public ArrayList<Ref<Resource>> getResources() { return resourcesList; }
     public void addCall(Resource value) { resourcesList.add(Ref.create(value)); }
+    
+    public Long getId() {return callId;}
 
 }

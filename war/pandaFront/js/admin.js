@@ -105,6 +105,7 @@
 			templateUrl:'admin/calls.html',
 			scope: {},
 			controller: function($scope){
+				$scope.postCallData = {};
 				$scope.alertInfo = "";
 				var now = new Date();
 				now.setMilliseconds(0);
@@ -139,6 +140,11 @@
 						$scope.calls.push($scope.call);
 						$scope.call = {start: now, end: now};
 						$scope.alertInfo = "New call was added";
+					});
+				}
+				$scope.openPostData = function(call){
+					$http.post('/post-call', {type:"get-call-data", id:call.callId}).success(function (postData){
+						$scope.postCallData = postData;
 					});
 				}
 				
@@ -302,7 +308,6 @@
 				$scope.selectedUser = {};
 				$http.post('/listUsers', {type:"get-pending"}).success(function (users){
 					$scope.users = users;
-					userUpdate(users);
 				});
 				$scope.select = function(user){
 					$scope.selectedUser = user;

@@ -33,11 +33,11 @@ public class CallManagerServlet extends HttpServlet {
 			call.Created();
 			User caller = ofy().load().type(User.class).id(call.callerId).now();
 			User callee = ofy().load().type(User.class).id(call.calleeId).now();
-			//Product p = ofy().load().type(Product.class).id(call.productId).now();
+			Product p = ofy().load().type(Product.class).id(call.productId).now();
 			//save resources somehow
 			call.setCaller(caller);
 			call.setCallee(callee);
-			//call.setProduct(p);
+			call.setProduct(p);
 			
 			ofy().save().entity(call).now();
 			caller.addCall(call);
@@ -79,7 +79,11 @@ public class CallManagerServlet extends HttpServlet {
 					if (caller.userId == user.userId){
 						caller = call.getCallee();
 					}
-					resp.getWriter().print("["+j.toJson(call)+","+j.toJson(caller)+"]");
+					Product product = null;
+					try{
+						product = call.getProduct();
+					}catch(Exception e){}
+					resp.getWriter().print("["+j.toJson(call)+","+j.toJson(caller)+","+j.toJson(product)+"]");
 					return;
 				}	
 			}

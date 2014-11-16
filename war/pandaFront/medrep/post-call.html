@@ -1,0 +1,16 @@
+<div>
+  <div class="modal-header">
+      <h3 class="modal-title">Rate Call</h3>
+  </div>
+  <div class="modal-body">
+	<form name="postCallForm" class="form-horizontal" role="form" ng-submit="postCall.rate()" novalidate>
+		<input ng-init="postCall.init()" id="star-rating" type="number" class="rating" min=0 max=5 step=1 data-size="lg" >
+		<h3>What did you talked about?</h3>
+		<textarea class="form-control" rows="" cols="" ng-model="postCall.details"></textarea>
+		<button class="btn btn-primary" type="submit">
+				Send
+		</button>
+	</form>
+	
+  </div>
+</div>
