@@ -26,6 +26,7 @@ public class User extends PandaEntity{
 	String contantPerson;
 	String imageUrl;
 	@Index String status;
+	@Index int rating;
 	@Load Ref<Profile> profile;
 	@Load ArrayList<Ref<Call>> callList = new ArrayList<Ref<Call>>();
 	@Load ArrayList<Ref<Product>> productList = new ArrayList<Ref<Product>>();

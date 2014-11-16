@@ -67,5 +67,10 @@ public class JSON {
 		return gson.fromJson(json, PostCall.class);
 	}
 	
+	public static CallRequest constructCallRequest(String json){
+		Gson gson = new Gson();
+		return gson.fromJson(json, CallRequest.class);
+	}
+	
 
 }

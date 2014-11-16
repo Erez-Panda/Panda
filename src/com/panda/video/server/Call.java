@@ -12,16 +12,16 @@ import com.googlecode.objectify.annotation.Load;
 
 @Entity
 public class Call extends PandaEntity{
-	private String title;
+	String title;
 	@Id private Long callId;
 	@Load Ref<User> caller;
-	@Ignore public Long callerId; //for JSON construction 
+	@Index Long callerId;
 	@Load Ref<User> callee;
-	@Ignore public Long calleeId; //for JSON construction 
+	@Index public Long calleeId;
 	@Index Long start;
 	Long end;
 	@Load Ref<Product> product;
-	@Ignore public Long productId; //for JSON construction 
+	@Index Long productId; 
 	@Load ArrayList<Ref<Resource>> resourcesList = new ArrayList<Ref<Resource>>();
 	
     public Product getProduct() { return product.get(); }

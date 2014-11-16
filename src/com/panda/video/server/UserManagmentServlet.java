@@ -29,6 +29,7 @@ public class UserManagmentServlet extends HttpServlet {
 				if (null != existingUser){
 					response.getWriter().print(j.toJson(new ErrorMessage("Email Already Exist")));
 				}else{
+					user.rating = 3;
 					ofy().save().entity(user).now();
 					response.getWriter().print(j.toJson(user));
 				}

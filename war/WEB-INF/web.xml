@@ -117,6 +117,16 @@
     <url-pattern>/fileUpload</url-pattern>
   </servlet-mapping>
   
+  <servlet>
+    <servlet-name>ScheduleServlet</servlet-name>
+    <servlet-class>com.panda.video.server.ScheduleServlet</servlet-class>
+  </servlet>
+  
+  <servlet-mapping>
+    <servlet-name>ScheduleServlet</servlet-name>
+    <url-pattern>/schedule</url-pattern>
+  </servlet-mapping>
+        
   <filter>
         <filter-name>ObjectifyFilter</filter-name>
         <filter-class>com.googlecode.objectify.ObjectifyFilter</filter-class>

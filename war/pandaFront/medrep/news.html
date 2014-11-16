@@ -8,6 +8,17 @@
 	</ul>
 </div>
 <div class="col-md-4">
+	<h3>Call offers</h3>
+	<ul class="list-group">
+	  <a href="#"class="list-group-item" ng-repeat="callRequest in callRequests">
+		Time: {{callRequest.start | date:'short'}}
+		<button class="btn btn-xs btn-success pull-right" ng-click="accept(callRequest)">
+		  	Accept
+		  </button>
+	  </a>
+	</ul>
+</div>
+<div class="col-md-4">
 	<h3>Training status</h3>
 	<ul class="list-group">
 	  <a href="#"class="list-group-item" ng-repeat="training in trainings">

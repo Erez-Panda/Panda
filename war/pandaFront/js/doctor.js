@@ -115,6 +115,12 @@
 					return $scope.currTab === tabIndex;
 				};
 				$scope.sendCall = function(){
+					var reqData = {
+							start: $scope.call.start.getTime()
+						}
+					$http.post('/schedule', {type:"new-call-request", message: JSON.stringify(reqData), userId:_user.userId, id:$scope.call.product.productId }).success(function (products){
+						
+					});
 					//send to server
 					$scope.call = {};
 					bootbox.alert("Your request was sent", function() {}); 

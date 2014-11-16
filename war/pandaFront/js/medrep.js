@@ -117,6 +117,16 @@
 					return Math.round(100*completed/training.resources.length);
 				}
 				
+				$scope.accept = function (req){
+					$http.post('/schedule', {type:"answer-call-request", userId:_user.userId, id: req.callRequestId}).success(function (resp){
+						if (resp == "Already assigned"){
+							alert("someone took it :(");
+						} else {
+							alert("cool, you have a new call :)");
+						}
+						$scope.callRequests.splice($scope.callRequests.indexOf(req),1);
+					});
+				}
 				$http.post('/calls', {type:"get-calls", userId:_user.userId}).success(function (calls){
 					calls.clean(null);
 					$scope.calls = calls;
@@ -129,6 +139,11 @@
 				$http.post('/products', {type:"get-products", userId:_user.userId}).success(function (products){
 					products.clean(null);
 					$scope.products = products;
+				});
+				
+				$http.post('/schedule', {type:"get-call-request", userId:_user.userId}).success(function (requests){
+					requests.clean(null);
+					$scope.callRequests = requests;
 				});
 			},
 			controllerAs: 'news'
