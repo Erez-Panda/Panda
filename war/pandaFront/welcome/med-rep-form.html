@@ -21,7 +21,7 @@
 		<label class="col-md-3 control-label"></label>
 		<div class="col-md-8">
 			<h6>Upload your Graduate Certificate</h6>
-			<input type="file" class="form-control">
+			<input type="file" class="form-control" name="degreeScan">
 		</div>
 	</div>
 	<div class="form-group" ng-show="medRegisterCtrl.isRadio('student')">
@@ -57,9 +57,9 @@
 	<div class="form-group">
 		<label class="col-md-3 control-label">ID number:</label>
 		<div class="col-md-8">
-			<input class="form-control" type="number" ng-model="profile.idNumber" min="0">
+			<input class="form-control" type="text" pattern="[0-9]* ng-model="profile.idNumber" min="0">
 			<h6>Upload your ID scan</h6>
-			<input type="file" class="form-control">
+			<input type="file" class="form-control" name="idScan">
 		</div>
 	</div>
 	<div class="form-group">

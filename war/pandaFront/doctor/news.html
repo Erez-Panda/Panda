@@ -1,0 +1,9 @@
+<div class="col-md-4">
+	<h3>Next calls</h3>
+	<ul class="list-group">
+	  <a href="#"class="list-group-item" ng-repeat="call in calls | orderBy:-start">
+			{{call.start | date: 'short'}}
+		  <strong>{{call.title}}</strong>
+	  </a>
+	</ul>
+</div>

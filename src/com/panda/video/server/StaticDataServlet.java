@@ -40,6 +40,8 @@ public class StaticDataServlet extends HttpServlet {
 				options = ofy().load().type(HcpSegmentOption.class).list();
 			} else if (msg.getType().equals("get-call-quantities")){
 				options = ofy().load().type(CallQuantityOption.class).list();
+			} else if (msg.getType().equals("get-FOI")){
+				options = ofy().load().type(FieldOfInterestOption.class).list();
 			}
 			JSON j = new JSON();
 			resp.getWriter().print(j.toJson(options));
@@ -68,6 +70,9 @@ public class StaticDataServlet extends HttpServlet {
 				ofy().save().entity(entity).now();
 			} else if (msg.getType().equals("add-call-quantities")){
 				entity = new CallQuantityOption(entity);
+				ofy().save().entity(entity).now();
+			} else if (msg.getType().equals("add-FOI")){
+				entity = new FieldOfInterestOption(entity);
 				ofy().save().entity(entity).now();
 			}
 			resp.getWriter().print(entity.id);

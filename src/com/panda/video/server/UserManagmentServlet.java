@@ -67,6 +67,10 @@ public class UserManagmentServlet extends HttpServlet {
 				ofy().save().entity(oldProfile).now();
 			} else if (msg.getType().equals("delete-user")){
 				ofy().delete().type(User.class).id(msg.getId()); 
+			} else if (msg.getType().equals("approve-user")){
+				User user =  ofy().load().type(User.class).id(msg.getUserId()).now();
+				user.status = "approved";
+				ofy().save().entity(user).now();
 			}
 	}
 	

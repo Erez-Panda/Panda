@@ -24,6 +24,8 @@ public class User extends PandaEntity{
 	String specialty;
 	String companyName;
 	String contantPerson;
+	String imageUrl;
+	@Index String status;
 	@Load Ref<Profile> profile;
 	@Load ArrayList<Ref<Call>> callList = new ArrayList<Ref<Call>>();
 	@Load ArrayList<Ref<Product>> productList = new ArrayList<Ref<Product>>();
@@ -98,6 +100,7 @@ public class User extends PandaEntity{
 		if (null != user.companyName){this.companyName = user.companyName;}
 		if (null != user.contantPerson){this.contantPerson = user.contantPerson;}
 		if (null != user.address){this.address = user.address;}
+		if (null != user.imageUrl){this.imageUrl = user.imageUrl;}
 	}
 	
 }

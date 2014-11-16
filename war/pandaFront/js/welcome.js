@@ -1,6 +1,30 @@
 (function (){
 	var app = angular.module('welcome',[]);
 	var currentUser;
+	
+	app.service('fileUpload', ['$http', function ($http) {
+	    this.uploadFileToUrl = function(file, uploadUrl, callback){
+	        var fd = new FormData();
+	        fd.append('file', file);
+	        $http.post(uploadUrl, fd, {
+	            transformRequest: angular.identity,
+	            headers: {'Content-Type': undefined}
+	        })
+	        .success(function(id){
+	        	callback(id);
+	        	console.log(id);
+	        })
+	        .error(function(){
+	        });
+	    }
+	}]);
+	Array.prototype.indexOfName = function(name){
+		for (var i = 0; i < this.length; i++) {
+			if (this[i]["name"] === name) return i;
+		}
+		return -1;
+	};
+	
 	app.directive('tabs', function($compile){
 		function appendTabs(tabs, scope){
 			var tabsElm = angular.element(document.getElementById("tabs"));
@@ -164,7 +188,7 @@
 	});
 	
 	
-	app.directive('registerForm',['$http', function($http){
+	app.directive('registerForm',['$http','$parse', 'fileUpload', function($http, $parse, fileUpload){
 		function watchForm(scope){
 			scope.$watch('registerForm.firstName.$invalid', function(invalid){
 				if (scope.registerForm.firstName.$dirty){
@@ -206,7 +230,7 @@
 			scope:{},
 			controller: function($scope){
 				var ctrl = this;
-				$scope.profile = {};
+				$scope.profile = {imageUrl: "//placehold.it/100"};
 				$http.post('/static-data', {type:"get-doctor-specialties"}).success(function (options){
 					$scope.specialties = options;
 				});
@@ -219,22 +243,34 @@
 					return $scope.currTab === tabIndex;
 				};
 				this.save = function(profile){
+					function newUser(imgId){
+						if (imgId){
+							$scope.profile.imageUrl = "/fileUpload?id="+imgId;
+						}
+						$http.post('/user', {type:"new-user",message:JSON.stringify($scope.profile)}).success(function (resp){
+							if (resp.error){
+								$scope.error = resp.message;
+								$scope.dirtyInput = true;
+							}else{
+								currentUser = resp;
+								ctrl.setTab(2);
+							}
+						}); 
+					}
 					$scope.profile = profile;
 					var types=["MEDREP", "PHARMA", "DOCTOR"];
 					$scope.profile.type = types[ctrl.formType];
 					if ($scope.profile.specialty){
 						$scope.profile.specialty = $scope.profile.specialty.name;
 					}
-					$http.post('/user', {type:"new-user",message:JSON.stringify($scope.profile)}).success(function (resp){
-						if (resp.error){
-							$scope.error = resp.message;
-							$scope.dirtyInput = true;
-						}else{
-							currentUser = resp;
-							ctrl.setTab(2);
-						}
-					});
-					
+					if ($scope.profile.imageUrl){
+				        var uploadUrl = "/fileUpload";
+				        fileUpload.uploadFileToUrl($scope.profile.image, uploadUrl, function(id){
+				        	newUser(id);
+				        });	
+					}else {
+						newUser();
+					}	
 				}
 				this.isType = function(type){
 					return this.formType === type;
@@ -261,11 +297,17 @@
 			          return false;
 			        };
 				watchForm(scope);
+	            element.bind('change', function(){
+	                scope.$apply(function(){
+	                	scope.profile.image = element.find('input')[0].files[0];
+	                	scope.profile.imageUrl = URL.createObjectURL(scope.profile.image);
+	                });
+	            })
 			}
 		};
 	}]);
 	
-	app.directive('medRepForm', ['$http', function($http){
+	app.directive('medRepForm', ['$http','$parse', 'fileUpload', function($http, $parse, fileUpload){
 		return {
 			restrict: 'E',
 			templateUrl:'welcome/med-rep-form.html',
@@ -286,20 +328,46 @@
 				this.save = function(profile){
 					$scope.profile = profile;
 					$scope.profile.degree = $scope.profile.degree.name;
-					$http.post('/user', {type:"new-med-profile",message:JSON.stringify($scope.profile), userId:currentUser.userId}).success(function (resp){
-						if (resp.error){
-
-						}else{
-							$http.post('/login',{type:'login', message:JSON.stringify(currentUser)}).success(function(user){
-								var href = document.location.href;
-								document.location.href = (href.replace('welcome','medrep'));
-							});
+					function uploadFile(file){
+						var dfd = new jQuery.Deferred();
+						if (file){
+					        var uploadUrl = "/fileUpload";
+					        fileUpload.uploadFileToUrl(file, uploadUrl, function(id){
+					        	dfd.resolve("/fileUpload?id="+id);
+					        });	
+						} else {
+							dfd.resolve();
 						}
-					});
+						return dfd.promise();
+					}
+					$.when(uploadFile($scope.profile.degreeScan),uploadFile($scope.profile.idScan))
+						.then(function(degreeScanUrl,idScanUrl){
+							if (degreeScanUrl){$scope.profile.degreeScanUrl = degreeScanUrl }
+							if (idScanUrl){$scope.profile.idScanUrl = idScanUrl }
+							$http.post('/user', {type:"new-med-profile",message:JSON.stringify($scope.profile), userId:currentUser.userId}).success(function (resp){
+								if (resp.error){
+
+								}else{
+									$http.post('/login',{type:'login', message:JSON.stringify(currentUser)}).success(function(user){
+										var href = document.location.href;
+										document.location.href = (href.replace('welcome','medrep'));
+									});
+								}
+							});
+						})
 				}
 				
 			},
-			controllerAs: 'medRegisterCtrl'
+			controllerAs: 'medRegisterCtrl',
+			link: function(scope, element, attrs, ctrl) {
+	            element.bind('change', function(){
+	                scope.$apply(function(){
+	                	var $elm = $(element);
+	                	scope.profile.degreeScan = $elm .find('[name="degreeScan"]')[0].files[0];
+	                	scope.profile.idScan = $elm .find('[name="idScan"]')[0].files[0];
+	                });
+	            })
+			}
 		};
 	}]);
 	
@@ -317,12 +385,16 @@
 
 				$http.post('/static-data', {type:"get-languages"}).success(function (options){
 					$scope.languages = options;
-					$scope.profile.lang = $scope.languages[0];
+					$scope.profile.lang = options[options.indexOfName("English")];
 				});
 
 				$http.post('/static-data', {type:"get-call-hours"}).success(function (options){
 					$scope.callHours = options;
 					$scope.profile.callHour = $scope.callHours[0];
+				});
+				
+				$http.post('/static-data', {type:"get-FOI"}).success(function (options){
+					$scope.fois = options;
 				});
 
 				this.save = function(profile){

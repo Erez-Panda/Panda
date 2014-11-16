@@ -24,7 +24,8 @@ public class OfyService {
         factory().register(CallHourOption.class);
         factory().register(CallFrequencyOption.class);
         factory().register(HcpSegmentOption.class);
-        factory().register(CallQuantityOption.class);     
+        factory().register(CallQuantityOption.class); 
+        factory().register(FieldOfInterestOption.class); 
     }
 
     public static Objectify ofy() {

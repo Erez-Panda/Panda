@@ -2,19 +2,19 @@
 	<h1>Register</h1>
 	<hr>
 	<div class="row">
-		<!-- left column -->
-		<div class="col-md-3">
-			<div class="text-center">
-				<img src="//placehold.it/100" class="avatar img-circle" alt="avatar">
-				<h6>Upload photo</h6>
-
-				<input type="file" class="form-control">
-			</div>
-		</div>
-
 		<!-- edit form column -->
 		<div class="col-md-9 personal-info">
 			<div ng-show="registerCtrl.isSet(1)">
+				<!-- left column -->
+				<div class="col-md-3">
+					<div class="text-center">
+						<img ng-src="{{profile.imageUrl}}" class="avatar" alt="avatar">
+						<h6>{{registerCtrl.isType(1)? 'Upload Logo' : 'Upload photo'}}</h6>
+		
+						<input type="file" class="form-control" accept="image/*">
+					</div>
+				</div>
+				<div class="col-md-8 personal-info">
 				<form name="registerForm" class="form-horizontal" role="form" ng-submit="registerForm.$valid && registerCtrl.save(profile)" novalidate>
 					<div class="form-group" ng-hide="registerCtrl.isType(1)">
 						<label class="col-lg-3 control-label">*First name:</label>
@@ -52,6 +52,12 @@
 							<input class="form-control" type="text" ng-model="profile.phone">
 						</div>
 					</div>
+					<div class="form-group" ng-show="registerCtrl.isType(0)">
+						<label class="col-lg-3 control-label">Address:</label>
+						<div class="col-lg-8">
+							<input class="form-control" type="text" ng-model="profile.address">
+						</div>
+					</div>
 					<div class="form-group">
 						<label class="col-md-3 control-label">*Password:</label>
 						<div class="col-md-8">
@@ -62,12 +68,6 @@
 						<label class="col-md-3 control-label">*Confirm password:</label>
 						<div class="col-md-8">
 							<input class="form-control" type="password" ng-model="profile.repassword" name="repassword" required>
-						</div>
-					</div>
-					<div class="form-group" ng-show="registerCtrl.isType(0)">
-						<label class="col-lg-3 control-label">Address:</label>
-						<div class="col-lg-8">
-							<input class="form-control" type="text" ng-model="profile.address">
 						</div>
 					</div>
 					<div class="form-group" ng-show="registerCtrl.isType(2)">
@@ -91,6 +91,8 @@
 					<strong>Error: </strong>
 					<input class="input-alert" ng-value="error" disabled/>
 				</div>
+				</div>
+
 			</div>
 			<div ng-show="registerCtrl.isSet(2)">
 				<med-rep-form ng-show="registerCtrl.isType(0)"></med-rep-form>

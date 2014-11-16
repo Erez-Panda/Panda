@@ -1,0 +1,19 @@
+<div class="col-md-4">
+	<div class="form-group">
+		<label class="control-label">Search:</label>
+		<div>
+			<input class="form-control" type="text" ng-model="searchText">
+		</div>
+	</div>
+	<ul class="list-group">
+	  <li ng-click="select(user)" class="list-group-item" ng-repeat="user in users | filter:searchText">
+			{{user.type}} {{user.firstName}} {{user.lastName}} {{user.email}} {{user.userId}}
+	  </li>
+	</ul>
+</div>
+<div class="col-md-4" ng-show="selectedUser.firstName">
+	{{selectedUser.firstName}} {{selectedUser.lastName}}
+	 <button class="btn btn-primary" ng-click="approve()">
+		Approve
+	</button>
+</div>

@@ -2,6 +2,15 @@
 	<h1>Edit Profile</h1>
 	<hr>
 	<div class="row">
+		<!-- left column -->
+		<div class="col-md-3">
+			<div class="text-center">
+				<img ng-src="{{profile.imageUrl}}" class="avatar" alt="avatar">
+				<h6 ng-show="isEdit" >Change Photo</h6>
+
+				<input type="file" class="form-control"  accept="image/*" ng-show="isEdit">
+			</div>
+		</div>
 		<!-- edit form column -->
 		<div class="col-md-9 personal-info">
 			<div >
@@ -44,6 +53,7 @@
 					<div class="form-group" ng-show="isEdit">
 						<label class="col-lg-3 control-label"></label>
 						<button class="btn btn-primary" type="submit">Save</button>
+						<a href="#" ng-click="cancel()">Cancel</a>
 					</div>
 				</form>
 				<div class="alert alert-danger" role="alert" ng-show="isError()">

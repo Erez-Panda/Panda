@@ -1,0 +1,29 @@
+<div class="col-md-4">
+	<h3>Next calls</h3>
+	<ul class="list-group">
+	  <a href="#"class="list-group-item" ng-repeat="call in calls | orderBy:-start">
+			{{call.start | date: 'short'}}
+		  <strong>{{call.title}}</strong>
+	  </a>
+	</ul>
+</div>
+<div class="col-md-4">
+	<h3>Training status</h3>
+	<ul class="list-group">
+	  <a href="#"class="list-group-item" ng-repeat="training in trainings">
+		<div class="progress">
+		  <div class="progress-bar" role="progressbar" aria-valuenow="{{getProgress(training)}}" aria-valuemin="0" aria-valuemax="100" style="width: {{getProgress(training)}}%;">
+		    {{training.name}} - {{getProgress(training)}}%
+		  </div>
+		</div>
+	  </a>
+	</ul>
+</div>
+<div class="col-md-4">
+	<h3>Active products</h3>
+	<ul class="list-group">
+	  <a href="#"class="list-group-item" ng-repeat="product in product">
+		  <strong>{{product.name}}</strong>
+	  </a>
+	</ul>
+</div>

@@ -78,3 +78,11 @@ class CallQuantityOption extends StaticEntity{
 		super(entity);
 	}
 }
+
+@Subclass(index=true)
+class FieldOfInterestOption extends StaticEntity{
+	public FieldOfInterestOption(){}
+	public FieldOfInterestOption(StaticEntity entity){
+		super(entity);
+	}
+}

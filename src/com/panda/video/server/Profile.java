@@ -33,11 +33,13 @@ class DoctorProfile extends Profile{
 @Subclass(index=true)
 class MedRepProfile extends Profile{
 	String degree;
+	String degreeScanUrl;
 	String currentYear;
 	String dgreeScanUrl;
 	int experience;
 	int workHours;
 	String idNumber;
+	String idScanUrl;
 	boolean salesExperience;
 	boolean pharmaExperience;
 }

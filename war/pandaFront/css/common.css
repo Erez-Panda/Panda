@@ -50,3 +50,6 @@ span {
 .call-screen .btn-group{
 	margin: -7px -12px 0px 0px;
 }
+.container img{
+	max-width: 200px;
+}

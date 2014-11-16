@@ -1,6 +1,28 @@
 (function (){
-	var app = angular.module('welcome',[]);
+	var app = angular.module('welcome',['call']);
 	var _user; 
+	app.service('fileUpload', ['$http', function ($http) {
+	    this.uploadFileToUrl = function(file, uploadUrl, callback){
+	        var fd = new FormData();
+	        fd.append('file', file);
+	        $http.post(uploadUrl, fd, {
+	            transformRequest: angular.identity,
+	            headers: {'Content-Type': undefined}
+	        })
+	        .success(function(id){
+	        	callback(id);
+	        	console.log(id);
+	        })
+	        .error(function(){
+	        });
+	    }
+	}]);
+	Array.prototype.indexOfName = function(name){
+		for (var i = 0; i < this.length; i++) {
+			if (this[i]["name"] === name) return i;
+		}
+		return -1;
+	};
 	Array.prototype.clean = function(deleteValue) {
 		  for (var i = 0; i < this.length; i++) {
 		    if (this[i] == deleteValue) {         
@@ -33,13 +55,12 @@
 						appendTabs($scope.tabs, $scope);
 					}
 				})
-				$scope.tabs = [{name:'Notifications', directive:'notifications'},
-				               {name:'Calendar', directive:'calendar'},
+				$scope.tabs = [{name:'News', directive:'news'},
 				               {name:'Profile', directive:'profile'},
 				               {name:'Feature Request', directive:'features'},
 				               {name:'Call', directive:'call'}
 				];
-				$scope.currTab = 'notifications';
+				$scope.currTab = 'news';
 				this.setTab = function (tabIndex){
 					$scope.currTab = tabIndex;
 				};
@@ -52,6 +73,9 @@
 						document.location.href = (href.replace('doctor','welcome'));
 					})
 				}
+				this.getActiveUser = function(){
+					return _user;
+				}
 				
 
 			},
@@ -59,27 +83,35 @@
 		}
 	}]);
 	
-	app.directive('features', function(){
+	app.directive('features', ['$http', function($http){
 		return {
 			restrict: 'E',
 			templateUrl:'doctor/features.html',
 			scope: {},
 			controller: function($scope){
-				$scope.features = Data.features; //server
-				$scope.products = Data.products;
+				$scope.features = ['Schedule a Call','Sampels', 'Medical Letter', 'Acticals and Promotion matirials'] //server?
+				$http.post('/products', {type:"get-all"}).success(function (products){
+					$scope.products = products.clean(null);
+				});
 				$scope.sample = {};
 				$scope.samples = [];
 				$scope.address;
 				$scope.phone;
 				$scope.letter= {};
 				$scope.promo = {};
-				$scope.currTab = 'Sampels';
+				$scope.call = {};
+				$scope.currTab = 'Schedule a Call';
 				this.setTab = function (tabIndex){
 					$scope.currTab = tabIndex;
 				};
 				$scope.isSet = function (tabIndex){
 					return $scope.currTab === tabIndex;
 				};
+				$scope.sendCall = function(){
+					//send to server
+					$scope.call = {};
+					bootbox.alert("Your request was sent", function() {}); 
+				}
 				
 				$scope.addSample = function (){
 					$scope.samples.push($scope.sample);
@@ -102,79 +134,61 @@
 					$scope.promo = {};
 					bootbox.alert("Your request was sent", function() {}); 
 				}
+				
 			},
 			controllerAs: "featuresCtrl"
 		}
-	})
-	app.directive('notifications', function(){
+	}])
+	app.directive('news', ['$http',function($http){
 		return {
 			restrict: 'E',
-			templateUrl:'common/notifications.html',
-			controller: function(){
-				var board = this;
-				board.notifications = Data.notifications; //should get from server
-			},
-			controllerAs: 'notificationCtrl'
-		};
-	});
-	
-	
-	app.directive('calendar', ['$http', function($http){
-		return {
-			restrict: 'E',
-			templateUrl:'common/calendar.html',
-			controller: function(){
-				var calendar;
+			templateUrl:'doctor/news.html',
+			scope:{},
+			controller: function($scope){			
 				$http.post('/calls', {type:"get-calls", userId:_user.userId}).success(function (calls){
 					calls.clean(null);
-				    calendar = $("#calendar").calendar(
-			            {
-			                tmpl_path: "/pandaFront/res/calendar/tmpls/",
-			                events_source: function () { 
-			                	return calls; 
-			                }
-			            });
+					$scope.calls = calls;
+					
 				});
-
-				this.currView = 'month';
-				this.setView = function (view){
-					this.currView = view;
-					this.calendar.view(view);
-				};
-				
-				this.isView = function (view){
-					return this.currView === view;
-				};
 			},
-			controllerAs: 'calCtrl'
+			controllerAs: 'news'
 		};
 	}]);
 	
-	app.directive('profile',['$http', function($http){
+	app.directive('profile', ['$http','$parse', 'fileUpload', function($http, $parse, fileUpload){
 		return {
 			restrict: 'E',
 			templateUrl:'doctor/profile.html',
 			scope: {},
 			controller: function($scope){
+				$scope.profile = {imageUrl: "//placehold.it/100"};
 				$http.post('/user', {type:"get-profile",userId:_user.userId}).success(function (profile){
 					$.extend(_user,profile);
-					$scope.profile = _user; 
-				});
-				//$scope.profile = _user;
-				$scope.specialties = Data.specialties; // server
-				$http.post('/static-data', {type:"get-call-frequencies"}).success(function (options){
-					$scope.frequency = options;
-					$scope.profile.callFreq = $scope.frequency[0];
-				});
-
-				$http.post('/static-data', {type:"get-languages"}).success(function (options){
-					$scope.languages = options;
-					$scope.profile.lang = $scope.languages[0];
-				});
-
-				$http.post('/static-data', {type:"get-call-hours"}).success(function (options){
-					$scope.callHours = options;
-					$scope.profile.callHour = $scope.callHours[0];
+					$scope.profile = _user;
+					
+					
+					$http.post('/static-data', {type:"get-doctor-specialties"}).success(function (options){
+						$scope.specialties = options;
+						$scope.profile.specialty = options[options.indexOfName($scope.profile.specialty)];
+					});
+					$http.post('/static-data', {type:"get-call-frequencies"}).success(function (options){
+						$scope.frequency = options;
+						$scope.profile.callFreq = options[options.indexOfName($scope.profile.callFreq)];
+					});
+	
+					$http.post('/static-data', {type:"get-languages"}).success(function (options){
+						$scope.languages = options;
+						$scope.profile.lang = options[options.indexOfName($scope.profile.lang)];
+					});
+	
+					$http.post('/static-data', {type:"get-call-hours"}).success(function (options){
+						$scope.callHours = options;
+						$scope.profile.callHour = options[options.indexOfName($scope.profile.callHour)];
+					});
+					
+					$http.post('/static-data', {type:"get-FOI"}).success(function (options){
+						$scope.fois = options;
+					});
 				});
 				$scope.isEdit = false;
 				$scope.currTab = 1;
@@ -184,25 +198,40 @@
 				$scope.isSet = function (tabIndex){
 					return $scope.currTab === tabIndex;
 				};
-				$scope.saveChanges = function(){
-					$scope.isEdit = false;
+				
+				function update(id){
 					var updateUser = {
 							firstName: $scope.profile.firstName,
 							lastName: $scope.profile.lastName,
 							email: $scope.profile.email,
 							password: $scope.profile.password,
 							phone: $scope.profile.phone,
-							address: $scope.profile.address
+							address: $scope.profile.address,
+							specialty: $scope.profile.specialty.name
+					}
+					if (id){
+						updateUser.imageUrl = "/fileUpload?id="+id;
 					}
 					$http.post('/user', {type:"update-user",message: JSON.stringify(updateUser), userId:_user.userId}).success(function (profile){
 					});
+				}
+				$scope.saveChanges = function(){
+					$scope.isEdit = false;
+					if (!$scope.profile.imageUrl || !~$scope.profile.imageUrl.indexOf('blob')){ 
+						update();
+					} else { //image changed
+				        var uploadUrl = "/fileUpload";
+				        fileUpload.uploadFileToUrl($scope.profile.image, uploadUrl, function(id){
+				        	update(id);
+				        });
+					}
 				}
 				$scope.saveProfile = function(){
 					$scope.isEdit = false;
 					var updateProfile = {
 							lang: $scope.profile.lang.name,
 							callHour: $scope.profile.callHour.name,
-							callFreq: $scope.profile.ecallFreq.name,
+							callFreq: $scope.profile.callFreq.name,
 							foi: $scope.profile.foi,
 							scheduleBy: $scope.profile.scheduleBy
 					}
@@ -211,176 +240,40 @@
 					});
 				}
 				$scope.enableEdit = function(){
+					$scope.currentProfile = {
+							firstName: $scope.profile.firstName,
+							lastName: $scope.profile.lastName,
+							email: $scope.profile.email,
+							password: $scope.profile.password,
+							phone: $scope.profile.phone,
+							address: $scope.profile.address,
+							specialty: $scope.profile.specialty,
+							imageUrl: $scope.profile.imageUrl,
+							lang: $scope.profile.lang,
+							callHour: $scope.profile.callHour,
+							callFreq: $scope.profile.callFreq,
+							foi: $scope.profile.foi,
+							scheduleBy: $scope.profile.scheduleBy
+					};
 					$scope.isEdit = true;
 				}
 				
-			},
-			controllerAs: 'profileCtrl'
-		};
-	}]);
-	
-	app.directive('call', ['$http', function($http){
-		var callData = {};
-		
-		function uiInit(callCtrl){
-			$( ".draggable" ).draggable();
-			$( ".resizable" ).resizable({
-			      aspectRatio: 16 / 11
-		    });
-			$('.call-screen select').change(function(){
-				setTimeout(function(){
-					callData.connection.send(JSON.stringify({type:"load_res", url:$scope.selectedRes.urls[$scope.currImg]}));
-				},0);
-				
-			});
-			$('.call-screen textarea').height('80px');
-		}
-		
-		function answerCall(video, answer, decline){
-			bootbox.dialog({
-				  message: "Someone is calling you",
-				  title: "Incoming call",
-				  buttons: {
-				    danger: {
-				      label: "Decline",
-				      className: "btn-danger",
-				      callback: decline
-				    },
-				    success: {
-					      label: "Answer",
-					      className: "btn-success",
-					      callback: answer
-					},
-					video:{
-					      label: "Video",
-					      className: "btn-success",
-					      callback: video
-					}
-				  }
-				});
-		}
-		
-		function updateTextarea(text){
-			var $ta = $('.call-screen textarea');
-			$ta.text($ta.text() + text + "\n" );
-			$ta.scrollTop($ta[0].scrollHeight);
-		}
-		return {
-			restrict: 'E',
-			templateUrl:'common/call.html',
-			scope: {},
-			controller: function($scope){
-				uiInit(this);
-				function onStream(remoteStream){
-					//$scope.video = window.URL.createObjectURL(remoteStream);
-					$('.call-screen video').attr('src',window.URL.createObjectURL(remoteStream));
-				}
-				function onData(remoteData){
-					//$scope.chatLog += remoteData + "\n";
-					try{
-						var message = JSON.parse(remoteData);
-						if (message.type=="load_res"){
-								$('.call-screen img').removeAttr('ng-src');
-							$('.call-screen img').attr('src',message.url);
-						}
-						if (message.type=="chat_text"){
-							updateTextarea(message.text);
-						}
-
-					}catch(e){}
-				}
-				$http.post('/calls', {type:"get-current-call",message: (new Date()).getTime() ,userId:_user.userId}).success(function (call){
-					if (call){
-						$scope.currCall = call;
-						VideoChat.openPeer($scope.currCall.callId, function(peer,id){
-							callData.peer = peer;
-							callData.peer.id = id;
-							$scope.peerActive = true;
-							if ($scope.currCall.callId == callData.peer.id){ //meaning this is the first person in page
-								//wait for someone to connect to you
-							} else { // connect to remote peer with the call id
-								callData.remotePeerId = $scope.currCall.callId;
-								callData.connection = VideoChat.connectToRemotePeer(callData.peer,callData.remotePeerId, onData);
-								$scope.activeConnection = true;
-							}
-							}, function (connection){
-								$scope.activeConnection = true;
-								callData.connection = connection;
-								callData.remotePeerId = connection.peer;
-							}, function (call){
-								$scope.activeCall = true;
-								callData.call = call;
-								answerCall(function(){
-									getUserMedia({video:true, audio:true}, function(stream){
-										callData.call.stream = stream;
-										callData.call.answer(stream);
-										},function(error){
-										console.log(error);
-									});
-									},function(){
-										getUserMedia({video:false, audio:true}, function(stream){
-											callData.call.stream = stream;
-											callData.call.answer(stream);
-											},function(error){
-											console.log(error);
-										});
-									}, function(){})
-							}, onData, onStream);
-					}else {
-						$scope.noCall = true;
-					}
-				});
-				$scope.chatText;
-				$scope.chatLog = "";
-				$scope.selectedRes;
-				$scope.activeCall = false;
-				$scope.currImg = 0;
-				$scope.nextImg = function (){
-					$scope.currImg++;
-					callData.connection.send(JSON.stringify({type:"load_res", url:$scope.selectedRes.urls[$scope.currImg]}));
-				}
-				$scope.prevImg = function (){
-					$scope.currImg--;
-					callData.connection.send(JSON.stringify({type:"load_res", url:$scope.selectedRes.urls[$scope.currImg]}));
-				}
-				$scope.startCall = function(){
-					$scope.activeCall = true;
-					getUserMedia({video:false, audio:true}, function(stream){
-						callData.call = VideoChat.callToRemotePeer(callData.peer,callData.remotePeerId, stream, onStream);
-						callData.call.stream = stream;
-						},function(error){
-						console.log(error);
-					});
-				}
-				
-				$scope.startVideoCall = function(){
-					$scope.activeCall = true;
-					getUserMedia({video:true, audio:true}, function(stream){
-						callData.call = VideoChat.callToRemotePeer(callData.peer,callData.remotePeerId, stream, onStream);
-						callData.call.stream = stream;
-						},function(error){
-						console.log(error);
-					});
-				}
-				
-				$scope.stopCall = function(){
-					$('.call-screen video').attr('src','');
-					if (callData.call && callData.call.stream){
-						callData.call.stream.stop();
-					}
-					$scope.activeCall = false;
-				}
-				$scope.chat = function(){
-					updateTextarea("Me: " +$scope.chatText);
-					callData.connection.send(JSON.stringify({type:"chat_text", text:$scope.chatText}));
-					$scope.chatText = "";
+				$scope.cancel = function(){
+					$scope.profile = $scope.currentProfile;
+					$scope.isEdit = false;
 				}
 				
 			},
-			controllerAs: 'callCtrl'
+			controllerAs: 'profileCtrl',
+			link: function(scope, element, attrs, ctrl) {
+	            element.bind('change', function(){
+	                scope.$apply(function(){
+	                	scope.profile.image = element.find('input')[0].files[0];
+	                	scope.profile.imageUrl = URL.createObjectURL(scope.profile.image);
+	                });
+	            })
+			}
 		};
 	}]);
-
-	
 
 })();

@@ -66,16 +66,20 @@ public class CallManagerServlet extends HttpServlet {
 			JSON j = new JSON();
 			resp.getWriter().print(j.toJson(calls));
 		} else if (msg.getType().equals("get-current-call")){
-			User caller = ofy().load().type(User.class).id(msg.getUserId()).now();
+			User user = ofy().load().type(User.class).id(msg.getUserId()).now();
 			Long currTime = Long.parseLong(msg.getMessage());
-			ArrayList<Ref<Call>> callRefs = caller.getCalls();
+			ArrayList<Ref<Call>> callRefs = user.getCalls();
 			Call call = null;
 			for(Iterator<Ref<Call>> i = callRefs.iterator(); i.hasNext(); ) {
 				Ref<Call> ref = i.next();
 				call = ref.get();
 				if (call.start <= (currTime + (15*60*1000)) && currTime < call.end){
 					JSON j = new JSON();
-					resp.getWriter().print(j.toJson(call));
+					User caller = call.getCaller(); // get the other side
+					if (caller.userId == user.userId){
+						caller = call.getCallee();
+					}
+					resp.getWriter().print("["+j.toJson(call)+","+j.toJson(caller)+"]");
 					return;
 				}	
 			}

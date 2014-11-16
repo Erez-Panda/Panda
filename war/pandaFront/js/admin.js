@@ -53,7 +53,8 @@
 				               {name:'Products', directive:'products'},
 				               {name:'Resources', directive:'resources'},
 				               {name:'Trainings', directive:'trainings'},
-				               {name:'Static data', directive:'static-data'}
+				               {name:'Static data', directive:'static-data'},
+				               {name:'Applications', directive:'applications'}
 				];
 				$scope.currTab = 'users';
 				this.setTab = function (tabIndex){
@@ -288,6 +289,32 @@
 				
 			},
 			controllerAs: 'resourcesCtrl'
+		};
+	}]);
+	
+	app.directive('applications',['$http', function($http){
+		return {
+			restrict: 'E',
+			templateUrl:'admin/applications.html',
+			scope: {},
+			controller: function($scope){
+				$scope.alertInfo = "";
+				$scope.selectedUser = {};
+				$http.post('/listUsers', {type:"get-pending"}).success(function (users){
+					$scope.users = users;
+					userUpdate(users);
+				});
+				$scope.select = function(user){
+					$scope.selectedUser = user;
+				}
+				$scope.approve = function(){
+					$http.post('/user', {type:"approve-user", userId: $scope.selectedUser.userId}).success(function (users){
+					});
+				}
+				
+				
+			},
+			controllerAs: 'usersCtrl'
 		};
 	}]);
 	

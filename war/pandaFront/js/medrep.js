@@ -1,6 +1,24 @@
 (function (){
-	var app = angular.module('medRep',[]);
+	var app = angular.module('medRep',['call']);
 	var _user;
+	
+	app.service('fileUpload', ['$http', function ($http) {
+	    this.uploadFileToUrl = function(file, uploadUrl, callback){
+	        var fd = new FormData();
+	        fd.append('file', file);
+	        $http.post(uploadUrl, fd, {
+	            transformRequest: angular.identity,
+	            headers: {'Content-Type': undefined}
+	        })
+	        .success(function(id){
+	        	callback(id);
+	        	console.log(id);
+	        })
+	        .error(function(){
+	        });
+	    }
+	}]);
+	
 	Array.prototype.clean = function(deleteValue) {
 		  for (var i = 0; i < this.length; i++) {
 		    if (this[i] == deleteValue) {         
@@ -28,18 +46,21 @@
 					if (!user.firstName){
 						var href = document.location.href;
 						document.location.href = (href.replace('medrep','welcome'));
-					} else {
+					} else if (user.status == "approved"){
 						_user = user;
+						appendTabs($scope.tabs, $scope);
+					} else {
+						$scope.tabs = [{name:'Not approved', directive:'not-approved'}];
+						$scope.currTab = 'not-approved';
 						appendTabs($scope.tabs, $scope);
 					}
 				})
-				$scope.tabs = [{name:'Notifications', directive:'notifications'},
+				$scope.tabs = [{name:'News', directive:'news'},
 				               {name:'Training', directive:'training'},
-				               {name:'Calendar', directive:'calendar'},
 				               {name:'Profile', directive:'profile'},				               
 				               {name:'Call', directive:'call'}
 				];
-				$scope.currTab = 'notifications';
+				$scope.currTab = 'news';
 				this.setTab = function (tabIndex){
 					$scope.currTab = tabIndex;
 				};
@@ -51,6 +72,9 @@
 						var href = document.location.href;
 						document.location.href = (href.replace('medrep','welcome'));
 					})
+				};
+				this.getActiveUser = function(){
+					return _user;
 				}
 				
 
@@ -59,15 +83,47 @@
 		}
 	}]);
 	
-	app.directive('notifications', ['$http',function($http){
+	app.directive('notApproved', ['$http',function($http){
 		return {
 			restrict: 'E',
-			templateUrl:'common/notifications.html',
-			controller: function(){
-				var board = this;
-				board.notifications = Data.notifications; //should get from server
+			template:'<h2>We are reviewing you application. you will be notified by email when we approve you</h2>'
+		};
+	}]);
+	
+	app.directive('news', ['$http',function($http){
+		return {
+			restrict: 'E',
+			templateUrl:'medrep/news.html',
+			scope:{},
+			controller: function($scope){
+				$scope.getProgress = function(training){
+					if (!training.resources){
+						return 0;
+					}
+					var completed = 0;
+					for (var lesson in training.resources){
+						if (training.resources[lesson].completed){
+							completed++;
+						}
+					}
+					return Math.round(100*completed/training.resources.length);
+				}
+				
+				$http.post('/calls', {type:"get-calls", userId:_user.userId}).success(function (calls){
+					calls.clean(null);
+					$scope.calls = calls;
+					
+				});
+				$http.post('/trainings', {type:"get-user-trainings", userId:_user.userId}).success(function (trainings){
+					$scope.trainings = trainings.clean(null);
+				});
+				
+				$http.post('/products', {type:"get-products", userId:_user.userId}).success(function (products){
+					products.clean(null);
+					$scope.products = products;
+				});
 			},
-			controllerAs: 'notificationCtrl'
+			controllerAs: 'news'
 		};
 	}]);
 	
@@ -117,232 +173,76 @@
 		};
 	}]);
 	
-	app.directive('calendar', ['$http', function($http){
-		return {
-			restrict: 'E',
-			templateUrl:'common/calendar.html',
-			controller: function(){
-				var calendar;
-				$http.post('/calls', {type:"get-calls", userId:_user.userId}).success(function (calls){
-					calls.clean(null);
-				    calendar = $("#calendar").calendar(
-			            {
-			                tmpl_path: "/pandaFront/res/calendar/tmpls/",
-			                events_source: function () { 
-			                	return calls; 
-			                }
-			            });
-				});
-
-				this.currView = 'month';
-				this.setView = function (view){
-					this.currView = view;
-					this.calendar.view(view);
-				};
-				
-				this.isView = function (view){
-					return this.currView === view;
-				};
-			},
-			controllerAs: 'calCtrl'
-		};
-	}]);
 	
-	app.directive('profile', ['$http', function($http){
+	app.directive('profile', ['$http','$parse', 'fileUpload', function($http, $parse, fileUpload){
 		return {
 			restrict: 'E',
 			templateUrl:'medrep/profile.html',
 			scope:{},
 			controller: function($scope){
 				$scope.isEdit = false;
+				$scope.profile = {imageUrl: "//placehold.it/100"};
 				$http.post('/user', {type:"get-profile",userId:_user.userId}).success(function (profile){
 						$.extend(_user,profile);
 						$scope.profile = _user; 
 				});
-				$scope.degreesList = Data.degreesList; //should get from server
 				$scope.saveChanges = function(){
 					$scope.isEdit = false;
-					var updateUser = {
+					function update(id){
+						var updateUser = {
+								firstName: $scope.profile.firstName,
+								lastName: $scope.profile.lastName,
+								email: $scope.profile.email,
+								password: $scope.profile.password,
+								phone: $scope.profile.phone,
+								address: $scope.profile.address
+						}
+						if (id){
+							updateUser.imageUrl = "/fileUpload?id="+id;
+						}
+						$http.post('/user', {type:"update-user",message: JSON.stringify(updateUser), userId:_user.userId}).success(function (profile){
+							$.extend(_user,profile);
+							$scope.profile = _user; 
+						});
+					}
+					if (!$scope.profile.imageUrl || !~$scope.profile.imageUrl.indexOf('blob')){ 
+						update();
+					} else { //image changed
+				        var uploadUrl = "/fileUpload";
+				        fileUpload.uploadFileToUrl($scope.profile.image, uploadUrl, function(id){
+				        	update(id);
+				        });
+					}
+
+				}
+				$scope.enableEdit = function(){
+					$scope.currentProfile = {
 							firstName: $scope.profile.firstName,
 							lastName: $scope.profile.lastName,
 							email: $scope.profile.email,
 							password: $scope.profile.password,
 							phone: $scope.profile.phone,
-							address: $scope.profile.address
-					}
-					$http.post('/user', {type:"update-user",message: JSON.stringify(updateUser), userId:_user.userId}).success(function (profile){
-						$.extend(_user,profile);
-						$scope.profile = _user; 
-				});
-				}
-				$scope.enableEdit = function(){
+							address: $scope.profile.address,
+							imageUrl: $scope.profile.imageUrl
+					};
 					$scope.isEdit = true;
 				}
 				
-			},
-			controllerAs: 'profileCtrl'
-		};
-	}]);
-	
-	app.directive('call', ['$http', function($http){
-		var callData = {};
-		
-		function uiInit(callCtrl){
-			$( ".draggable" ).draggable();
-			$( ".resizable" ).resizable({
-			      aspectRatio: 16 / 11
-		    });
-			$('.call-screen select').change(function(){
-				setTimeout(function(){
-					callData.connection.send(JSON.stringify({type:"load_res", url:$scope.selectedRes.urls[$scope.currImg]}));
-				},0);
-				
-			});
-			$('.call-screen textarea').height('80px');
-		}
-		
-		function answerCall(video, answer, decline){
-			bootbox.dialog({
-				  message: "Someone is calling you",
-				  title: "Incoming call",
-				  buttons: {
-				    danger: {
-				      label: "Decline",
-				      className: "btn-danger",
-				      callback: decline
-				    },
-				    success: {
-					      label: "Answer",
-					      className: "btn-success",
-					      callback: answer
-					},
-					video:{
-					      label: "Video",
-					      className: "btn-success",
-					      callback: video
-					}
-				  }
-				});
-		}
-		
-		function updateTextarea(text){
-			var $ta = $('.call-screen textarea');
-			$ta.text($ta.text() + text + "\n" );
-			$ta.scrollTop($ta[0].scrollHeight);
-		}
-		return {
-			restrict: 'E',
-			templateUrl:'common/call.html',
-			scope: {},
-			controller: function($scope){
-				uiInit(this);
-				function onStream(remoteStream){
-					//$scope.video = window.URL.createObjectURL(remoteStream);
-					$('.call-screen video').attr('src',window.URL.createObjectURL(remoteStream));
-				}
-				function onData(remoteData){
-					//$scope.chatLog += remoteData + "\n";
-					try{
-						var message = JSON.parse(remoteData);
-						if (message.type=="load_res"){
-								$('.call-screen img').removeAttr('ng-src');
-							$('.call-screen img').attr('src',message.url);
-						}
-						if (message.type=="chat_text"){
-							updateTextarea(message.text);
-						}
-
-					}catch(e){}
-				}
-				$http.post('/calls', {type:"get-current-call",message: (new Date()).getTime() ,userId:_user.userId}).success(function (call){
-					if (call){
-						$scope.currCall = call;
-						VideoChat.openPeer($scope.currCall.callId, function(peer,id){
-							callData.peer = peer;
-							callData.peer.id = id;
-							$scope.peerActive = true;
-							if ($scope.currCall.callId == callData.peer.id){ //meaning this is the first person in page
-								//wait for someone to connect to you
-							} else { // connect to remote peer with the call id
-								callData.remotePeerId = $scope.currCall.callId;
-								callData.connection = VideoChat.connectToRemotePeer(callData.peer,callData.remotePeerId, onData);
-								$scope.activeConnection = true;
-							}
-							}, function (connection){
-								$scope.activeConnection = true;
-								callData.connection = connection;
-								callData.remotePeerId = connection.peer;
-							}, function (call){
-								$scope.activeCall = true;
-								callData.call = call;
-								answerCall(function(){
-									getUserMedia({video:true, audio:true}, function(stream){
-										callData.call.stream = stream;
-										callData.call.answer(stream);
-										},function(error){
-										console.log(error);
-									});
-									},function(){
-										getUserMedia({video:false, audio:true}, function(stream){
-											callData.call.stream = stream;
-											callData.call.answer(stream);
-											},function(error){
-											console.log(error);
-										});
-									}, function(){})
-							}, onData, onStream);
-					}else {
-						$scope.noCall = true;
-					}
-				});
-				$scope.chatText;
-				$scope.chatLog = "";
-				$scope.selectedRes;
-				$scope.activeCall = false;
-				$scope.currImg = 0;
-				$scope.nextImg = function (){
-					$scope.currImg++;
-					callData.connection.send(JSON.stringify({type:"load_res", url:$scope.selectedRes.urls[$scope.currImg]}));
-				}
-				$scope.prevImg = function (){
-					$scope.currImg--;
-					callData.connection.send(JSON.stringify({type:"load_res", url:$scope.selectedRes.urls[$scope.currImg]}));
-				}
-				$scope.startCall = function(){
-					$scope.activeCall = true;
-					getUserMedia({video:false, audio:true}, function(stream){
-						callData.call = VideoChat.callToRemotePeer(callData.peer,callData.remotePeerId, stream, onStream);
-						callData.call.stream = stream;
-						},function(error){
-						console.log(error);
-					});
-				}
-				
-				$scope.startVideoCall = function(){
-					$scope.activeCall = true;
-					getUserMedia({video:true, audio:true}, function(stream){
-						callData.call = VideoChat.callToRemotePeer(callData.peer,callData.remotePeerId, stream, onStream);
-						callData.call.stream = stream;
-						},function(error){
-						console.log(error);
-					});
-				}
-				
-				$scope.stopCall = function(){
-					$('.call-screen video').attr('src','');
-					if (callData.call && callData.call.stream){
-						callData.call.stream.stop();
-					}
-					$scope.activeCall = false;
-				}
-				$scope.chat = function(){
-					updateTextarea("Me: " +$scope.chatText);
-					callData.connection.send(JSON.stringify({type:"chat_text", text:$scope.chatText}));
-					$scope.chatText = "";
+				$scope.cancel = function(){
+					$scope.profile = $scope.currentProfile;
+					$scope.isEdit = false;
 				}
 				
 			},
-			controllerAs: 'callCtrl'
+			controllerAs: 'profileCtrl',
+			link: function(scope, element, attrs, ctrl) {
+	            element.bind('change', function(){
+	                scope.$apply(function(){
+	                	scope.profile.image = element.find('input')[0].files[0];
+	                	scope.profile.imageUrl = URL.createObjectURL(scope.profile.image);
+	                });
+	            })
+			}
 		};
 	}]);
 

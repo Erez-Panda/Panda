@@ -3,7 +3,7 @@
 	<div class="form-group">
 		<label class="col-md-3 control-label">Prefered Language</label>
 		<div class="col-md-8">
-			<select class="form-control" ng-model="profile.lang" ng-options="lang.name for lang in languages | orderBy:name">
+			<select class="form-control" ng-model="profile.lang" ng-options="lang.name for lang in languages | orderBy:-name">
 			</select>
 		</div>
 	</div>
@@ -24,29 +24,9 @@
 	<div class="form-group">
 		<label class="col-md-3 control-label">Main fields of interest:</label>
 		<div class="col-md-8">
-			<div>
+			<div ng-repeat="foi in fois" >
 				<label class="control-label">
-					<input type="checkbox" ng-model="profile.foi[0]">Diabetes
-				</label>
-			</div>
-			<div>
-				<label class="control-label">
-					<input type="checkbox" ng-model="profile.foi[1]">Cancer
-				</label>
-			</div>
-			<div>
-				<label class="control-label">
-					<input type="checkbox" ng-model="profile.foi[2]">Osteoporosis
-				</label>
-			</div>
-			<div>
-				<label class="control-label">
-					<input type="checkbox" ng-model="profile.foi[3]">ED
-				</label>
-			</div>
-			<div>
-				<label class="control-label">
-					<input type="checkbox" ng-model="profile.foi[3]">Cardiovascular
+					<input type="checkbox" ng-model="profile.foi[fois.indexOf(foi)]">{{foi.name}}
 				</label>
 			</div>
 		</div>
