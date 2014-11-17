@@ -73,7 +73,7 @@ public class CallManagerServlet extends HttpServlet {
 			for(Iterator<Ref<Call>> i = callRefs.iterator(); i.hasNext(); ) {
 				Ref<Call> ref = i.next();
 				call = ref.get();
-				if (call.start <= (currTime + (15*60*1000)) && currTime < call.end){
+				if (null != call && call.start <= (currTime + (15*60*1000)) && currTime < call.end){
 					JSON j = new JSON();
 					User caller = call.getCaller(); // get the other side
 					if (caller.userId == user.userId){

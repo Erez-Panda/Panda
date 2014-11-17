@@ -19,6 +19,16 @@
 	    }
 	}]);
 	
+	Array.prototype.clean = function(deleteValue) {
+		  for (var i = 0; i < this.length; i++) {
+		    if (this[i] == deleteValue) {         
+		      this.splice(i, 1);
+		      i--;
+		    }
+		  }
+		  return this;
+	};
+	
 	app.directive('tabs', ['$http','$compile', function($http, $compile){
 		var selectCB = [];
 		function appendTabs(tabs, scope){
@@ -207,7 +217,8 @@
 					}
 					training.productId = $scope.selectedProduct.productId;
 					training.dueDate = training.dueDate.getTime();
-					$http.post('/trainings', {type:"new-training",message:JSON.stringify(training), userId:_user.userId}).success(function (){
+					$http.post('/trainings', {type:"new-training",message:JSON.stringify(training), userId:_user.userId}).success(function (id){
+						training.trainingId = id;
 						$scope.selectedProduct.training.push(training);
 						$scope.selectedProduct.selectedTraining = training;
 						$scope.training = {};
@@ -220,9 +231,11 @@
 				scope.$watch('selectedProduct', function (value){
 					if (value && value.productId){
 						$http.post('/resources', {type:"get-resources", userId:value.productId}).success(function (resources){
+							resources.clean(null);
 							scope.selectedProduct.callResources = resources;
 						});
 						$http.post('/trainings', {type:"get-trainings", userId:value.productId}).success(function (trainings){
+							trainings.clean(null);
 							scope.selectedProduct.training = trainings;
 						});
 					}
@@ -230,6 +243,7 @@
 				scope.$watch('selectedProduct.selectedTraining', function (value){
 					if (value && value.trainingId){
 						$http.post('/resources', {type:"get-training-resources", userId:value.trainingId}).success(function (resources){
+							resources.clean(null);
 							scope.selectedProduct.selectedTraining.resources = resources;
 						});
 					}

@@ -35,7 +35,7 @@ public class TrainingManagerServlet extends HttpServlet {
 			Product product = ofy().load().type(Product.class).id(training.productId).now();
 			product.addTraining(training);
 			ofy().save().entity(product).now();
-			resp.getWriter().print("OK");
+			resp.getWriter().print(training.getId());
 		} else if (msg.getType().equals("get-all")){
 			List<Training> trainings = ofy().load().type(Training.class).list();
 			JSON j = new JSON();

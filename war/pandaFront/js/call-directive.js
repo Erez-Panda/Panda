@@ -54,6 +54,7 @@
 			require: '^tabs',
 			controller: function($scope, $modal){
 				uiInit(this);
+				$scope.noCall = true;
 				$scope.showPostCall = false;
 				function onStream(remoteStream){
 					//$scope.video = window.URL.createObjectURL(remoteStream);
@@ -123,6 +124,7 @@
 					$scope.user = user;
 					$http.post('/calls', {type:"get-current-call",message: (new Date()).getTime() ,userId:user.userId}).success(function (call){
 						if(call){
+							$scope.noCall = false;
 							$scope.currCall = call[0];
 							$scope.caller = call[1];
 							$scope.product = call[2];
@@ -158,7 +160,7 @@
 								showCallScreen();
 							}
 						}else{
-							$scope.noCall = true;
+							//$scope.noCall = true;
 						}
 					});	
 

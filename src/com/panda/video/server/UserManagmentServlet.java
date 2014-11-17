@@ -53,7 +53,10 @@ public class UserManagmentServlet extends HttpServlet {
 				ofy().save().entity(user).now();
 			} else if (msg.getType().equals("get-profile")){
 				User user = ofy().load().type(User.class).id(msg.getUserId()).now();
-				Profile p = user.getProfile();
+				Profile p = null;
+				try{
+					p = user.getProfile();
+				}catch(Exception e){}
 				JSON j = new JSON();
 				response.getWriter().print(j.toJson(p));
 			}  else if (msg.getType().equals("update-user")){

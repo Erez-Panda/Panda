@@ -22,4 +22,6 @@ public class Training extends PandaEntity{
     
     public User getCreator() { return creator.get(); }
     public void setCreator(User value) { creator = Ref.create(value); }
+    
+    public Long getId (){return trainingId;}
 }

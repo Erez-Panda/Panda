@@ -63,7 +63,7 @@ public class PostCallServlet extends HttpServlet {
 				for(Iterator<Ref<Call>> i = callRefs.iterator(); i.hasNext(); ) {
 					Ref<Call> ref = i.next();
 					call = ref.get();
-					if (null == lastCall || call.start > lastCall.start){
+					if (null != call && (null == lastCall || call.start > lastCall.start)){
 						if (call.getId() - msg.getId() != 0){ // not current call
 							boolean sameProduct = true;
 							try{
@@ -75,7 +75,10 @@ public class PostCallServlet extends HttpServlet {
 						}
 					}	
 				}
-				PostCall pCall = ofy().load().type(PostCall.class).filter("callId", lastCall.getId()).first().now();
+				PostCall pCall = null;
+				try{
+					pCall = ofy().load().type(PostCall.class).filter("callId", lastCall.getId()).first().now();
+				}catch(Exception e){}
 				JSON j = new JSON();
 				resp.getWriter().print(j.toJson(pCall));
 			}
