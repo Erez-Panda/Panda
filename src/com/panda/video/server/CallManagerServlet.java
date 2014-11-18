@@ -31,20 +31,29 @@ public class CallManagerServlet extends HttpServlet {
 		if (msg.getType().equals("new-call")){
 			Call call = JSON.constructCall(msg.getMessage());
 			call.Created();
+			User callee = null;
+			boolean isGuest = (call.calleeId == 0);
 			User caller = ofy().load().type(User.class).id(call.callerId).now();
-			User callee = ofy().load().type(User.class).id(call.calleeId).now();
+			if (!isGuest){
+				 callee = ofy().load().type(User.class).id(call.calleeId).now();
+			}
 			Product p = ofy().load().type(Product.class).id(call.productId).now();
 			//save resources somehow
 			call.setCaller(caller);
-			call.setCallee(callee);
+			if (!isGuest){
+				call.setCallee(callee);
+			}
 			call.setProduct(p);
 			
 			ofy().save().entity(call).now();
 			caller.addCall(call);
-			callee.addCall(call);
 			ofy().save().entity(caller).now();
-			ofy().save().entity(callee).now();
-			resp.getWriter().print("OK");
+
+			if (!isGuest){
+				callee.addCall(call);
+				ofy().save().entity(callee).now();
+			}
+			resp.getWriter().print(call.getId());
 		} else if (msg.getType().equals("get-all")){
 			List<Call> calls = ofy().load().type(Call.class).list();
 			JSON j = new JSON();
@@ -77,7 +86,11 @@ public class CallManagerServlet extends HttpServlet {
 					JSON j = new JSON();
 					User caller = call.getCaller(); // get the other side
 					if (caller.userId == user.userId){
-						caller = call.getCallee();
+						try{
+							caller = call.getCallee();
+						}catch(Exception e){
+							caller = null;
+						}
 					}
 					Product product = null;
 					try{
@@ -86,6 +99,20 @@ public class CallManagerServlet extends HttpServlet {
 					resp.getWriter().print("["+j.toJson(call)+","+j.toJson(caller)+","+j.toJson(product)+"]");
 					return;
 				}	
+			}
+			resp.getWriter().print("");
+		} else if (msg.getType().equals("get-guest-call")){
+			Call call = ofy().load().type(Call.class).id(msg.getId()).now();
+			Long currTime = Long.parseLong(msg.getMessage());
+			if (null != call && call.start <= (currTime + (15*60*1000)) && currTime < call.end){
+				JSON j = new JSON();
+				User caller = call.getCaller(); // get the other side
+				Product product = null;
+				try{
+					product = call.getProduct();
+				}catch(Exception e){}
+				resp.getWriter().print("["+j.toJson(call)+","+j.toJson(caller)+","+j.toJson(product)+"]");
+				return;
 			}
 			resp.getWriter().print("");
 		}

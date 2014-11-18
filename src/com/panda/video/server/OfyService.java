@@ -28,6 +28,8 @@ public class OfyService {
         factory().register(FieldOfInterestOption.class); 
         factory().register(PostCall.class); 
         factory().register(CallRequest.class); 
+        factory().register(Test.class);
+        factory().register(Question.class);
     }
 
     public static Objectify ofy() {

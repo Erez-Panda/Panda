@@ -17,6 +17,7 @@
 			<label class="control-label">Callee:</label>
 			<div class="ui-select">
 				<select class="form-control" ng-model="call.callee" ng-options="user.email for user in users">
+					<option value="">Guest</option>
 				</select>
 			</div>
 		</div>
@@ -86,6 +87,7 @@
 		<strong>Completed: </strong>
 		<div class="input-alert" >
 			{{alertInfo}}
+			<a ng-href="{{alertLink}}" ng-show="alertLink">Guest call link</a>
 		</div>
 	</div>
 </div>

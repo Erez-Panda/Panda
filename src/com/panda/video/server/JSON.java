@@ -72,5 +72,10 @@ public class JSON {
 		return gson.fromJson(json, CallRequest.class);
 	}
 	
+	public static Question constructQuestion(String json){
+		Gson gson = new Gson();
+		return gson.fromJson(json, Question.class);
+	}
+	
 
 }

@@ -1,34 +1,34 @@
 (function (){
 	var app = angular.module('pharma',['call']);
 	var _user; 
-	
+
 	app.service('fileUpload', ['$http', function ($http) {
-	    this.uploadFileToUrl = function(file, uploadUrl, callback){
-	        var fd = new FormData();
-	        fd.append('file', file);
-	        $http.post(uploadUrl, fd, {
-	            transformRequest: angular.identity,
-	            headers: {'Content-Type': undefined}
-	        })
-	        .success(function(id){
-	        	callback(id);
-	        	console.log(id);
-	        })
-	        .error(function(){
-	        });
-	    }
+		this.uploadFileToUrl = function(file, uploadUrl, callback){
+			var fd = new FormData();
+			fd.append('file', file);
+			$http.post(uploadUrl, fd, {
+				transformRequest: angular.identity,
+				headers: {'Content-Type': undefined}
+			})
+			.success(function(id){
+				callback(id);
+				console.log(id);
+			})
+			.error(function(){
+			});
+		}
 	}]);
-	
+
 	Array.prototype.clean = function(deleteValue) {
-		  for (var i = 0; i < this.length; i++) {
-		    if (this[i] == deleteValue) {         
-		      this.splice(i, 1);
-		      i--;
-		    }
-		  }
-		  return this;
+		for (var i = 0; i < this.length; i++) {
+			if (this[i] == deleteValue) {         
+				this.splice(i, 1);
+				i--;
+			}
+		}
+		return this;
 	};
-	
+
 	app.directive('tabs', ['$http','$compile', function($http, $compile){
 		var selectCB = [];
 		function appendTabs(tabs, scope){
@@ -57,7 +57,7 @@
 				               {name:'Profile', directive:'profile'},
 				               {name:'Dashboard', directive:'dashboard'},
 				               {name:'Call', directive:'call'}
-				];
+				               ];
 				$scope.currTab = 'whats-new';
 				this.setTab = function (tabIndex){
 					$scope.currTab = tabIndex;
@@ -80,13 +80,13 @@
 				this.getActiveUser = function(){
 					return _user;
 				}
-				
+
 
 			},
 			controllerAs:'tabCtrl'
 		}
 	}]);
-	
+
 
 	app.directive('whatsNew', function(){
 		var setTab;
@@ -109,7 +109,7 @@
 			}
 		};
 	});
-	
+
 	app.directive('addCallResource', ['$parse', 'fileUpload', function($parse, fileUpload){
 		var addCallResource;
 		return {
@@ -121,13 +121,13 @@
 				$scope.resource = {};
 				$scope.resourceTypes = Data.resourceTypes; //should get from server
 				$scope.addResource = function (){
-			        //console.log('file is ' + JSON.stringify($scope.resource.file));
-			        var uploadUrl = "/fileUpload";
-			        fileUpload.uploadFileToUrl($scope.resource.file, uploadUrl, function(id){
-			        	$scope.resource.url = "/fileUpload?id="+id;
+					//console.log('file is ' + JSON.stringify($scope.resource.file));
+					var uploadUrl = "/fileUpload";
+					fileUpload.uploadFileToUrl($scope.resource.file, uploadUrl, function(id){
+						$scope.resource.url = "/fileUpload?id="+id;
 						addCallResource($scope.resource);
 						$scope.resource = {}; 	
-			        });
+					});
 
 				}
 
@@ -135,16 +135,16 @@
 			controllerAs: 'addResCtrl',
 			link: function(scope, element, attrs, controller) {
 				addCallResource = controller.addCallResource;
-	            
-	            element.bind('change', function(){
-	                scope.$apply(function(){
-	                	scope.resource.file = element.find('input')[2].files[0];
-	                });
-	            });
+
+				element.bind('change', function(){
+					scope.$apply(function(){
+						scope.resource.file = element.find('input')[2].files[0];
+					});
+				});
 			}
 		};
 	}]);
-	
+
 	app.directive('addTrainingResource', ['$parse', 'fileUpload', function($parse, fileUpload){
 		var addTrainingResource;
 		return {
@@ -156,46 +156,48 @@
 				$scope.resource = {};
 				$scope.resourceTypes = Data.resourceTypes; //should get from server
 				$scope.addResource = function (){
-			        var uploadUrl = "/fileUpload";
-			        fileUpload.uploadFileToUrl($scope.resource.file, uploadUrl, function(id){
-			        	$scope.resource.url = "/fileUpload?id="+id;
+					var uploadUrl = "/fileUpload";
+					fileUpload.uploadFileToUrl($scope.resource.file, uploadUrl, function(id){
+						$scope.resource.url = "/fileUpload?id="+id;
 						addTrainingResource($scope.resource);
 						$scope.resource = {};
-			        });
+					});
 				}
 
 			},
 			controllerAs: 'addResCtrl',
 			link: function(scope, element, attrs, controller) {
 				addTrainingResource = controller.addTrainingResource;
-	            element.bind('change', function(){
-	                scope.$apply(function(){
-	                	scope.resource.file = element.find('input')[2].files[0];
-	                });
-	            });
+				element.bind('change', function(){
+					scope.$apply(function(){
+						scope.resource.file = element.find('input')[2].files[0];
+					});
+				});
 			}
 		};
 	}]);
-	
+
 	app.directive('uploads', ['$http', function($http){
+		var updateResId;
 		return {
 			restrict: 'E',
 			templateUrl:'pharma/uploads.html',
 			scope:{},
 			controller: function($scope){
 				$http.post('/products', {type:"get-products", userId:_user.userId}).success(function (products){
-					
+
 					$scope.products = products;
 				});
 				$scope.selectedProduct = {};
 				$scope.training = {};
-				
+
 				this.addCallResource = function (resource){
 					if (!$scope.selectedProduct.callResources){
 						$scope.selectedProduct.callResources = [];
 					}
 					resource.productId = $scope.selectedProduct.productId;
-					$http.post('/resources', {type:"new-resource",message:JSON.stringify(resource), userId:_user.userId}).success(function (){
+					$http.post('/resources', {type:"new-resource",message:JSON.stringify(resource), userId:_user.userId}).success(function (id){
+						resource.resourceId = id;
 						$scope.selectedProduct.callResources.push(resource);
 						$scope.callResource = {};
 					});
@@ -205,7 +207,8 @@
 						$scope.selectedProduct.selectedTraining.resources = [];
 					}
 					resource.trainingId = $scope.selectedProduct.selectedTraining.trainingId;
-					$http.post('/resources', {type:"new-resource",message:JSON.stringify(resource), userId:_user.userId}).success(function (){
+					$http.post('/resources', {type:"new-resource",message:JSON.stringify(resource), userId:_user.userId}).success(function (id){
+						resource.resourceId = id;
 						$scope.selectedProduct.selectedTraining.resources.push(resource);
 						$scope.callResource = {};
 					});
@@ -225,7 +228,17 @@
 					});
 
 				};
-				
+				$scope.addTest = function(resource){
+					$scope.testEdit = true;
+					updateResId(resource.resourceId);
+				}
+				this.endTest = function(){
+					$scope.testEdit = false;
+				}
+				this.onResUpdate = function (callback){
+					updateResId = callback;
+				}
+
 			},
 			link: function(scope, element, attrs, controller) {
 				scope.$watch('selectedProduct', function (value){
@@ -252,7 +265,7 @@
 			controllerAs: 'uploadCtrl'
 		};
 	}]);
-	
+
 	app.directive('profile', ['$http','$parse', 'fileUpload', function($http, $parse, fileUpload){
 		return {
 			restrict: 'E',
@@ -279,19 +292,19 @@
 					});	
 				}
 				$http.post('/user', {type:"get-profile",userId:_user.userId}).success(function (profile){
-						$.extend(_user,profile);
-						$scope.profile = _user; 
+					$.extend(_user,profile);
+					$scope.profile = _user; 
 				});
 				$scope.saveChanges = function(){
 					$scope.isEdit = false;
-					
+
 					if (!$scope.profile.imageUrl || !~$scope.profile.imageUrl.indexOf('blob')){ 
 						update();
 					} else { //image changed
-				        var uploadUrl = "/fileUpload";
-				        fileUpload.uploadFileToUrl($scope.profile.image, uploadUrl, function(id){
-				        	update(id);
-				        });
+						var uploadUrl = "/fileUpload";
+						fileUpload.uploadFileToUrl($scope.profile.image, uploadUrl, function(id){
+							update(id);
+						});
 					}
 				}
 				$scope.enableEdit = function(){
@@ -306,23 +319,78 @@
 					};
 					$scope.isEdit = true;
 				}
-				
+
 				$scope.cancel = function(){
 					$scope.profile = $scope.currentProfile;
 					$scope.isEdit = false;
 				}
-				
+
 			},
 			controllerAs: 'profileCtrl',
 			link: function(scope, element, attrs, ctrl) {
-	            element.bind('change', function(){
-	                scope.$apply(function(){
-	                	scope.profile.image = element.find('input')[0].files[0];
-	                	scope.profile.imageUrl = URL.createObjectURL(scope.profile.image);
-	                });
-	            })
+				element.bind('change', function(){
+					scope.$apply(function(){
+						scope.profile.image = element.find('input')[0].files[0];
+						scope.profile.imageUrl = URL.createObjectURL(scope.profile.image);
+					});
+				})
 			}
 		};
 	}]);
+
+	app.directive('test', ['$http', function($http){
+		var endTest;
+		var testId;
+		function onUpdate(resId){
+			$http.post('/tests', {type:"new-test",id:resId}).success(function (id){
+				testId = id;
+			});
+		};
+		return {
+			require: '^uploads',
+			restrict: 'E',
+			scope:{},
+			templateUrl:'pharma/test.html',
+			controller: function($scope){
+				$scope.closeTest= function (){
+					endTest();
+				}
+				this.addQuestion = function(q){
+					$http.post('/tests', {type:"add-question",id:testId, message: JSON.stringify(q)}).success(function (id){
+						
+					});
+				}
+			},
+			link: function(scope, element, attrs, controller) {
+				endTest = controller.endTest;
+				controller.onResUpdate(onUpdate);
+			}
+		};
+	}]);
+	
+	app.directive('question', function($http){
+		var addQ;
+		return {
+			require: '^test',
+			restrict: 'E',
+			scope:{},
+			templateUrl:'pharma/question.html',
+			controller: function($scope){
+				$scope.question = {answers:[{text:'answer 1'}, {text:'answer 2'}, {text:'answer 3'}, {text:'answer 4'}]}
+				$scope.newQuestion= function (){
+					var q = {
+							question: $scope.question.question,
+							answers: [$scope.question.answers[0].text, $scope.question.answers[1].text, $scope.question.answers[2].text, $scope.question.answers[3].text],
+							correctAns: $scope.question.answers.indexOf($scope.question.correctAns)
+					}
+					addQ(q);
+					$scope.question = {answers:[{text:'answer 1'}, {text:'answer 2'}, {text:'answer 3'}, {text:'answer 4'}]}
+				}
+			},
+			link: function(scope, element, attrs, controller) {
+				addQ = controller.addQuestion;
+			}
+		};
+	});
 
 })();

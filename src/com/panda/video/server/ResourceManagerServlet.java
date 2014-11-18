@@ -42,7 +42,7 @@ public class ResourceManagerServlet extends HttpServlet {
 				product.addResource(resource);
 				ofy().save().entity(product).now();
 			}
-			resp.getWriter().print("OK");
+			resp.getWriter().print(resource.resourceId);
 		} else if (msg.getType().equals("get-all")){
 			List<Resource> resources = ofy().load().type(Resource.class).list();
 			JSON j = new JSON();

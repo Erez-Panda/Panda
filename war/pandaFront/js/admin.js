@@ -127,6 +127,9 @@
 					});	
 				}
 				$scope.newCall = function (){
+					if (!$scope.call.callee){
+						$scope.call.callee= {userId: 0};
+					}
 					var callData = {
 							title: $scope.call.title,
 							callerId:$scope.call.caller.userId,
@@ -136,10 +139,14 @@
 							productId: $scope.call.product.productId,
 							resources: $scope.call.resources
 						};
-					$http.post('/calls', {type:"new-call", message: JSON.stringify(callData)}).success(function (users){
+					$http.post('/calls', {type: "new-call", message: JSON.stringify(callData)}).success(function (callId){
+						$scope.call.callId = callId;
 						$scope.calls.push($scope.call);
 						$scope.call = {start: now, end: now};
 						$scope.alertInfo = "New call was added";
+						if (callData.calleeId == 0){ //guest call
+							$scope.alertLink = document.location.href.replace('admin','guest-call') + "?callid=" + callId;
+						}
 					});
 				}
 				$scope.openPostData = function(call){

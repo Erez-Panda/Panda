@@ -1,4 +1,4 @@
-<div class="uploads">
+<div class="uploads" ng-hide="testEdit">
 	<div class="row">
 		<div class="col-md-4">
 			<h4>Product:</h4>
@@ -43,6 +43,9 @@
 					<ul ng-show="selectedProduct.selectedTraining.resources" class="list-group">
 					  <a href="#"class="list-group-item" ng-repeat="resource in selectedProduct.selectedTraining.resources">
 						  <strong>{{resource.name}}:</strong> {{resource.desc}}
+						  	<button class="btn btn-xs btn-primary pull-right" ng-click="addTest(resource)">
+							  	addTest
+							</button>
 					  </a>
 					</ul>
 					<hr>
@@ -74,3 +77,4 @@
 		</div>
 	</div>
 </div>
+<test ng-show="testEdit"></test>

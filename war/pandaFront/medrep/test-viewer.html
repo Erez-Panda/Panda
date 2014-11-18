@@ -1,0 +1,12 @@
+<div>
+	<h3>Test</h3>
+	<div ng-repeat="question in questions">
+		<h4>{{$index}}: {{question.question}}</h4>
+		<div ng-repeat="answer in question.answers">
+			<input type="radio" ng-model="question.userAns" ng-value="$index"> {{answer}}
+		</div>
+	</div>
+		<button class="btn btn-success" ng-click="checkTest()">
+		Send!
+	</button>
+</div>

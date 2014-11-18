@@ -1,0 +1,29 @@
+<div class="col-md-4">
+	<form name="newQForm" class="form-horizontal" role="form" ng-submit="newQuestion()" novalidate>
+		<div class="form-group">
+			<label class="control-label">Question:</label>
+			<div>
+				<input class="form-control" type="text" ng-model="question.question">
+			</div>
+		</div>
+		<div class="form-group" >
+			<label class="control-label">Answers:</label>
+			<div ng-repeat="answer in question.answers">
+				<input class="form-control" type="text" ng-model="question.answers[$index].text" >
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="control-label">Correct answer:</label>
+			<div class="ui-select">
+				<select class="form-control" ng-model="question.correctAns" ng-options="answer.text for answer in question.answers">
+				</select>
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="control-label"></label>
+			<button class="btn btn-primary" type="submit">
+				Add to test
+			</button>
+		</div>
+	</form>
+</div>

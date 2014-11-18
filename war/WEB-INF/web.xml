@@ -126,6 +126,16 @@
     <servlet-name>ScheduleServlet</servlet-name>
     <url-pattern>/schedule</url-pattern>
   </servlet-mapping>
+  
+   <servlet>
+    <servlet-name>TestsServlet</servlet-name>
+    <servlet-class>com.panda.video.server.TestsServlet</servlet-class>
+  </servlet>
+  
+  <servlet-mapping>
+    <servlet-name>TestsServlet</servlet-name>
+    <url-pattern>/tests</url-pattern>
+  </servlet-mapping>
         
   <filter>
         <filter-name>ObjectifyFilter</filter-name>

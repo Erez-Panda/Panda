@@ -75,6 +75,15 @@ public class UserManagmentServlet extends HttpServlet {
 				User user =  ofy().load().type(User.class).id(msg.getUserId()).now();
 				user.status = "approved";
 				ofy().save().entity(user).now();
+			} else if (msg.getType().equals("resource-completed")){
+				User user =  ofy().load().type(User.class).id(msg.getUserId()).now();
+				MedRepProfile p = null;
+				try{
+					p = (MedRepProfile)user.getProfile();
+					p.completedResources.add(msg.getId());
+					ofy().save().entity(p).now();
+					
+				}catch(Exception e){}
 			}
 	}
 	

@@ -55,32 +55,37 @@ public class PostCallServlet extends HttpServlet {
 				JSON j = new JSON();
 				resp.getWriter().print(j.toJson(pCall));
 			} else if(msg.getType().equals("get-last-call-data")){
-				User uesr = ofy().load().type(User.class).id(msg.getUserId()).now();
-				Call currCall = ofy().load().type(Call.class).id(msg.getId()).now();
-				ArrayList<Ref<Call>> callRefs = uesr.getCalls();
-				Call call = null;
-				Call lastCall = null;
-				for(Iterator<Ref<Call>> i = callRefs.iterator(); i.hasNext(); ) {
-					Ref<Call> ref = i.next();
-					call = ref.get();
-					if (null != call && (null == lastCall || call.start > lastCall.start)){
-						if (call.getId() - msg.getId() != 0){ // not current call
-							boolean sameProduct = true;
-							try{
-								sameProduct = call.getProduct().getId() == currCall.getProduct().getId();
-							}catch(Exception e){}
-							if (sameProduct){
-								lastCall = call;
-							}
-						}
-					}	
+				if (msg.getUserId() == 0){
+					return; //guest user
 				}
-				PostCall pCall = null;
-				try{
-					pCall = ofy().load().type(PostCall.class).filter("callId", lastCall.getId()).first().now();
-				}catch(Exception e){}
-				JSON j = new JSON();
-				resp.getWriter().print(j.toJson(pCall));
+				User user = ofy().load().type(User.class).id(msg.getUserId()).now();
+				if (null != user){
+					Call currCall = ofy().load().type(Call.class).id(msg.getId()).now();
+					ArrayList<Ref<Call>> callRefs = user.getCalls();
+					Call call = null;
+					Call lastCall = null;
+					for(Iterator<Ref<Call>> i = callRefs.iterator(); i.hasNext(); ) {
+						Ref<Call> ref = i.next();
+						call = ref.get();
+						if (null != call && (null == lastCall || call.start > lastCall.start)){
+							if (call.getId() - msg.getId() != 0){ // not current call
+								boolean sameProduct = true;
+								try{
+									sameProduct = call.getProduct().getId() == currCall.getProduct().getId();
+								}catch(Exception e){}
+								if (sameProduct){
+									lastCall = call;
+								}
+							}
+						}	
+					}
+					PostCall pCall = null;
+					try{
+						pCall = ofy().load().type(PostCall.class).filter("callId", lastCall.getId()).first().now();
+					}catch(Exception e){}
+					JSON j = new JSON();
+					resp.getWriter().print(j.toJson(pCall));
+				}
 			}
 		}
 	}

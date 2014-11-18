@@ -42,6 +42,8 @@ class MedRepProfile extends Profile{
 	String idScanUrl;
 	boolean salesExperience;
 	boolean pharmaExperience;
+	ArrayList<Long> completedResources = new ArrayList<Long>();
+	ArrayList<Long> completedTrainings = new ArrayList<Long>();
 }
 
 @Subclass(index=true)

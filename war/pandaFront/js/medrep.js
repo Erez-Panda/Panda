@@ -167,7 +167,10 @@
 				};
 				$scope.setTraning = function(training){
 					$http.post('/resources', {type:"get-training-resources", userId:training.trainingId}).success(function (resources){
-						training.resources = resources;
+						training.resources = resources.clean(null);
+						for (var lesson in training.resources){
+							 training.resources[lesson].completed = (_user.completedResources.indexOf(training.resources[lesson].resourceId) != -1);
+						}
 						$scope.currTraining = training;
 					});
 					
@@ -187,12 +190,65 @@
 				$scope.openResource = function (resource){
 					window.open(resource.url);
 				}
+				
+				$scope.startTest = function (resource){
+					$scope.showTest = true;
+					updateResId(resource.testId, resource.resourceId);
+				}
+				
+				this.endTest = function(){
+					$scope.showTest = false;
+				}
+				this.onResUpdate = function (callback){
+					updateResId = callback;
+				}
 				$http.post('/trainings', {type:"get-user-trainings", userId:_user.userId}).success(function (trainings){
 					$scope.trainings = trainings.clean(null);
 				});
 				
 			},
 			controllerAs: 'trainingCtrl'
+		};
+	}]);
+	
+	app.directive('testViewer', ['$http', function($http){
+		var endTest;
+		var resourceId;
+		function onUpdate(scope, testId){
+			$http.post('/tests', {type:"get-test",id:testId}).success(function (questions){
+				scope.questions = questions;
+			});
+		};
+		return {
+			require: '^training',
+			restrict: 'E',
+			scope:{},
+			templateUrl:'medrep/test-viewer.html',
+			controller: function($scope){
+				$scope.questions = [];
+				$scope.checkTest = function(q){
+					var score = 0;
+					for (var i=0; i< $scope.questions.length; i++){
+						if ($scope.questions[i].userAns == $scope.questions[i].correctAns){
+							score++;
+						}
+					}
+					if (score/$scope.questions.length > 0.8){
+						$http.post('/user', {type:"resource-completed",userId:_user.userId, id: resourceId}).success(function (){
+ 
+						});
+					}
+					alert("your score is " + score/$scope.questions.length);
+					endTest();
+				}
+			},
+			link: function(scope, element, attrs, controller) {
+				endTest = controller.endTest;
+				controller.onResUpdate(function (testId, resId){
+					resourceId = resId;
+					onUpdate(scope,testId)
+				});
+			}
 		};
 	}]);
 	

@@ -1,6 +1,7 @@
 (function (){
-	var app = angular.module('call',['ui.bootstrap']);
-	app.directive('call', ['$http', function($http){
+	var app = angular.module('guestCall',['ui.bootstrap']);
+	
+	app.directive('call', ['$http', '$location',  function($http, $location){
 		var callData = {};
 		var profileCB;
 		var postCallData = {};
@@ -9,6 +10,7 @@
 			$( ".resizable" ).resizable({
 				aspectRatio: 16 / 11
 			});
+
 			$('.call-screen textarea').height('80px');
 		}
 
@@ -45,7 +47,6 @@
 			restrict: 'E',
 			templateUrl:'common/call.html',
 			scope: {},
-			require: '^tabs',
 			controller: function($scope, $modal){
 				uiInit(this);
 				$scope.noCall = true;
@@ -114,47 +115,14 @@
 					}, onData, onStream, function(){onClose($scope)});
 
 				}
-				$scope.getCurrentCall = function(user){
-					$scope.user = user;
-					$http.post('/calls', {type:"get-current-call",message: (new Date()).getTime() ,userId:user.userId}).success(function (call){
+				$scope.getCurrentCall = function(callId){
+					$http.post('/calls', {type:"get-guest-call",message: (new Date()).getTime() ,id:callId}).success(function (call){
 						if(call){
 							$scope.noCall = false;
-							call[0].resoucres=[{name: 'panda-demo', urls:[ '../res/panda/1.jpg', '../res/panda/2.jpg','../res/panda/3.jpg','../res/panda/4.jpg','../res/panda/5.jpg']}];
 							$scope.currCall = call[0];
-							if (!call[1]) {call[1] = {};}
 							$scope.caller = call[1];
-							$scope.product = call[2] || {};
-							if (user.type == "MEDREP"){
-								var m = $modal.open({
-									templateUrl: 'medrep/pre-call.html',
-									controller: function($scope, $modalInstance){
-										$http.post('/post-call', {type:"get-last-call-data", id:call[0].callId, userId:call[1].userId || 0}).success(function (data){
-											if (data.postCallId){
-												$scope.lastCall = data;
-												postCallData.sessionNumber = data.sessionNumber + 1;
-											} else {
-												postCallData.sessionNumber = 1;
-												$scope.firstCall = true;
-											}
-											
-											$scope.doctor = call[1];
-											$scope.product = call[2];
-											$scope.ok = function (){
-												$modalInstance.close();
-											}
-										});
-
-									},
-									size: '',
-									resolve: {},
-									controllerAs: 'preCall'
-								});
-								m.result.then(function(data){
-									showCallScreen();
-								});
-							} else {
-								showCallScreen();
-							}
+							$scope.product = call[2];
+							showCallScreen();
 						}else{
 							//$scope.noCall = true;
 						}
@@ -166,14 +134,6 @@
 				$scope.selectedRes;
 				$scope.activeCall = false;
 				$scope.currImg = 0;
-				$scope.nextImg = function (){
-					$scope.currImg++;
-					callData.connection.send(JSON.stringify({type:"load_res", url:$scope.selectedRes.urls[$scope.currImg]}));
-				}
-				$scope.prevImg = function (){
-					$scope.currImg--;
-					callData.connection.send(JSON.stringify({type:"load_res", url:$scope.selectedRes.urls[$scope.currImg]}));
-				}
 				$scope.startCall = function(){
 					$scope.activeCall = true;
 					getUserMedia({video:false, audio:true}, function(stream){
@@ -201,38 +161,6 @@
 						callData.call.stream.stop();
 					}
 					$scope.activeCall = false;
-					var tUrl;
-					if ($scope.user.type == "MEDREP"){
-						tUrl = 'medrep/post-call.html'
-					} else {
-						tUrl = 'doctor/post-call.html'
-					}
-					var m = $modal.open({
-						templateUrl: tUrl,
-						controller: function($modalInstance){
-							var rating;
-							this.init = function(){
-								$("#star-rating").rating({showClear:false, showCaption:false}).on('rating.change', function (event, value, caption){
-									rating = value;
-								});
-							}
-							this.rate = function(){
-								$modalInstance.close({rating: rating, details: this.details});
-							}
-						},
-						size: '',
-						resolve: {},
-						controllerAs: 'postCall'
-					});
-					m.result.then(function(data){
-						if ($scope.user.type == "DOCTOR"){
-							$http.post('/post-call', {type:"doc-rate-call",message: JSON.stringify(data), id:$scope.currCall.callId});
-						} else {
-							$.extend(data, postCallData)
-							$http.post('/post-call', {type:"rep-rate-call",message: JSON.stringify(data), id:$scope.currCall.callId});
-						}
-
-					})
 
 				}
 				$scope.chat = function(){
@@ -243,18 +171,11 @@
 				this.closePostCall = function(){
 					$scope.showPostCall = false;
 				}
+				
+				$scope.getCurrentCall($location.search().callid);
 
 			},
-			controllerAs: 'callCtrl',
-			link: function(scope, element, attrs, controller) {
-				controller.onSelect('call', function(){
-					var user = controller.getActiveUser();
-					scope.getCurrentCall(user);
-				});
-				scope.$watch('selectedRes', function(val){
-					callData.connection.send(JSON.stringify({type:"load_res", url:val.urls[scope.currImg]}));
-				})
-			}
+			controllerAs: 'callCtrl'
 		};
 	}]);
 
@@ -275,5 +196,4 @@
 			}
 		};
 	}]);
-
 })();
