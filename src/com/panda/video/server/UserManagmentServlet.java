@@ -22,6 +22,7 @@ public class UserManagmentServlet extends HttpServlet {
 			String msgJson = reqeust.getReader().readLine();
 			Message msg = JSON.constructMessage(msgJson);
 			if (msg.getType().equals("new-user")){
+				try{
 				User user = JSON.constructUser(msg.getMessage());
 				user.Created();
 				User existingUser = ofy().load().type(User.class).filter("email", user.getEmail()).first().now();
@@ -32,6 +33,11 @@ public class UserManagmentServlet extends HttpServlet {
 					user.rating = 3;
 					ofy().save().entity(user).now();
 					response.getWriter().print(j.toJson(user));
+				}
+				}catch (Exception e){
+					response.getWriter().print("Somthing is wrong3: ");
+					response.getWriter().print(msgJson);
+					response.getWriter().print(e);
 				}
 			} else if (msg.getType().equals("new-med-profile")){
 				MedRepProfile profile = JSON.constructMedProfile(msg.getMessage());

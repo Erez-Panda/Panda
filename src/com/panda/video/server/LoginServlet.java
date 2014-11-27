@@ -21,9 +21,10 @@ public class LoginServlet extends HttpServlet {
 	@Override
 	public void doPost(HttpServletRequest req, HttpServletResponse resp)
 			throws IOException {
-
+		String msgJson ="";
+		try{
 		HttpSession session = req.getSession();
-		String msgJson = req.getReader().readLine();
+		msgJson = req.getReader().readLine();
 		Message msg = JSON.constructMessage(msgJson);
 		JSON j = new JSON();
 		String sessionUser = (String)session.getAttribute("user");
@@ -48,7 +49,11 @@ public class LoginServlet extends HttpServlet {
 		} else if (sessionUser != null){
 			resp.getWriter().print(sessionUser);
 		} else {
-			resp.getWriter().print("no user");
+		}
+		}catch(Exception e){
+			resp.getWriter().print("Somthing is wrong3: ");
+			resp.getWriter().print(msgJson);
+			resp.getWriter().print(e);
 		}
 	}
 
